@@ -297,10 +297,10 @@ export default function Register({ navigation }) {
 									/>
 								</View>
 								<View style={{ marginLeft: "3%" }}>
-									<Text style={{ fontSize: 12 }}>
+									<Text style={{ fontSize: 12, color:"#949AAF" }}>
 										Estoy de acuerdo con los
 									</Text>
-									<Text style={{ fontWeight: "bold", fontSize: 11.5 }}>
+									<Text style={{ fontWeight: "bold", fontSize: 11.5, color:"#949AAF" }}>
 										Términos de Servicios y Política de privacidad.
 									</Text>
 								</View>

@@ -38,7 +38,7 @@ export function InputLogin({ control, name, placeholder, rules = {}, secureTextE
 							secureTextEntry={visibility !== true ? secureTextEntry : false}
 							maxLength={maxLength}
 							keyboardType={numeric}
-							style={{ width: "85%", paddingLeft: 10, alignItems: "center", fontWeight: "600", fontSize: 14, lineHeight: 16 }}
+							style={{ width: "85%", paddingLeft: 10, alignItems: "center", fontWeight: "600", fontSize: 14, lineHeight: 16, color:"#564C71" }}
 						/>
 						<TouchableOpacity onPress={changeVisibility} style={{width:"10%"}}>
 							{

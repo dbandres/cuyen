@@ -182,9 +182,10 @@ export function Form({ navigation }) {
                 numberOfLines={4} // Número de líneas visibles (ajusta según tus necesidades)
                 style={styles.textArea}
                 maxLength={160} // Establecer el número máximo de caracteres
+                placeholderTextColor="#CDD1DF"
               />
               <View style={{ width: "100%", paddingLeft: 10 }}>
-                <Text style={{ fontSize: 10 }}>Caracteres restantes: {160 - texto.length}</Text>
+                <Text style={{ fontSize: 10, color:"#000000" }}>Caracteres restantes: {160 - texto.length}</Text>
               </View>
             </View>
             <View style={{ height: 50, alignItems: "center", display: "flex", flexDirection: "row", justifyContent: "flex-end", width: "97%" }}>
@@ -286,5 +287,6 @@ const styles = StyleSheet.create({
     padding: 10,
     width: '95%',
     height: "75%", // Ajusta la altura según tus necesidades
+    color:"#000000"
   },
 })

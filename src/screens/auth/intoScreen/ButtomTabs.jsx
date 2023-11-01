@@ -8,7 +8,7 @@ export const ButtomTabs = ({navigation}) => {
   }
 
   return (
-    <View style={{ backgroundColor: "#162962", height: "12%", alignItems: "center", justifyContent: "space-around", flexDirection: "row" }}>
+    <View style={{ backgroundColor: "#162962", height: "10%", alignItems: "center", justifyContent: "space-around", flexDirection: "row" }}>
       <View style={{ justifyContent: "center", alignItems: "center", height: "60%" }}>
         <TouchableOpacity style={{ bottom: 8 }}>
           <Image
@@ -20,11 +20,11 @@ export const ButtomTabs = ({navigation}) => {
           Nuestras Redes
         </Text>
       </View>
-      <View style={{ width: "20%", bottom: "6%", backgroundColor: "#162962", alignItems: "center", justifyContent: "center", borderRadius: 50, height: "120%" }}>
+      <View style={{ width: "20%", bottom: "3%", backgroundColor: "#162962", alignItems: "center", justifyContent: "center", borderRadius: 50, height: "120%" }}>
         <TouchableOpacity style={{ bottom: 8 }} onPress={gotToLogin}>
           <Image
             source={require("../../../assets/account_circle.png")}
-            style={{ width: 48, height: 48 }}
+            style={{ width: 40, height: 40 }}
           />
         </TouchableOpacity>
         <Text style={{ color: "white", fontSize: 10 }}>Iniciar sesión</Text>

@@ -80,7 +80,7 @@ export function Intro({navigation}) {
             style>
             <View style={{ height: 286, width: 320, backgroundColor: "white", margin: 14, borderRadius: 10 }}>
               <View style={{ height: "30%", justifyContent: "center", margin: "5%" }}>
-                <Text style={{ fontSize: 20, fontWeight: "400", lineHeight: 24 }}>Titulo de Informacion Importante</Text>
+                <Text style={{ fontSize: 20, fontWeight: "400", lineHeight: 24, color: "#564C71" }}>Titulo de Informacion Importante</Text>
               </View>
               <View style={{ height: "45%", justifyContent: "center", borderTopColor: "#162962", borderTopWidth: 3 }}>
                 <View style={{ margin: "5%" }}>
@@ -90,7 +90,7 @@ export function Intro({navigation}) {
             </View>
             <View style={{ height: 286, width: 320, backgroundColor: "white", margin: 14, borderRadius: 10 }}>
               <View style={{ height: "30%", justifyContent: "center", margin: "5%" }}>
-                <Text style={{ fontSize: 20, fontWeight: "400", lineHeight: 24 }}>Titulo de Informacion Importante</Text>
+                <Text style={{ fontSize: 20, fontWeight: "400", lineHeight: 24, color: "#564C71" }}>Titulo de Informacion Importante</Text>
               </View>
               <View style={{ height: "45%", justifyContent: "center", borderTopColor: "#162962", borderTopWidth: 3 }}>
                 <View style={{ margin: "5%" }}>
