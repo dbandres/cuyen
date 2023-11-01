@@ -7,11 +7,12 @@ import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { UserContext } from "../../../context/UserContext";
 import CheckBox from '@react-native-community/checkbox';
-import { SelectList } from "react-native-dropdown-select-list";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllContratos } from "../../../redux/actions";
 import DropDownPicker from "react-native-dropdown-picker";
 import LinearGradient from "react-native-linear-gradient";
+import { API_URL, token } from "../../../api";
+
 
 
 
@@ -24,6 +25,7 @@ export default function Register({ navigation }) {
 	const [showAlert, setShowAlert] = useState(false)
 	const [showAlert1, setShowAlert1] = useState(false)
 	const [showAlert2, setShowAlert2] = useState(false)
+	const [showAlert3, setShowAlert3] = useState(false)
 	const { setUserData } = useContext(UserContext)
 	const [toggleCheckBox, setToggleCheckBox] = useState(false)
 	const [itemsArray, setItemsArray] = useState([])
@@ -81,55 +83,58 @@ export default function Register({ navigation }) {
 	}
 
 	async function handleSubmitRegister(data) {
-		navigation.navigate("registerOk")
-		// console.log(data)
-		// if (selectedItems.length == 0 && toggleCheckBox) {
-		// 	setShowAlert1(true)
-		// }
-		// else if (!toggleCheckBox && selectedItems) {
-		// 	setShowAlert2(true)
-		// }
-		// else if (selectedItems && toggleCheckBox) {
+		// navigation.navigate("registerOk")
+		console.log(data)
+		if (selectedItems.length == 0 && toggleCheckBox) {
+			setShowAlert1(true)
+		}
+		else if (!toggleCheckBox && selectedItems) {
+			setShowAlert2(true)
+		}
+		else if (selectedItems && toggleCheckBox) {
 
-		// 	const separamosString = selectedItems.split("-")
-		// 	const numeroContrato = separamosString[0].toString()
+			// const separamosString = selectedItems.split("-")
+			// const numeroContrato = separamosString[0].toString()
 
-		// 	try {
-		// 		const fetch = await axios.post("http://192.168.1.3:4002/usuarios",
-		// 			{
-		// 				usuario: data.userdni,
-		// 				nombre: data.username,
-		// 				apellido: data.userlastname,
-		// 				email: data.useremail,
-		// 				contrato: numeroContrato,
-		// 				password: data.userpass,
-		// 				rol: "padre",
-		// 				telefono: data.userphone
-		// 			},
-		// 			{
-		// 				headers: {
-		// 					'x-access-token': `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.t0c3Oss0aMtu_AZCsXNzrms8E7oV6GXQ5ciwNRoidcE`,
-		// 					"Content-Type": "application/json",
-		// 				}
-		// 			}
-		// 		)
-		// 			.then((res) => {
-		// 				if (res.status === 200) {
-		// 					setShowAlert(true)
-		// 					setUserData({
-		// 						jwt: res.data,
-		// 						nombre: data.username,
-		// 						apellido: data.userlastname,
-		// 						email: data.useremail,
-		// 						usuario: data.userdni,
-		// 						telefono: data.userphone,
-		// 					})
-		// 				}
-		// 			})
-		// 	} catch (error) {
-		// 		console.log('Error de Axios:', error);
-		// 	}
-		// }
+			try {
+				await axios.post(`${API_URL}/usuarios`,
+					{
+						usuario: data.userdni,
+						nombre: data.username,
+						apellido: data.userlastname,
+						email: data.useremail,
+						contrato: "343455",
+						password: data.userpass,
+						rol: "padre",
+						telefono: data.userphone
+					},
+					{
+						headers: {
+							'x-access-token': `${token}`,
+							"Content-Type": "application/json",
+						}
+					}
+				)
+					.then((res) => {
+						if (res.status === 200) {
+							console.log(JSON.stringify(res, null ,3))
+							setShowAlert(true)
+							setUserData({
+								jwt: res.data,
+								nombre: data.username,
+								apellido: data.userlastname,
+								email: data.useremail,
+								usuario: data.userdni,
+								telefono: data.userphone,
+								contrato: data.contrato
+							})
+						}
+					})
+			} catch (error) {
+				console.log('Error de Axios:', error);
+				setShowAlert3(true)
+			}
+		}
 	}
 
 	const onSelectedItemsChange = (selectedItems) => {
@@ -155,9 +160,9 @@ export default function Register({ navigation }) {
 							<DropDownPicker
 								items={data}
 								open={isOpen}
-								value={currentValue}
+								value={selectedItems}
 								setOpen={openPicker}
-								setValue={(val) => { setCurrentValue(val) }}
+								setValue={(val) => { onSelectedItemsChange(val) }}
 								autoScroll
 								placeholder="Contrato"
 								placeholderStyle={{ color: "#CDD1DF" }}
@@ -336,6 +341,7 @@ export default function Register({ navigation }) {
 			/>
 			{showAlerts(showAlert1, setShowAlert1, "Error", "Debes seleccionar un contrato", "Ok")}
 			{showAlerts(showAlert2, setShowAlert2, "Error!", "Debes aceptar Terminos y Politica de privacidad", "Ok")}
+			{showAlerts(showAlert3, setShowAlert3, "Error!", "Es posible que ya te hayas registrado", "Ok")}
 		</View>
 	)
 }

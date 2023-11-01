@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useDispatch, } from "react-redux";
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions, StatusBar, Image, Platform } from "react-native";
 import { useForm } from "react-hook-form";
@@ -15,31 +15,48 @@ export default function Login({ navigation }) {
 
 	const dispatch = useDispatch()
 	const { setUserData } = useContext(UserContext)
-	const { control, handleSubmit, setValue } = useForm()
+	const [inputValue, setInputValue] = useState(false)
+	const { control, handleSubmit, watch } = useForm()
 
 	function authentication(data) {
-		// dispatch(loginAuth(data.user, data.userpassword))
-		// 	.then((response) => {
-		// 		if (response.payload.status === 200) {
-		// 			// accedo a la respuesta de la acción
-		// 			console.log(JSON.stringify(response.payload.data, null, 3))
-		// 			setUserData({
-		// 				jwt: response.payload.data.token,
-		// 				nombre: response.payload.data.usuario.nombre,
-		// 				apellido: response.payload.data.usuario.apellido,
-		// 				email: response.payload.data.usuario.email,
-		// 				usuario: response.payload.data.usuario.usuario,
-		// 				telefono: response.payload.data.usuario.telefono,
-		// 			})
-		// 			navigation.navigate("landing")
-		// 		}
-		// 	})
-		// 	.catch((error) => {
-		// 		// Manejo los errores que puedan ocurrir en la acción loginAuth
-		// 		console.log("Error, datos Incorrectos", error);
-		// 	});
-		navigation.navigate("landing")
+		dispatch(loginAuth(data.dniUser, data.passUser))
+			.then((response) => {
+				if (response.payload.status === 200) {
+					// accedo a la respuesta de la acción
+					console.log(JSON.stringify(response.payload.data, null, 3))
+					setUserData({
+						jwt: response.payload.data.token,
+						nombre: response.payload.data.usuario.nombre,
+						apellido: response.payload.data.usuario.apellido,
+						email: response.payload.data.usuario.email,
+						usuario: response.payload.data.usuario.usuario,
+						telefono: response.payload.data.usuario.telefono,
+						contrato: response.payload.data.usuario.contrato
+					})
+					navigation.navigate("landing")
+				}
+			})
+			.catch((error) => {
+				// Manejo los errores que puedan ocurrir en la acción loginAuth
+				console.log("Error, datos Incorrectos", error);
+			});
+		// navigation.navigate("landing")
 	}
+
+	const watchControl =()=>{
+		const dniValue = watch("dniUser");
+		const passValue = watch("passUser")
+		if(dniValue && passValue){
+			setInputValue(true)
+		}
+		else{
+			setInputValue(false)
+		}
+	}
+
+	useEffect(() => {
+		watchControl()
+	}, [watch("dniUser"), watch("passUser")])
 
 	return (
 		<ContainerWithBackground>
@@ -63,7 +80,8 @@ export default function Login({ navigation }) {
 						<View style={{ height: "22%", width: "100%" }}>
 							<ButtonCustom
 								text="Ingresar"
-								color="#FF3D00"
+								color={inputValue !== false ? "#FF3D00" : "#CDD1DF"}
+								disabled={inputValue !== false ? false : true}
 								onPress={handleSubmit(authentication)}
 							/>
 						</View>

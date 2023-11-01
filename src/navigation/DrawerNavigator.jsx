@@ -8,13 +8,14 @@ import { MenuBottonItem } from './MenuBottonItem';
 import { data } from './dataDrawer';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { RouteMuro } from '../screens/tabScreens/muro/RouteMuro';
-
+import { UserContext } from '../context/UserContext';
+import { useContext} from "react";
 
 
 
 const CustomDrawerContent = ({ navigation }) => {
 
-	console.log(data)
+	const { userdata } = useContext(UserContext)
 
 	return (
 		<DrawerContentScrollView style={{ backgroundColor: "#3462BF", flex: 1 }}>
@@ -52,7 +53,7 @@ const CustomDrawerContent = ({ navigation }) => {
 					<View style={{ height: "30%",  marginBottom:"10%"}}>
 						<View style={{  height: "70%", display: "flex", justifyContent: "space-between", flexDirection:"row" }}>
 							<View style={{width:"50%"}}>
-								<Text style={{fontWeight:"700", color:"white"}}>Jonathan David Fischer</Text>
+								<Text style={{fontWeight:"700", color:"white"}}>{userdata.apellido.toUpperCase()} {userdata.nombre}</Text>
 							</View>
 							<TouchableOpacity>
 								<Image
@@ -61,7 +62,7 @@ const CustomDrawerContent = ({ navigation }) => {
 								/>
 							</TouchableOpacity>
 						</View>
-						<Text style={{ color: "white" }}>Contrato 43587</Text>
+						<Text style={{ color: "white" }}>Contrato {userdata.contrato}</Text>
 					</View>
 					{
 						data.map((d, index) => (

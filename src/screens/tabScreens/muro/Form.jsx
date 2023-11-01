@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Dimensions, ScrollView, Modal, TouchableOpacity, TextInput, Platform, PermissionsAndroid, FlatList, Image } from "react-native";
+import Swiper from 'react-native-swiper'
 import { request, PERMISSIONS, check, RESULTS } from 'react-native-permissions';
 import { launchCamera, launchImageLibrary } from "react-native-image-picker"
 import { ButtonCustom } from "../../../components/ButtomCustom";
 import { Header } from "./Header";
+import axios from "axios";
 
 
 const Height = Dimensions.get("screen").height
@@ -11,7 +13,7 @@ const Height = Dimensions.get("screen").height
 export function Form({ navigation }) {
 
   const [texto, setTexto] = useState('');
-  const [imageRender, setImageRender] = useState("");
+  const [imageRender, setImageRender] = useState([]);
   const [cameraGranted, setCameraGranted] = useState(false);
 
   const [postData, setPostData] = useState({
@@ -25,17 +27,13 @@ export function Form({ navigation }) {
     // Verificar la longitud máxima del texto
     if (newText.length <= 160) {
       setTexto(newText);
-      setPostData({ ...postData, comentario: newText });
+      setPostData({ comentario: newText });
     }
   };
 
   const addImageUri = (newUri) => {
     if (newUri) {
       setImageRender([].concat(...imageRender, newUri));
-      setPostData({ ...postData, img: [...postData.img, newUri] });
-    }
-    else {
-      setPostData({ ...postData })
     }
   };
 
@@ -85,9 +83,8 @@ export function Form({ navigation }) {
       try {
         if (response) {
           addImageUri(response.assets[0].uri)
-          onClose()
         }
-        else{
+        else {
           console.log("error, no seleccionó ninguna foto")
         }
       } catch (error) {
@@ -99,10 +96,10 @@ export function Form({ navigation }) {
     });
   };
 
-  const openImageLibrary=()=>{
+  const openImageLibrary = () => {
     launchImageLibrary({
-      mediaType: 'mixed', quality: 0.5,  selectionLimit: 5
-    },response=>{
+      mediaType: 'mixed', quality: 0.5, selectionLimit: 5
+    }, response => {
       if (response.didCancel) {
         console.log('El usuario canceló la selección');
       } else if (response.error) {
@@ -111,7 +108,9 @@ export function Form({ navigation }) {
         console.log("estado del response: ", response)
         // Aquí puedes manejar la imagen o video seleccionado
         console.log(JSON.stringify(response, null, 3))
-        addImageUri(response.assets[0].uri)
+        const selectedImageUris = response.assets.map((asset) => asset.uri);
+        setImageRender([...imageRender, ...selectedImageUris]);
+        // addImageUri(response.assets[0].uri)
       }
     })
   }
@@ -123,62 +122,101 @@ export function Form({ navigation }) {
 
   };
 
-  // useEffect(() => {
-  //   requestGalleryPermission();
-  //   savePicturesAndVideos();
-  // }, []);
-
   const armadoDePublicacion = () => {
-    console.log("publicación: ", postData)
+    if(imageRender.length !== 0){
+      try {
+        imageRender.forEach(img => {
+          axios.post("https://www.turismocuyen.com.ar/viaje/spaces", img,
+          {
+            "x-access-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.p5Uixc5mcFGxx8eRohkZI8ec8vR092iQb5GDsJVqffM"
+          }
+          )
+          .then(res=>console.log(res))
+        });
+      } catch (error) {
+        console.log(error)
+      }
+    }
   }
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Header children="Publicar" navigation={navigation} />
-      <View style={{ backgroundColor: "white", width: "90%", height: "34%", borderRadius: 20, }}>
-        <View style={{ display: "flex", justifyContent: "flex-start", alignItems: "center", height: "50%" }}>
-          <TextInput
-            placeholder="Escribe tu comentario..."
-            onChangeText={handleTextChange}
-            value={texto}
-            textAlignVertical="top"
-            multiline={true} // Permite múltiples líneas
-            numberOfLines={4} // Número de líneas visibles (ajusta según tus necesidades)
-            style={styles.textArea}
-            maxLength={160} // Establecer el número máximo de caracteres
-          />
-          <View style={{ width: "100%", paddingLeft: 10 }}>
-            <Text style={{ fontSize: 10 }}>Caracteres restantes: {160 - texto.length}</Text>
-          </View>
-        </View>
-        <View style={{ height: "20%", alignItems: "center", display: "flex", flexDirection: "row", justifyContent: "flex-end", width: "97%" }}>
-          <Text style={{ fontSize: 12, fontWeight: "600", color: "#7899FF", marginRight: "3%" }}>
-            Agregar a tu publicacion
-          </Text>
-          <TouchableOpacity onPress={requestGalleryPermission}>
-            <Image
-              source={require('../../../assets/Picture.png')}
-              style={{ width: 50, height: 50, marginRight: "3%" }}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={handleCameraPermission}>
-            <Image
-              source={require('../../../assets/Videos.png')}
-              style={{ width: 50, height: 50, }}
-            />
-          </TouchableOpacity>
-        </View>
-        <View style={{ height: "20%", width: "100%", alignItems: "center", justifyContent: "center", display: "flex", marginTop: "4%" }}>
-          <View style={{ width: "95%" }}>
-            <ButtonCustom
-              text="Publicar"
-              color="#CDD1DF"
-              onPress={armadoDePublicacion}
-            />
+      <View style={{ flex: 1, alignItems: "center" }}>
+        <View style={{ backgroundColor: "white", width: "93%", height: imageRender.length !== 0 ? 617 : 253, borderRadius: 20 }}>
+          {
+            imageRender.length !== 0 ?
+              <View style={{ height: imageRender.length !== 0 ? "56%" : "0%", alignItems: "center", borderRadius: 10, margin: 8 }}>
+                <Swiper style={{ height: "100%", borderRadius: 10 }}>
+                  {
+                    imageRender.map((img, index) => (
+                      <View key={index} style={{ justifyContent: 'center', alignItems: 'center' }}>
+                        <Image
+                          source={{
+                            uri: img
+                          }}
+                          style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 10 }}
+                        />
+                        <TouchableOpacity
+                          style={{ position: 'absolute', top: 10, right: 10, backgroundColor: 'red', borderRadius: 20, padding: 5 }}
+                          onPress={() => removeItem(index)}
+                        >
+                          <Text style={{ color: 'white' }}>Eliminar</Text>
+                        </TouchableOpacity>
+                      </View>
+                    ))
+                  }
+                </Swiper>
+              </View>
+              :
+              null
+          }
+          <View style={{ height: "60%" }}>
+            <View style={{ display: "flex", justifyContent: "flex-start", alignItems: "center", height: 130 }}>
+              <TextInput
+                placeholder="Escribe tu comentario..."
+                onChangeText={handleTextChange}
+                value={texto}
+                textAlignVertical="top"
+                multiline={true} // Permite múltiples líneas
+                numberOfLines={4} // Número de líneas visibles (ajusta según tus necesidades)
+                style={styles.textArea}
+                maxLength={160} // Establecer el número máximo de caracteres
+              />
+              <View style={{ width: "100%", paddingLeft: 10 }}>
+                <Text style={{ fontSize: 10 }}>Caracteres restantes: {160 - texto.length}</Text>
+              </View>
+            </View>
+            <View style={{ height: 50, alignItems: "center", display: "flex", flexDirection: "row", justifyContent: "flex-end", width: "97%" }}>
+              <Text style={{ fontSize: 12, fontWeight: "600", color: "#7899FF", marginRight: "3%" }}>
+                Agregar a tu publicacion
+              </Text>
+              <TouchableOpacity onPress={requestGalleryPermission}>
+                <Image
+                  source={require('../../../assets/Picture.png')}
+                  style={{ width: 50, height: 50, marginRight: "3%" }}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={handleCameraPermission}>
+                <Image
+                  source={require('../../../assets/Videos.png')}
+                  style={{ width: 50, height: 50, }}
+                />
+              </TouchableOpacity>
+            </View>
+            <View style={{ height: 47, width: "100%", alignItems: "center", justifyContent: "center", display: "flex", marginTop: "5%" }}>
+              <View style={{ width: "95%" }}>
+                <ButtonCustom
+                  text="Publicar"
+                  color={texto !== " " ? "#FF3D00" : "#CDD1DF"}
+                  onPress={armadoDePublicacion}
+                />
+              </View>
+            </View>
           </View>
         </View>
       </View>
-    </View>
+    </ScrollView>
   )
 }
 
@@ -187,12 +225,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#D2DCEB",
     height: Height,
     display: "flex",
-    alignItems: "center"
-  },
-  containerAddImg: {
-    height: Height * 18 / 100,
-    width: "95%",
-    marginTop: "4%"
+    // alignItems: "center"
   },
   buttonOverlay: {
     position: 'absolute',
