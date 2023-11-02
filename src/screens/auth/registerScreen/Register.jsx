@@ -153,7 +153,10 @@ export default function Register({ navigation }) {
 				start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} colors={['#FF3D00', '#FFB800']}
 				style={styles.gradient}
 			/>
-			<View style={{ alignItems: "center", position: "absolute", width: "95%", backgroundColor: "white", height: "95%", marginTop: "2%", borderRadius: 10, }}>
+			<View style={{ alignItems: "center", position: "absolute", width: "95%", backgroundColor: "white", height: "98%", marginTop: "2%", borderRadius: 10, }}>
+				<View style={{height:"15%",alignItems:"center", justifyContent:"center"}}>
+					<Text style={{color:"#334EA2", fontWeight:"700", fontSize:16}}>Registro del Padre/Responsable</Text>
+				</View>
 				<View style={{ justifyContent: "flex-start", marginTop: "2%", width: "90%", marginBottom: "3%" }}>
 					{
 						data.length != 0 ?

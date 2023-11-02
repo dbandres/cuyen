@@ -14,8 +14,8 @@ export const ContainerWithBackground=({children})=>{
       />
       <StatusBar backgroundColor="#fff"
         barStyle="dark-content" />
-      <ScrollView style={{ position: "absolute", height: height, width: "100%" }}>
-        <View style={{ width: "100%", top: "10%", alignItems: "center", height: 700, justifyContent: "center" }}>
+      <View style={{ position: "absolute", height:"100%", width: "100%" }}>
+        <View style={{ width: "100%", top: "10%",alignItems: "center", height: 715, justifyContent: "center" }}>
           <View style={{ height: "80%", width: "95%", backgroundColor: "white", alignItems: "center", borderRadius: 10 }}>
             <View style={Platform.OS === 'ios' ? styles.iosShadow : styles.androidShadow}>
               <Image
@@ -26,7 +26,7 @@ export const ContainerWithBackground=({children})=>{
             {children}
           </View>
         </View>
-      </ScrollView>
+      </View>
     </View>
   )
 }
