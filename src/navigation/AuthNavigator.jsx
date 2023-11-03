@@ -1,13 +1,14 @@
-import ForgotPassword from "../screens/auth/ForgotPassword";
+import ForgotPassword from "../screens/auth/forgotPass/ForgotPassword";
 import Login from "../screens/auth/loginScreen/Login";
 import Register from "../screens/auth/registerScreen/Register";
 import axios from 'axios';
 import DrawerNavigator from "./DrawerNavigator";
-import ForgotPassword2 from "../screens/auth/ForgotPassword2";
-import { ForgotPassword3 } from "../screens/auth/ForgotPassword3";
+import ForgotPassword2 from "../screens/auth/forgotPass/ForgotPassword2";
+import { ForgotPassword3 } from "../screens/auth/forgotPass/ForgotPassword3";
 import { Intro } from "../screens/auth/intoScreen/Intro";
 import { RegisterOk } from "../screens/auth/registerScreen/RegisterOk";
-import { ForgotPassword1 } from "../screens/auth/ForgotPassword1";
+import { ForgotPassword1 } from "../screens/auth/forgotPass/ForgotPassword1";
+import { FinishForgotPass } from "../screens/auth/forgotPass/FinishForgotPass";
 
 const { createStackNavigator } = require("@react-navigation/stack");
 
@@ -24,8 +25,9 @@ export default function AuthNavigator() {
 			<Stack.Screen name="registerOk" component={RegisterOk} options={{ headerShown: false }} />
 			<Stack.Screen name="forgotPass" component={ForgotPassword} options={{ headerShown: false }} />
 			<Stack.Screen name="forgotPassOne" component={ForgotPassword1} options={{ headerShown: false }}/>
-			<Stack.Screen name="forgotPasstwo" component={ForgotPassword2} options={{ title: "Enviar Código", headerStyle:{backgroundColor: "white", elevation: 0, shadowColor: "transparent"}, headerTintColor: "black", headerTitleAlign: "center" }} />
-			<Stack.Screen name="forgotPassthree" component={ForgotPassword3} options={{ title: "Ingresar Contraseña Nueva", headerStyle:{backgroundColor: "white", elevation: 0, shadowColor: "transparent"}, headerTintColor: "black", headerTitleAlign: "center" }} />
+			<Stack.Screen name="forgotPasstwo" component={ForgotPassword2} options={{ headerShown: false }} />
+			<Stack.Screen name="forgotPassthree" component={ForgotPassword3} options={{ headerShown: false }}/>
+			<Stack.Screen name="finishForgotPass" component={FinishForgotPass} options={{ headerShown: false }}/>
 			<Stack.Screen name="landing" component={DrawerNavigator} options={{ headerShown: false }}/>
 		</Stack.Navigator>
 	)

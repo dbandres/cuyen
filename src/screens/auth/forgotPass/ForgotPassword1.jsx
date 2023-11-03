@@ -1,13 +1,27 @@
 import { Dimensions, Image, ScrollView, StatusBar, StyleSheet, Text, View } from "react-native"
-import { ContainerWithBackground } from "../ContainerWithBackground"
+import { ContainerWithBackground } from "../../ContainerWithBackground"
 import { useContext, useEffect, useState } from "react";
 import CheckBox from "@react-native-community/checkbox";
-import { ButtonCustom } from "../../components/ButtomCustom";
+import { ButtonCustom } from "../../../components/ButtomCustom";
 
-export const ForgotPassword1 = () => {
+export const ForgotPassword1 = ({ navigation, route }) => {
 
   const { height } = Dimensions.get("screen")
   const [toggleCheckBox, setToggleCheckBox] = useState(false)
+  const { jwt, idUser, numAleatorio, email } = route.params.datos;
+
+  console.log(email)
+
+  const goPass2 = () => {
+    navigation.navigate("forgotPasstwo", {
+      datos: {
+        jwt: jwt,
+        idUser: idUser,
+        numAleatorio: numAleatorio,
+        email: email
+      }
+    })
+  }
 
   return (
     <ContainerWithBackground>
@@ -27,9 +41,16 @@ export const ForgotPassword1 = () => {
               value={toggleCheckBox}
               onValueChange={(newValue) => setToggleCheckBox(newValue)}
             />
-            <Text>
-              E-mail
-            </Text>
+            {
+              email ?
+                <Text>
+                  {email}
+                </Text>
+                :
+                <Text>
+                  E-mail
+                </Text>
+            }
           </View>
           <View style={{ top: 70, width: "100%" }}>
             <View style={{ height: "22%", width: "100%" }}>
@@ -37,7 +58,7 @@ export const ForgotPassword1 = () => {
                 text="Continuar"
                 color={toggleCheckBox !== false ? "#FF3D00" : "#CDD1DF"}
                 disabled={toggleCheckBox !== false ? false : true}
-                onPress={() => { navigation.navigate("forgotPassOne") }}
+                onPress={goPass2}
               />
             </View>
             <View style={{ height: "21%", marginTop: "2%", width: "100%", borderColor: "#3462BF", borderWidth: 1, borderRadius: 10 }}>

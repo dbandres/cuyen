@@ -1,13 +1,13 @@
 import { View, Text, StyleSheet, Dimensions, ScrollView, Image, StatusBar } from "react-native";
-import { CustomInput } from "./registerScreen/CustomInput";
 import { useForm } from "react-hook-form";
-import { ButtonCustom } from "../../components/ButtomCustom";
+import { ButtonCustom } from "../../../components/ButtomCustom";
 import axios from "axios";
 import AwesomeAlert from "react-native-awesome-alerts";
 import { useEffect, useState } from "react";
-import LinearGradient from "react-native-linear-gradient";
-import { InputLogin } from "./loginScreen/InputLogin";
-import { ContainerWithBackground } from "../ContainerWithBackground";
+import { InputLogin } from "../loginScreen/InputLogin";
+import { ContainerWithBackground } from "../../ContainerWithBackground";
+import { API_URL, token } from "../../../api";
+
 
 export default function ForgotPassword({ navigation }) {
 
@@ -40,23 +40,25 @@ export default function ForgotPassword({ navigation }) {
 
 	const recuperarContraseña = async (data) => {
 		setShowAlert2(true)
-		await axios.post("http://192.168.1.3:4002/resetapp",
+		await axios.post(`${API_URL}/resetapp`,
 			{
-				usuario: data.user
+				usuario: data.dniUser
 			},
 			{
 				headers: {
-					'x-access-token': `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.t0c3Oss0aMtu_AZCsXNzrms8E7oV6GXQ5ciwNRoidcE`,
+					'x-access-token': `${token}`,
 					"Content-Type": "application/json",
 				}
 			})
 			.then((res) => {
 				if (res.status === 200) {
-					navigation.navigate("forgotPasstwo", {
+					console.log(res)
+					navigation.navigate("forgotPassOne", {
 						datos: {
 							jwt: res.data.token,
 							idUser: res.data.idUsuario,
-							numAleatorio: res.data.numeroAleatorio
+							numAleatorio: res.data.numeroAleatorio,
+							email: res.data.email
 						}
 					})
 				}
@@ -86,7 +88,7 @@ export default function ForgotPassword({ navigation }) {
 								text="Continuar"
 								color={inputValue !== false ? "#FF3D00" : "#CDD1DF"}
 								disabled={inputValue !== false ? false : true}
-								onPress={() => { navigation.navigate("forgotPassOne") }}
+								onPress={handleSubmit(recuperarContraseña)}
 							/>
 						</View>
 						<View style={{ height: "22%", marginTop: "2%", width: "100%", borderColor: "#3462BF", borderWidth: 1, borderRadius: 10 }}>
@@ -99,48 +101,8 @@ export default function ForgotPassword({ navigation }) {
 						</View>
 					</View>
 				</View>
+				{showAlert2 ? getAlert() : null}
 			</View>
 		</ContainerWithBackground>
 	)
 }
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		display: "flex",
-		alignItems: "center",
-	},
-	text: {
-		color: "black",
-		fontSize: 25,
-		fontWeight: "bold"
-	}, gradient: {
-		flex: 1,
-		width: "100%"
-	},
-	androidShadow: {
-		elevation: 5, // Ajusta este valor según tu preferencia
-		height: '28%',
-		width: '85%',
-		backgroundColor: '#FFFFFF',
-		position: 'absolute',
-		top: -100,
-		borderRadius: 10,
-		alignItems: "center",
-		justifyContent: "center"
-	},
-	iosShadow: {
-		shadowColor: 'black',
-		shadowOffset: { width: 0, height: 2 },
-		shadowOpacity: 0.25, // Ajusta este valor según tu preferencia
-		shadowRadius: 4, // Ajusta este valor según tu preferencia
-		height: '32%',
-		width: '85%',
-		backgroundColor: 'red',
-		position: 'absolute',
-		top: -100,
-		borderRadius: 10,
-		alignItems: "center",
-		justifyContent: "center"
-	},
-})

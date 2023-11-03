@@ -2,12 +2,10 @@ import { View, Text, StyleSheet, Image } from "react-native"
 import LinearGradient from "react-native-linear-gradient"
 import { useEffect } from "react";
 
-
-
-export const RegisterOk = ({ navigation }) => {
+export const FinishForgotPass = ({ navigation }) => {
 
   const goToHome = () => {
-    navigation.navigate("landing")
+    navigation.navigate("login")
   }
 
   useEffect(() => {
@@ -28,16 +26,16 @@ export const RegisterOk = ({ navigation }) => {
             source={require("../../../assets/Action_Correct.png")}
             style={{ width: 128, height: 128 }}
           />
-          <View style={{ marginTop: "4%", width: 170, alignItems: "center", justifyContent: "center" }}>
-            <Text style={{ fontSize: 16, fontWeight: "600", lineHeight: 19, color: "#000000", textAlign: "center" }}>
-              ¡Usuario dado de alta
-              con éxito!
+          <View style={{ marginTop: "4%",  width:170, alignItems:"center", justifyContent:"center"}}>
+            <Text style={{ fontSize: 16, fontWeight: "600", lineHeight: 19, color: "#000000", textAlign:"center"}}>
+              ¡Su contraseña fue
+              restablecida con éxito!
             </Text>
           </View>
         </View>
-        <View style={{ bottom: 130, position: "absolute", width: "58%", height: "7%", }}>
-          <Text style={{ fontWeight: "600", fontSize: 12, color: "#949AAF", lineHeight: 14, textAlign: "center" }}>
-            Será redireccionado automáticamente al Login ahora mismo...
+        <View style={{ bottom: 130, position: "absolute", width: "58%", height: "7%",}}>
+          <Text style={{fontWeight:"600", fontSize:12, color:"#949AAF", lineHeight:14, textAlign:"center"}}>
+          Será redireccionado automáticamente al Login ahora mismo...
           </Text>
         </View>
       </View>

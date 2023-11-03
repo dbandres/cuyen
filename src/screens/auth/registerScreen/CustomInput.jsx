@@ -28,7 +28,6 @@ export function CustomInput({ control, name, placeholder, rules = {}, secureText
 						borderRadius: 10,
 						padding: formIntro === true ? 0 : 5,
 						height: multiline === true ? 150 : 50,
-						marginBottom: "3%",
 					}}>
 						{
 							placeholder === "Crea tu contraseña" ?
@@ -88,7 +87,7 @@ export function CustomInput({ control, name, placeholder, rules = {}, secureText
 								fontSize: 14,
 								lineHeight: 16,
 								backgroundColor: formIntro === true ? "white" : "transparent",
-								borderRadius:8,
+								borderRadius: 8,
 								color: "#564C71"
 							}}
 							placeholderTextColor="#CDD1DF"
@@ -112,7 +111,17 @@ export function CustomInput({ control, name, placeholder, rules = {}, secureText
 								: null
 						}
 					</View>
-					{error && <Text style={{ color: "red", fontSize: 10 }}> {error.message || `Este campo es Requerido`}</Text>}
+					<View style={{ height: 25, justifyContent: "center", marginLeft: 20 }}>
+						{error &&
+							<View style={{display:"flex", flexDirection:"row", alignItems:"center"}}>
+								<Image
+									source={require("../../../assets/Error.png")}
+									style={{ width: 25, height: 25 }}
+								/>
+								<Text style={{ color: "#FF6363", fontSize: 10 }}>{error.message || `Este campo es Requerido`}</Text>
+							</View>
+						}
+					</View>
 				</>
 			)}
 		/>

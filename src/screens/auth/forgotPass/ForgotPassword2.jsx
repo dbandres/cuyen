@@ -1,9 +1,10 @@
 import { View, Text, StyleSheet, Dimensions, ScrollView } from "react-native";
-import { CustomInput } from "./registerScreen/CustomInput";
+import { CustomInput } from "../registerScreen/CustomInput";
 import { useForm } from "react-hook-form";
-import { ButtonCustom } from "../../components/ButtomCustom";
-import { useState } from "react";
+import { ButtonCustom } from "../../../components/ButtomCustom";
+import { useEffect, useState } from "react";
 import AwesomeAlert from 'react-native-awesome-alerts';
+import { ContainerWithBackground } from "../../ContainerWithBackground";
 
 export default function ForgotPassword2({ navigation, route }) {
 
@@ -11,8 +12,9 @@ export default function ForgotPassword2({ navigation, route }) {
   const { height } = Dimensions.get("screen")
   const [showAlert, setShowAlert] = useState(false)
   const [showAlert2, setShowAlert2] = useState(false)
+  const [numerosDigitos, setNumerosDigitos] = useState("")
 
-  // const { datos } = route.params;
+  const { datos } = route.params;
 
   const getAlert = () => {
     return (
@@ -24,6 +26,26 @@ export default function ForgotPassword2({ navigation, route }) {
       />
     )
   }
+  console.log(datos)
+
+  useEffect(()=>{
+    const numAlt = datos.numAleatorio.toString();
+    const digitos = numAlt.split('');
+    setShowAlert2(true)
+    setTimeout(()=>{
+      setNumerosDigitos(digitos)
+    },2000)
+  },[])
+
+  console.log(numerosDigitos)
+  useEffect(()=>{
+    if (numerosDigitos.length === 4) {
+      setValue('codigo1', numerosDigitos[0]);
+      setValue('codigo2', numerosDigitos[1]);
+      setValue('codigo3', numerosDigitos[2]);
+      setValue('codigo4', numerosDigitos[3]);
+    }
+  },[numerosDigitos, setValue])
 
 
   function compararNumAleatorio(data) {
@@ -49,16 +71,19 @@ export default function ForgotPassword2({ navigation, route }) {
   }
 
   return (
-    <View style={styles.container}>
-      <ScrollView style={{ width: "70%", height: "50%" }}>
-        <View style={{ height: height * 70 / 100, }}>
-          <View style={{ height: "20%", display: "flex", justifyContent: "center", alignItems: "center" }}>
-            <Text style={{ fontSize: 14 }}>
-              Revisá tu correo electronico con el cual te registraste a Cuyen, e ingresa el codigo correspondiente.
+    <ContainerWithBackground>
+      <View style={{ width: "100%", alignItems: "center" }}>
+        <View style={{ height: "90%", width: "90%", justifyContent: "center", top: 80, alignItems: "center" }}>
+          <Text style={{ color: "#334EA2", fontSize: 16, fontWeight: "500", lineHeight: 19, marginBottom: "10%" }}>
+            Recupero de contraseña
+          </Text>
+          <View style={{ width: 296, alignItems: "center" }}>
+            <Text style={{ fontSize: 12, fontWeight: "600", lineHeight: 14, color: "#949AAF", marginBottom: "10%", textAlign: "center" }}>
+            Revise su correo electrónico e ingrese el código que se envió para continuar con el recupero/restablecimiento de su contraseña.
             </Text>
           </View>
-          <View style={{ height: "35%", display: "flex", justifyContent: "center", flexDirection: "row", }}>
-            <View style={{ width: "25%", height: "100%", justifyContent: "center", display: "flex" }}>
+          <View style={{ height: "35%", width:"80%",display: "flex", justifyContent: "center", alignItems:"center" ,flexDirection: "row"}}>
+            <View style={{ width: 40}}>
               <CustomInput
                 control={control}
                 name="codigo1"
@@ -76,7 +101,7 @@ export default function ForgotPassword2({ navigation, route }) {
                 }}
               />
             </View>
-            <View style={{ width: "25%", height: "100%", justifyContent: "center", display: "flex", paddingLeft: "2%" }}>
+            <View style={{ width: 43, height: 40, justifyContent: "center", display: "flex", paddingLeft: 4 }}>
               <CustomInput
                 control={control}
                 name="codigo2"
@@ -94,7 +119,7 @@ export default function ForgotPassword2({ navigation, route }) {
                 }}
               />
             </View>
-            <View style={{ width: "25%", height: "100%", justifyContent: "center", display: "flex", paddingLeft: "2%" }}>
+            <View style={{ width: 43, height: 40, justifyContent: "center", display: "flex", paddingLeft: 4 }}>
               <CustomInput
                 control={control}
                 name="codigo3"
@@ -112,7 +137,7 @@ export default function ForgotPassword2({ navigation, route }) {
                 }}
               />
             </View>
-            <View style={{ width: "25%", height: "100%", justifyContent: "center", display: "flex", paddingLeft: "2%" }}>
+            <View style={{ width: 43, height: 40, justifyContent: "center", display: "flex", paddingLeft:4 }}>
               <CustomInput
                 control={control}
                 name="codigo4"
@@ -131,16 +156,27 @@ export default function ForgotPassword2({ navigation, route }) {
               />
             </View>
           </View>
-          <View style={{ height: "9%", }}>
-            <ButtonCustom
-              text="Enviar Codigo"
-              color="orange"
-              onPress={()=>{navigation.navigate("forgotPassthree")}}
-            />
+          <View style={{ top: 70, width: "100%" }}>
+            <View style={{ height: "22%", width: "100%" }}>
+              <ButtonCustom
+                text="Enviar"
+                color={"#FF3D00"}
+                // disabled={toggleCheckBox !== false ? false : true}
+                onPress={handleSubmit(compararNumAleatorio)}
+              />
+            </View>
+            <View style={{ height: "21%", marginTop: "2%", width: "100%", borderColor: "#3462BF", borderWidth: 1, borderRadius: 10 }}>
+              <ButtonCustom
+                text="Cancelar"
+                color="#FFFFFF"
+                register={true}
+                onPress={() => { navigation.navigate("login") }}
+              />
+            </View>
           </View>
         </View>
-      </ScrollView>
-      {getAlert()}
+      </View>
+      {numerosDigitos.length === 4 ? null : getAlert()}
       <AwesomeAlert
         show={showAlert}
         showProgress={false}
@@ -154,9 +190,8 @@ export default function ForgotPassword2({ navigation, route }) {
         titleStyle={{ color: "red" }}
         onConfirmPressed={() => {
           setShowAlert(false)
-        }}
-      />
-    </View>
+        }}/>
+    </ContainerWithBackground>
   )
 }
 

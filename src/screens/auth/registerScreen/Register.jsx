@@ -19,7 +19,7 @@ import { API_URL, token } from "../../../api";
 export default function Register({ navigation }) {
 
 	const { height } = Dimensions.get("screen")
-	const { control, handleSubmit, setValue, watch } = useForm()
+	const { control, handleSubmit, setValue, watch} = useForm()
 
 	const dispatch = useDispatch()
 	const [showAlert, setShowAlert] = useState(false)
@@ -196,15 +196,15 @@ export default function Register({ navigation }) {
 								secureTextEntry
 								numeric="numeric"
 								rules={{
-									//required: true,
-									pattern: { value: /^[0-9]+$/, message: "El DNI es incorrecto" },
+									required: true,
+									// pattern: { value: /^[0-9]+$/, message: "El DNI es incorrecto" },
 									minLength: {
 										value: 7,
-										message: "El DNI debe tener un minimo de 7 caracteres"
+										message: "El DNI ingresado no es válido."
 									},
 									maxLength: {
 										value: 8,
-										message: "El DIN debe tener como maximo de 8 caracteres"
+										message: "El DNI ingresado no es válido."
 									}
 								}}
 							/>
@@ -213,14 +213,14 @@ export default function Register({ navigation }) {
 								name="username"
 								placeholder="Nombre"
 								rules={{
-									//required: true,
+									required: true,
 									minLength: {
 										value: 2,
-										message: "El nombre debe tener un minimo de 2 caracteres"
+										message: "El Nombre no es válido."
 									},
 									maxLength: {
 										value: 15,
-										message: "El nombre debe tener como maximo de 15 caracteres"
+										message: "El Nombre no es válido."
 									}
 								}}
 							/>
@@ -229,14 +229,14 @@ export default function Register({ navigation }) {
 								name="userlastname"
 								placeholder="Apellido"
 								rules={{
-									//required: true,
+									required: true,
 									minLength: {
 										value: 2,
-										message: "El nombre debe tener un minimo de 2 caracteres"
+										message: "El Apellido no es válido."
 									},
 									maxLength: {
 										value: 15,
-										message: "El nombre debe tener como maximo de 15 caracteres"
+										message: "El Apellido no es válido."
 									}
 								}}
 							/>
@@ -245,8 +245,8 @@ export default function Register({ navigation }) {
 								name="useremail"
 								placeholder="Email"
 								rules={{
-									//required: true,
-									pattern: { value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, message: "La Direccion de Email es Incorrecta" }
+									required: true,
+									pattern: { value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, message: "El Email ingresado no es válido." }
 								}}
 							/>
 							<CustomInput
@@ -255,8 +255,8 @@ export default function Register({ navigation }) {
 								numeric="numeric"
 								placeholder="Número de Celular"
 								rules={{
-									//required: true,
-									pattern: { value: /^[0-9]+$/, message: "El numero de Telefono es incorrecto" },
+									required: true,
+									pattern: { value: /^[0-9]+$/, message: "El Número ingresado no es válido." },
 								}}
 							/>
 
@@ -267,10 +267,10 @@ export default function Register({ navigation }) {
 								secureTextEntry
 								numeric="numeric"
 								rules={{
-									//required: true,
+									required: true,
 									minLength: {
-										value: 8,
-										message: "La Contraseña debe tener un minimo de 8 caracteres"
+										value: 4,
+										message: "La Contraseña debe tener un minimo de 4 caracteres"
 									}
 								}}
 							/>
@@ -282,7 +282,7 @@ export default function Register({ navigation }) {
 								secureTextEntry
 								numeric="numeric"
 								rules={{
-									//required: true,
+									required: true,
 									minLength: {
 										value: 8,
 										message: "La Contraseña debe tener un minimo de 8 caracteres"
@@ -297,6 +297,7 @@ export default function Register({ navigation }) {
 										disabled={false}
 										value={toggleCheckBox}
 										onValueChange={(newValue) => setToggleCheckBox(newValue)}
+										tintColors={true ? "black" : "black" }
 									/>
 								</View>
 								<View style={{ marginLeft: "3%" }}>
@@ -315,12 +316,12 @@ export default function Register({ navigation }) {
 									onPress={handleSubmit(handleSubmitRegister)}
 								/>
 							</View>
-							<View style={{ height: "7%", marginTop: "5%", borderColor: "#3462BF", borderWidth: 1, borderRadius: 10 }}>
+							<View style={{ height: "7%", marginTop: "2%", borderColor: "#3462BF", borderWidth: 1, borderRadius: 10 }}>
 								<ButtonCustom
 									text="Cancelar"
 									color="#FFFFFF"
 									register={true}
-									onPress={() => { navigation.navigate("register") }}
+									onPress={() => { navigation.navigate("login") }}
 								/>
 							</View>
 						</View>
