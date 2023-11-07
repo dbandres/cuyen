@@ -33,37 +33,37 @@ export default function Register({ navigation }) {
 	const pwd = watch("userpass")
 	const allContratos = useSelector((state) => state.allContratos)
 
-	const data = [
-		{
-			label: "ASD", value: "asd"
-		},
-		{
-			label: "A", value: "a"
-		},
-		{
-			label: "S", value: "s"
-		},
-		{
-			label: "H", value: "h"
-		},
-		{
-			label: "Y", value: "y"
-		},
-		{
-			label: "Jota", value: "jota"
-		},
-	]
+	// const data = [
+	// 	{
+	// 		label: "ASD", value: "asd"
+	// 	},
+	// 	{
+	// 		label: "A", value: "a"
+	// 	},
+	// 	{
+	// 		label: "S", value: "s"
+	// 	},
+	// 	{
+	// 		label: "H", value: "h"
+	// 	},
+	// 	{
+	// 		label: "Y", value: "y"
+	// 	},
+	// 	{
+	// 		label: "Jota", value: "jota"
+	// 	},
+	// ]
 	const [isOpen, setIsOpen] = useState(false)
 	const [currentValue, setCurrentValue] = useState([])
 
-	// useEffect(() => {
-	// 	dispatch(getAllContratos())
-	// 	const nuevoArray = allContratos.map((contrato) => ({
-	// 		key: contrato.id,
-	// 		value: contrato.num + " - " + contrato.colegio
-	// 	}))
-	// 	setItemsArray(nuevoArray)
-	// }, [allContratos.length != 0])
+	useEffect(() => {
+		dispatch(getAllContratos())
+		const nuevoArray = allContratos.map((contrato) => ({
+			label: contrato.num + " - " + contrato.colegio,
+			value: contrato.num
+		}))
+		setItemsArray(nuevoArray)
+	}, [allContratos.length != 0])
 
 	const showAlerts = (show, setShow, titulo, msg, text) => {
 		return (
@@ -82,6 +82,8 @@ export default function Register({ navigation }) {
 		);
 	}
 
+	console.log("select: ",selectedItems)
+
 	async function handleSubmitRegister(data) {
 		// navigation.navigate("registerOk")
 		console.log(data)
@@ -92,10 +94,8 @@ export default function Register({ navigation }) {
 			setShowAlert2(true)
 		}
 		else if (selectedItems && toggleCheckBox) {
-
-			// const separamosString = selectedItems.split("-")
-			// const numeroContrato = separamosString[0].toString()
-
+			const numeroContrato = selectedItems[0]
+			// console.log(numeroContrato)
 			try {
 				await axios.post(`${API_URL}/usuarios`,
 					{
@@ -103,7 +103,7 @@ export default function Register({ navigation }) {
 						nombre: data.username,
 						apellido: data.userlastname,
 						email: data.useremail,
-						contrato: "343455",
+						contrato: numeroContrato,
 						password: data.userpass,
 						rol: "padre",
 						telefono: data.userphone
@@ -117,8 +117,7 @@ export default function Register({ navigation }) {
 				)
 					.then((res) => {
 						if (res.status === 200) {
-							console.log(JSON.stringify(res, null ,3))
-							setShowAlert(true)
+							console.log("ESto es la respuesta: ",JSON.stringify(res.data, null ,3))
 							setUserData({
 								jwt: res.data,
 								nombre: data.username,
@@ -126,8 +125,9 @@ export default function Register({ navigation }) {
 								email: data.useremail,
 								usuario: data.userdni,
 								telefono: data.userphone,
-								contrato: data.contrato
+								contrato: numeroContrato
 							})
+							navigation.navigate("registerOk")
 						}
 					})
 			} catch (error) {
@@ -159,9 +159,9 @@ export default function Register({ navigation }) {
 				</View>
 				<View style={{ justifyContent: "flex-start", marginTop: "2%", width: "90%", marginBottom: "3%" }}>
 					{
-						data.length != 0 ?
+						itemsArray.length != 0 ?
 							<DropDownPicker
-								items={data}
+								items={itemsArray}
 								open={isOpen}
 								value={selectedItems}
 								setOpen={openPicker}
@@ -328,21 +328,6 @@ export default function Register({ navigation }) {
 					</View>
 				</ScrollView>
 			</View>
-			<AwesomeAlert
-				show={showAlert}
-				showProgress={false}
-				title="OK!"
-				message="Ya te encuentras registrado 🎉"
-				closeOnTouchOutside={false}
-				closeOnHardwareBackPress={false}
-				showConfirmButton={true}
-				confirmText="Ir al Inicio"
-				confirmButtonColor="#008000"
-				onConfirmPressed={() => {
-					setShowAlert(false)
-					navigation.navigate("landing")
-				}}
-			/>
 			{showAlerts(showAlert1, setShowAlert1, "Error", "Debes seleccionar un contrato", "Ok")}
 			{showAlerts(showAlert2, setShowAlert2, "Error!", "Debes aceptar Terminos y Politica de privacidad", "Ok")}
 			{showAlerts(showAlert3, setShowAlert3, "Error!", "Es posible que ya te hayas registrado", "Ok")}

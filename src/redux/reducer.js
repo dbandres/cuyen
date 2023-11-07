@@ -1,10 +1,12 @@
-import { LOGIN_AUTH, SET_CURRENT_USER, GET_ALL_CONTRATO} from "./actions";
+import { LOGIN_AUTH, SET_CURRENT_USER, GET_ALL_CONTRATO, GET_ALL_POST, GET_ALL_EMOJIS } from "./actions";
 
 
 const initialState = {
   loginStaus: "",
   currentUser: "",
-  allContratos: []
+  allContratos: [],
+  allPost: [],
+  allEmojis: []
 }
 
 function rootReducer(state = initialState, action) {
@@ -15,14 +17,24 @@ function rootReducer(state = initialState, action) {
         loginStaus: action.payload
       }
     case SET_CURRENT_USER:
-      return{
+      return {
         ...state,
         currentUser: action.payload
       }
     case GET_ALL_CONTRATO:
-      return{
+      return {
         ...state,
         allContratos: action.payload
+      }
+    case GET_ALL_POST:
+      return {
+        ...state,
+        allPost: action.payload
+      }
+    case GET_ALL_EMOJIS:
+      return {
+        ...state,
+        allEmojis: action.payload
       }
     default:
       return state

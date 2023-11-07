@@ -1,29 +1,38 @@
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, Dimensions, Image, Platform } from "react-native";
 import { Form } from "./Form";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { CardsMuro } from "./CardsMuro";
-import LinearGradient from "react-native-linear-gradient";
 import { Header } from "./Header";
+import { useDispatch, useSelector } from "react-redux";
+import { UserContext } from "../../../context/UserContext";
+import { getAllPost } from "../../../redux/actions";
 
 
 const Height = Dimensions.get("screen").height
 const Width = Dimensions.get("screen").width
 
-export function Muro({ navigation, route }) {
+export function Muro({ navigation}) {
 
-	console.log(route)
+	const {userdata} = useContext(UserContext)
+ 	const allPost = useSelector((state)=>state.allPost)
+	const dispatch = useDispatch()
+
+	useEffect(()=>{
+		dispatch(getAllPost(userdata.contrato))
+	},[])
+
 
 	return (
 		<View style={styles.container}>
 			<Header children="Publicaciones" navigation={navigation}/>
 			<View style={styles.centeredFlatList}>
-				{/* {
-					publicacion.length != 0 ?
+				{
+					allPost.length != 0 ?
 						<FlatList
-							data={publicacion}
+							data={allPost}
 							keyExtractor={(item) => item.toString()}
-							renderItem={({ item, index }) => (
-								<View key={index} style={styles.containerPublicacion}>
+							renderItem={({ item}) => (
+								<View key={item.id} style={styles.containerPublicacion}>
 									<CardsMuro data={item} />
 								</View>
 							)}
@@ -34,12 +43,7 @@ export function Muro({ navigation, route }) {
 								No hay publicaiones
 							</Text>
 						</View>
-				} */}
-				<View>
-					<Text>
-						No hay publicaiones
-					</Text>
-				</View>
+				}
 			</View>
 			<View style={{ backgroundColor: "#162962", height: "8%", alignItems: "center" }}>
 				<View style={{ width: "17%", bottom: "34%", backgroundColor: "#162962", alignItems: "center", justifyContent: "center", borderRadius: 50, height: "120%" }}>
@@ -86,24 +90,24 @@ const styles = StyleSheet.create({
 	containerPublicacion: {
 		borderRadius: 20,
 		alignItems: "center", // Center horizontally within the container
-		width: "99%",
+		width: "97%",
 		marginBottom: "5%",
-		// overflow:"hidden",
-		// ...Platform.select({
-		//   ios: {
-		//     shadowColor: 'rgba(0, 0, 0, 0.25)',
-		//     shadowOffset: { width: 0, height: 2 },
-		//     shadowOpacity: 1,
-		//     shadowRadius: 2,
-		//   },
-		//   android: {
-		//     elevation: 9,
-		// 		shadowColor: 'rgba(0, 0, 0, 0.25)',
-		// 		shadowOffset: { width: 0, height: 2 },
-		//     shadowOpacity: 1,
-		//     shadowRadius: 2,
-		//   },
-		// }),
+		overflow:"hidden",
+		...Platform.select({
+		  ios: {
+		    shadowColor: 'rgba(0, 0, 0, 0.25)',
+		    shadowOffset: { width: 0, height: 2 },
+		    shadowOpacity: 1,
+		    shadowRadius: 2,
+		  },
+		  android: {
+		    elevation: 9,
+				shadowColor: 'rgba(0, 0, 0, 0.25)',
+				shadowOffset: { width: 0, height: 2 },
+		    shadowOpacity: 1,
+		    shadowRadius: 2,
+		  },
+		}),
 	},
 	centeredFlatList: {
 		flex: 1,

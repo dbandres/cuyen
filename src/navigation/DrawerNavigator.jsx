@@ -17,6 +17,7 @@ const CustomDrawerContent = ({ navigation }) => {
 
 	const { userdata } = useContext(UserContext)
 
+
 	return (
 		<DrawerContentScrollView style={{ backgroundColor: "#3462BF", flex: 1 }}>
 			<View style={styles.drawerHeader}>

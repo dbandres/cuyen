@@ -1,23 +1,71 @@
 import { Text, View, StyleSheet, Dimensions, Image, Platform } from "react-native";
 import Swiper from 'react-native-swiper';
 import { ReactionBox } from "./ReactionBox";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllEmojis } from "../../../redux/actions";
 
 const Height = Dimensions.get("screen").height
 export function CardsMuro({ data }) {
 
-  console.log(Height)
+  //console.log(data)
+  const [uriImg, setUri] = useState("")
+  const [emojiPubli, setEmojiPubli] = useState([])
+  const dispatch = useDispatch()
+  const allEmojis = useSelector((state) => state.allEmojis)
+
+  const transformUriImag = (dataImage) => {
+    const cadenaModificada = dataImage.slice(1, dataImage.length - 1).toString();
+    const separarCadena = cadenaModificada.split(", ")
+    setUri(separarCadena);
+  }
+
+  useEffect(() => {
+    transformUriImag(data.image)
+    if (allEmojis.length === 0) {
+      dispatch(getAllEmojis())
+    }
+    setEmojiPubli(JSON.parse(data.emoji))
+  }, [])
+
+  // funcion para ordenar los emojis de mayor a menor y filtrar los 3 primeros
+  function obtenerTresEmojisConMayorValor(arrayDeObjetosEmojis) {
+    if (!Array.isArray(arrayDeObjetosEmojis) || arrayDeObjetosEmojis.length === 0) {
+      return [];
+    }
+    // Ordena el array en función del valor (de mayor a menor)
+    const emojisOrdenados = arrayDeObjetosEmojis.sort((a, b) => {
+      const valorA = Object.values(a)[0];
+      const valorB = Object.values(b)[0];
+      return valorB - valorA;
+    });
+
+    // Filtra los emojis con los valores más altos (hasta 3)
+    const emojisTop3 = emojisOrdenados.slice(0, 3);
+    const emojisUrls = [];
+    //buscamos la url de los tres primeros emojis
+    emojisTop3.forEach(emojibusc => {
+      const clave = Object.keys(emojibusc)[0];
+      const emojiFinal = allEmojis.find(emoji => emoji.id === clave)
+
+      emojisUrls.push(emojiFinal)
+    })
+
+    return emojisTop3, emojisUrls;
+  }
+  const emojisTop3 = obtenerTresEmojisConMayorValor(emojiPubli);
+  console.log(uriImg.length)
+
   return (
     <>
       {
-        data.img[0] ?
+        uriImg?.length ?
           <View style={styles.cardContainer}>
             <View style={styles.imageContainer}>
               <Swiper
-                loop={false}
-                style={{ width: "100%" }}
               >
                 {
-                  data.img[0].map((img, index) => (
+                  uriImg?.map((img, index) => (
                     <View key={index} style={styles.swiperSlide}>
                       <Image
                         source={{ uri: img }}
@@ -35,12 +83,21 @@ export function CardsMuro({ data }) {
                   35 Reacciones
                 </Text>
               </View>
-              <View style={styles.reactionBoxAbsolute}>
-                <ReactionBox />
+              <View style={{justifyContent:"center", alignItems:"center", display:"flex", flexDirection:"row",  position:"absolute", top:-25, right: 10}}>
+                {
+                  emojisTop3.length !== 0 ?
+                      <View >
+                        <ReactionBox emojis={allEmojis} sortEmoji={emojisTop3} />
+                      </View>
+                    :
+                    <View >
+                      <ReactionBox emojis={allEmojis} />
+                    </View>
+                }
               </View>
               <View style={{ width: "90%", height: "30%" }}>
                 <Text style={{ fontSize: 12, fontWeight: "400", color: "#000000" }}>
-                  {data.comentario}
+                  {data.texto}
                 </Text>
               </View>
               <View style={{ width: "90%", alignItems: "flex-end", justifyContent: "center" }}>
@@ -64,7 +121,7 @@ export function CardsMuro({ data }) {
                 </View>
                 <View style={{ width: "90%", height: "40%" }}>
                   <Text style={{ fontSize: 12, fontWeight: "400", color: "#000000" }}>
-                    {data.comentario}
+                    {data.texto}
                   </Text>
                 </View>
                 <View style={{ width: "90%", alignItems: "flex-end", justifyContent: "center" }}>
@@ -78,6 +135,7 @@ export function CardsMuro({ data }) {
 
       }
     </>
+
   )
 }
 
@@ -96,11 +154,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center"
   },
-  containerSupre:{
-    width:"100%",
+  containerSupre: {
+    width: "100%",
     height: Height * 30 / 100,
-    alignItems:"center",
-    justifyContent:"flex-end"
+    alignItems: "center",
+    justifyContent: "flex-end"
   },
   image: {
     width: "100%",
@@ -113,14 +171,8 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   swiperSlide: {
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  reactionBoxAbsolute: {
-    position: 'absolute',
-    top: -20,
-    right: 20,
   },
   reactionBoxAbsoluteSinImg: {
     position: 'absolute',

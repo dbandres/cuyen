@@ -1,12 +1,15 @@
-import { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Dimensions, ScrollView, Modal, TouchableOpacity, TextInput, Platform, PermissionsAndroid, FlatList, Image } from "react-native";
+import { useEffect, useState, useContext } from "react";
+import { View, Text, StyleSheet, Dimensions, ScrollView, TouchableOpacity, TextInput, Platform, PermissionsAndroid, Image } from "react-native";
 import Swiper from 'react-native-swiper'
 import { request, PERMISSIONS, check, RESULTS } from 'react-native-permissions';
 import { launchCamera, launchImageLibrary } from "react-native-image-picker"
 import { ButtonCustom } from "../../../components/ButtomCustom";
 import { Header } from "./Header";
 import axios from "axios";
-
+import Video from "react-native-video"
+import AwesomeAlert from "react-native-awesome-alerts";
+import { API_URL, token } from "../../../api";
+import { UserContext } from "../../../context/UserContext";
 
 const Height = Dimensions.get("screen").height
 
@@ -14,14 +17,49 @@ export function Form({ navigation }) {
 
   const [texto, setTexto] = useState('');
   const [imageRender, setImageRender] = useState([]);
+  const { userdata } = useContext(UserContext)
   const [cameraGranted, setCameraGranted] = useState(false);
-
+  const [urlSpaces, setUrlSpaces] = useState("")
+  const [showAlert, setShowAlert] = useState(false);
+  const [showAlertOK, setShowAlertOK] = useState(false)
+  const [disabledBtn, setDisabledBtn] = useState(false)
+  const [showAlert2, setShowAlert2] = useState(false)
   const [postData, setPostData] = useState({
     comentario: '',
     img: [],
   });
 
-  console.log(imageRender)
+
+  const getAlert = () => {
+    return (
+      <AwesomeAlert
+        show={showAlert2}
+        showProgress={true}
+        progressColor="black"
+        progressSize={50}
+      />
+    )
+  }
+
+  const getAlertOk = () => {
+    return (
+      <AwesomeAlert
+        show={showAlertOK}
+        showProgress={false}
+        title="OK!"
+        message="Publicación realizada con Éxito 🎉"
+        closeOnTouchOutside={false}
+        closeOnHardwareBackPress={false}
+        showConfirmButton={true}
+        confirmText="Aceptar"
+        confirmButtonColor="#008000"
+        onConfirmPressed={() => {
+          setShowAlert(false)
+          navigation.navigate("publicaciones")
+        }}
+      />
+    )
+  }
 
   const handleTextChange = (newText) => {
     // Verificar la longitud máxima del texto
@@ -35,8 +73,20 @@ export function Form({ navigation }) {
     if (newUri) {
       setImageRender([].concat(...imageRender, newUri));
     }
+    else {
+      console.log("mas de 5 img")
+    }
   };
 
+  useEffect(() => {
+    if (imageRender.length > 5) {
+      setShowAlert(true)
+      setDisabledBtn(true)
+    } else {
+      setShowAlert(false)
+      setDisabledBtn(false)
+    }
+  }, [imageRender])
 
   const requestGalleryPermission = async () => {
     try {
@@ -82,7 +132,9 @@ export function Form({ navigation }) {
     }, response => {
       try {
         if (response) {
-          addImageUri(response.assets[0].uri)
+          console.log("open camera: ", response)
+          const newImage = { uri: response.assets[0].uri, type: response.assets[0].type, name: response.assets[0].fileName }
+          addImageUri(newImage);
         }
         else {
           console.log("error, no seleccionó ninguna foto")
@@ -90,9 +142,6 @@ export function Form({ navigation }) {
       } catch (error) {
         console.log(error)
       }
-      // console.log(response)
-      // setImageUri(response.assets[0].base64)
-      // response.assets[0].uri ? setValue("image", response.assets[0].uri) : setValue("image", response.assets[0].uri)
     });
   };
 
@@ -108,9 +157,14 @@ export function Form({ navigation }) {
         console.log("estado del response: ", response)
         // Aquí puedes manejar la imagen o video seleccionado
         console.log(JSON.stringify(response, null, 3))
-        const selectedImageUris = response.assets.map((asset) => asset.uri);
-        setImageRender([...imageRender, ...selectedImageUris]);
-        // addImageUri(response.assets[0].uri)
+
+        const imgSelect = response.assets.map((assets) => {
+          // Extrae las propiedades necesarias del objeto asset
+          const { uri, type, name, } = assets;
+          // Crea un nuevo objeto con las propiedades extraídas
+          return { uri, type, name };
+        })
+        addImageUri(imgSelect)
       }
     })
   }
@@ -119,25 +173,78 @@ export function Form({ navigation }) {
     const updatedImageRender = [...imageRender];
     updatedImageRender.splice(indexToRemove, 1); // Elimina el elemento en el índice especificado
     setImageRender(updatedImageRender); // Actualiza el estado con el nuevo array
-
   };
 
   const armadoDePublicacion = () => {
-    if(imageRender.length !== 0){
-      try {
-        imageRender.forEach(img => {
-          axios.post("https://www.turismocuyen.com.ar/viaje/spaces", img,
-          {
-            "x-access-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.p5Uixc5mcFGxx8eRohkZI8ec8vR092iQb5GDsJVqffM"
-          }
-          )
-          .then(res=>console.log(res))
+    let cadenaUrl;
+    if (imageRender.length !== 0) {
+      setShowAlert2(true)
+      const responsesArray = [];
+      imageRender.forEach(image => {
+        const formData = new FormData();
+        formData.append('image', {
+          uri: image.uri,
+          type: image.type,
+          name: "image/png",
         });
-      } catch (error) {
-        console.log(error)
-      }
+        console.log(formData.getParts())
+        try {
+          axios.post("https://www.turismocuyen.com.ar/spaces", formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            }
+          })
+            .then((res) => {
+              if (res.status === 200) {
+                console.log(res.data)
+                responsesArray.push(res.data);
+                cadenaUrl = "[" + responsesArray.join(", ") + "]"; // "[url1, url2]"
+                
+              }
+            })
+        } catch (error) {
+          console.log(error)
+        }
+      });
+      setTimeout(() => {
+        console.log("esto es url spaces: ",cadenaUrl)
+        axios.post(`${API_URL}/muro/${userdata.contrato}`, {
+          image: cadenaUrl,
+          texto: texto
+        },
+          {
+            headers: {
+              'x-access-token': `${token}`,
+              "Content-Type": "application/json",
+            }
+          }
+        ).then((res) => {
+          setShowAlertOK(true)
+          console.log(JSON.stringify(res, null, 3));
+          setShowAlert2(false)
+        })
+      }, 10000)
+    }
+    else {
+      axios.post(`${API_URL}/muro/${userdata.contrato}`, {
+        image: "",
+        texto: texto
+      },
+        {
+          headers: {
+            'x-access-token': `${token}`,
+            "Content-Type": "application/json",
+          }
+        }
+      )
+        .then((res) => {
+          setShowAlertOK(true)
+          console.log(JSON.stringify(res, null, 3));
+          setShowAlert2(false)
+        })
     }
   }
+
 
   return (
     <ScrollView style={styles.container}>
@@ -151,12 +258,36 @@ export function Form({ navigation }) {
                   {
                     imageRender.map((img, index) => (
                       <View key={index} style={{ justifyContent: 'center', alignItems: 'center' }}>
-                        <Image
-                          source={{
-                            uri: img
-                          }}
-                          style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: 10 }}
-                        />
+                        {
+                          img.type.includes("video") ?
+                            <Video
+                              source={{ uri: img.uri }}
+                              style={styles.video}
+                              controls={true} // Muestra controles de reproducción
+                              resizeMode="contain"
+
+                            />
+                            :
+                            <Image
+                              source={{
+                                uri: img.uri
+                              }}
+                              style={{ width: 350, height: 350, borderRadius: 10, objectFit: "cover" }}
+                            />
+                        }
+                        {showAlert && (
+                          <AwesomeAlert
+                            show={showAlert}
+                            showProgress={false}
+                            title="Límite de imágenes alcanzado"
+                            message="Solo se pueden adjuntar 5 imagenes por publicacion!"
+                            closeOnTouchOutside={true}
+                            closeOnHardwareBackPress={false}
+                            showConfirmButton={true}
+                            confirmText="OK"
+                            onConfirmPressed={() => setShowAlert(false)}
+                          />
+                        )}
                         <TouchableOpacity
                           style={{ position: 'absolute', top: 10, right: 10, backgroundColor: 'red', borderRadius: 20, padding: 5 }}
                           onPress={() => removeItem(index)}
@@ -185,7 +316,7 @@ export function Form({ navigation }) {
                 placeholderTextColor="#CDD1DF"
               />
               <View style={{ width: "100%", paddingLeft: 10 }}>
-                <Text style={{ fontSize: 10, color:"#000000" }}>Caracteres restantes: {160 - texto.length}</Text>
+                <Text style={{ fontSize: 10, color: "#000000" }}>Caracteres restantes: {160 - texto.length}</Text>
               </View>
             </View>
             <View style={{ height: 50, alignItems: "center", display: "flex", flexDirection: "row", justifyContent: "flex-end", width: "97%" }}>
@@ -209,13 +340,16 @@ export function Form({ navigation }) {
               <View style={{ width: "95%" }}>
                 <ButtonCustom
                   text="Publicar"
-                  color={texto !== " " ? "#FF3D00" : "#CDD1DF"}
+                  color={texto !== " " && disabledBtn !== true ? "#FF3D00" : "#CDD1DF"}
                   onPress={armadoDePublicacion}
+                  disabled={disabledBtn}
                 />
               </View>
             </View>
           </View>
         </View>
+        {showAlert2 ? getAlert() : null}
+        {showAlertOK ? getAlertOk() : null}
       </View>
     </ScrollView>
   )
@@ -244,6 +378,11 @@ const styles = StyleSheet.create({
   containerVistaPre: {
     height: Height * 27 / 100,
     width: "95%",
+  },
+  video: {
+    width: "100%",
+    height: 350,
+    borderRadius: 10
   },
   containerTextIcon: {
     width: "50%",
@@ -287,6 +426,6 @@ const styles = StyleSheet.create({
     padding: 10,
     width: '95%',
     height: "75%", // Ajusta la altura según tus necesidades
-    color:"#000000"
+    color: "#000000"
   },
 })

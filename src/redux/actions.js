@@ -3,6 +3,9 @@ import { API_URL, token } from "../api";
 export const LOGIN_AUTH = "LOGIN_AUTH";
 export const SET_CURRENT_USER = "SET_CURRENT_USER";
 export const GET_ALL_CONTRATO = "GET_ALL_CONTRATO";
+export const GET_ALL_POST = "GET_ALL_POST";
+export const GET_ALL_EMOJIS = "GET_ALL_EMOJIS"
+
 
 export function loginAuth(usuario, contraseña) {
 	console.log(usuario, contraseña)
@@ -35,15 +38,55 @@ export function CurrentUser(user) {
 export function getAllContratos(){
 	try {
 		return async function(dispatch){
-			let response = await axios.get("https://api-usuarios-git-lorena-dufaur-dev.apps.sandbox-m4.g2pi.p1.openshiftapps.com/contrato",
+			let response = await axios.get(`${API_URL}/contrato`,
 			{
 				headers:{
-					'x-access-token': `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.t0c3Oss0aMtu_AZCsXNzrms8E7oV6GXQ5ciwNRoidcE`,
+					'x-access-token': `${token}`,
 					"Content-Type": "application/json",
 				}
 			})
 			return dispatch({
 				type: GET_ALL_CONTRATO,
+				payload: response.data
+			})
+		}
+	} catch (error) {
+		console.log('Error de Axios:', error);
+	}
+}
+
+export function getAllPost(contrato){
+	try {
+		return async function(dispatch){
+			let response = await axios.get(`${API_URL}/muro/${contrato}`,
+			{
+				headers:{
+					'x-access-token': `${token}`,
+					"Content-Type": "application/json",
+				}
+			})
+			return dispatch({
+				type: GET_ALL_POST,
+				payload: response.data
+			})
+		}
+	} catch (error) {
+		console.log('Error de Axios:', error);
+	}
+}
+
+export function getAllEmojis(){
+	try {
+		return async function(dispatch){
+			let response = await axios.get(`${API_URL}/emoji`,
+			{
+				headers:{
+					'x-access-token': `${token}`,
+					"Content-Type": "application/json",
+				}
+			})
+			return dispatch({
+				type: GET_ALL_EMOJIS,
 				payload: response.data
 			})
 		}
