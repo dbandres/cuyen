@@ -4,13 +4,16 @@ import { ReactionBox } from "./ReactionBox";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllEmojis } from "../../../redux/actions";
+import axios from "axios";
+import { API_URL, token } from "../../../api";
 
 const Height = Dimensions.get("screen").height
-export function CardsMuro({ data }) {
+export function CardsMuro({ data, controlDispatch }) {
 
-  //console.log(data)
+  // console.log(JSON.stringify(data))
   const [uriImg, setUri] = useState("")
   const [emojiPubli, setEmojiPubli] = useState([])
+  const [totalReacciones, setTotalReacciones] = useState("")
   const dispatch = useDispatch()
   const allEmojis = useSelector((state) => state.allEmojis)
 
@@ -22,11 +25,12 @@ export function CardsMuro({ data }) {
 
   useEffect(() => {
     transformUriImag(data.image)
+    calcularTotalEmojisPorPost(data.emoji)
     if (allEmojis.length === 0) {
       dispatch(getAllEmojis())
     }
     setEmojiPubli(JSON.parse(data.emoji))
-  }, [])
+  }, [data])
 
   // funcion para ordenar los emojis de mayor a menor y filtrar los 3 primeros
   function obtenerTresEmojisConMayorValor(arrayDeObjetosEmojis) {
@@ -54,12 +58,60 @@ export function CardsMuro({ data }) {
     return emojisTop3, emojisUrls;
   }
   const emojisTop3 = obtenerTresEmojisConMayorValor(emojiPubli);
-  console.log(uriImg.length)
+
+  // funcion para sumar las reacciones totales por post
+  function calcularTotalEmojisPorPost(objJON) {
+    // Parsea el valor "emoji" a un array de objetos
+    const emojis = JSON.parse(objJON)
+    // Inicializa una variable para el total
+    let totalEmojis = 0;
+
+    // Itera a través de los objetos y suma los valores
+    if (emojis !== null) {
+      emojis.forEach(emoji => {
+        for (const key in emoji) {
+          if (emoji.hasOwnProperty(key)) {
+            totalEmojis += emoji[key];
+          }
+        }
+      });
+    } else {
+      console.log("es null", emojis)
+    }
+    setTotalReacciones(totalEmojis)
+  }
+
+  // funcion para capturar el emoji reaccionado
+  function handleEmoji(emoji) {
+    console.log(emoji)
+
+    if (emoji) {
+      axios.put(`${API_URL}/reaccion/${data.id}`,
+        {
+          "emoji": `${emoji.id}`
+        },
+        {
+          headers: {
+            'x-access-token': `${token}`,
+            "Content-Type": "application/json",
+          }
+        }
+      )
+        .then((res) => {
+          console.log(res)
+          if (res.status === 200) {
+            controlDispatch()
+          }
+        })
+    }
+  }
+  console.log("uri: ", uriImg[0])
+
 
   return (
     <>
       {
-        uriImg?.length ?
+        uriImg && uriImg[0] !== "" ?
           <View style={styles.cardContainer}>
             <View style={styles.imageContainer}>
               <Swiper
@@ -80,18 +132,18 @@ export function CardsMuro({ data }) {
             <View style={{ width: "100%", alignItems: "center" }}>
               <View style={{ width: "90%", height: "18%", justifyContent: "center", }}>
                 <Text style={{ fontSize: 12, fontWeight: "bold", color: "#000000" }}>
-                  35 Reacciones
+                  {totalReacciones} Reacciones
                 </Text>
               </View>
-              <View style={{justifyContent:"center", alignItems:"center", display:"flex", flexDirection:"row",  position:"absolute", top:-25, right: 10}}>
+              <View style={{ justifyContent: "center", alignItems: "center", display: "flex", flexDirection: "row", position: "absolute", top: -25, right: 10 }}>
                 {
                   emojisTop3.length !== 0 ?
-                      <View >
-                        <ReactionBox emojis={allEmojis} sortEmoji={emojisTop3} />
-                      </View>
+                    <View >
+                      <ReactionBox emojis={allEmojis} sortEmoji={emojisTop3} handleEmoji={handleEmoji} />
+                    </View>
                     :
                     <View >
-                      <ReactionBox emojis={allEmojis} />
+                      <ReactionBox emojis={allEmojis} handleEmoji={handleEmoji} />
                     </View>
                 }
               </View>
@@ -111,23 +163,32 @@ export function CardsMuro({ data }) {
           <View style={styles.containerSupre}>
             <View style={styles.cardContainerSinImg}>
               <View style={{ width: "100%", alignItems: "center" }}>
-                <View style={{ width: "90%", height: "38%", justifyContent: "center", }}>
-                  <Text style={{ fontSize: 12, fontWeight: "bold", color: "#000000" }}>
-                    35 Reacciones
+                <View style={{ width: "90%", alignItems: "flex-start", justifyContent: "center", height:"25%" }}>
+                  <Text style={{ color: "#949AAF", fontSize:12, fontWeight:"400", lineHeight:14 }}>
+                    Fecha de publicacion
                   </Text>
                 </View>
-                <View style={styles.reactionBoxAbsoluteSinImg}>
-                  <ReactionBox />
-                </View>
-                <View style={{ width: "90%", height: "40%" }}>
+                <View style={{ width: "90%", height: "50%", }}>
                   <Text style={{ fontSize: 12, fontWeight: "400", color: "#000000" }}>
                     {data.texto}
                   </Text>
                 </View>
-                <View style={{ width: "90%", alignItems: "flex-end", justifyContent: "center" }}>
-                  <Text style={{ color: "#949AAF" }}>
-                    Fecha de publicacion
+                <View style={{ width: "90%", height: "20%", justifyContent: "center",}}>
+                  <Text style={{ fontSize: 12, fontWeight: "bold", color: "#000000" }}>
+                    {totalReacciones} Reacciones
                   </Text>
+                </View>
+                <View style={styles.reactionBoxAbsoluteSinImg}>
+                  {
+                    emojisTop3.length !== 0 ?
+                      <View >
+                        <ReactionBox emojis={allEmojis} sortEmoji={emojisTop3} handleEmoji={handleEmoji} />
+                      </View>
+                      :
+                      <View >
+                        <ReactionBox emojis={allEmojis} handleEmoji={handleEmoji} />
+                      </View>
+                  }
                 </View>
               </View>
             </View>
@@ -152,13 +213,13 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 20,
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
   },
   containerSupre: {
     width: "100%",
-    height: Height * 30 / 100,
+    height: Height * 22 / 100,
     alignItems: "center",
-    justifyContent: "flex-end"
+    justifyContent: "flex-start",
   },
   image: {
     width: "100%",
@@ -176,7 +237,7 @@ const styles = StyleSheet.create({
   },
   reactionBoxAbsoluteSinImg: {
     position: 'absolute',
-    top: -30,
-    right: 20,
+    bottom: -20,
+    right: 10,
   },
 })

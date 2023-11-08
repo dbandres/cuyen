@@ -10,6 +10,8 @@ import Video from "react-native-video"
 import AwesomeAlert from "react-native-awesome-alerts";
 import { API_URL, token } from "../../../api";
 import { UserContext } from "../../../context/UserContext";
+import { useDispatch } from "react-redux";
+import { getAllPost } from "../../../redux/actions";
 
 const Height = Dimensions.get("screen").height
 
@@ -19,7 +21,7 @@ export function Form({ navigation }) {
   const [imageRender, setImageRender] = useState([]);
   const { userdata } = useContext(UserContext)
   const [cameraGranted, setCameraGranted] = useState(false);
-  const [urlSpaces, setUrlSpaces] = useState("")
+  const dispatch = useDispatch()
   const [showAlert, setShowAlert] = useState(false);
   const [showAlertOK, setShowAlertOK] = useState(false)
   const [disabledBtn, setDisabledBtn] = useState(false)
@@ -56,6 +58,7 @@ export function Form({ navigation }) {
         onConfirmPressed={() => {
           setShowAlert(false)
           navigation.navigate("publicaciones")
+          dispatch(getAllPost(userdata.contrato))
         }}
       />
     )
@@ -199,7 +202,7 @@ export function Form({ navigation }) {
                 console.log(res.data)
                 responsesArray.push(res.data);
                 cadenaUrl = "[" + responsesArray.join(", ") + "]"; // "[url1, url2]"
-                
+
               }
             })
         } catch (error) {
@@ -207,7 +210,7 @@ export function Form({ navigation }) {
         }
       });
       setTimeout(() => {
-        console.log("esto es url spaces: ",cadenaUrl)
+        console.log("esto es url spaces: ", cadenaUrl)
         axios.post(`${API_URL}/muro/${userdata.contrato}`, {
           image: cadenaUrl,
           texto: texto
@@ -219,9 +222,13 @@ export function Form({ navigation }) {
             }
           }
         ).then((res) => {
-          setShowAlertOK(true)
-          console.log(JSON.stringify(res, null, 3));
-          setShowAlert2(false)
+          if (res.status === 200) {
+            setShowAlertOK(true)
+            console.log(JSON.stringify(res, null, 3));
+            setShowAlert2(false)
+          } else {
+            console.log("NO SE PUDO PUBLICAR")
+          }
         })
       }, 10000)
     }
@@ -238,9 +245,13 @@ export function Form({ navigation }) {
         }
       )
         .then((res) => {
-          setShowAlertOK(true)
-          console.log(JSON.stringify(res, null, 3));
-          setShowAlert2(false)
+          if (res.status === 200) {
+            setShowAlertOK(true)
+            console.log(JSON.stringify(res, null, 3));
+            setShowAlert2(false)
+          } else {
+            console.log("NO SE PUDO PUBLICAR")
+          }
         })
     }
   }
@@ -249,8 +260,8 @@ export function Form({ navigation }) {
   return (
     <ScrollView style={styles.container}>
       <Header children="Publicar" navigation={navigation} />
-      <View style={{ flex: 1, alignItems: "center" }}>
-        <View style={{ backgroundColor: "white", width: "93%", height: imageRender.length !== 0 ? 617 : 253, borderRadius: 20 }}>
+      <View style={{ flex: 1, alignItems: "center", paddingTop: 5 }}>
+        <View style={{ backgroundColor: "white", width: "93%", height: imageRender.length !== 0 ? 617 : 253, borderRadius: 20, }}>
           {
             imageRender.length !== 0 ?
               <View style={{ height: imageRender.length !== 0 ? "56%" : "0%", alignItems: "center", borderRadius: 10, margin: 8 }}>

@@ -14,12 +14,20 @@ const Width = Dimensions.get("screen").width
 export function Muro({ navigation}) {
 
 	const {userdata} = useContext(UserContext)
+	const [control, setControl] = useState(false)
  	const allPost = useSelector((state)=>state.allPost)
 	const dispatch = useDispatch()
 
 	useEffect(()=>{
+		console.log("se actualizo")
 		dispatch(getAllPost(userdata.contrato))
-	},[])
+	},[control])
+
+	function controlDispatch(){
+		console.log("llego aca")
+		setControl(!control)
+	}
+
 
 
 	return (
@@ -30,10 +38,10 @@ export function Muro({ navigation}) {
 					allPost.length != 0 ?
 						<FlatList
 							data={allPost}
-							keyExtractor={(item) => item.toString()}
-							renderItem={({ item}) => (
+							keyExtractor={(item) => item.id.toString()}
+							renderItem={({ item, index}) => (
 								<View key={item.id} style={styles.containerPublicacion}>
-									<CardsMuro data={item} />
+									<CardsMuro data={item} controlDispatch={controlDispatch}/>
 								</View>
 							)}
 						/>
@@ -65,6 +73,7 @@ const styles = StyleSheet.create({
 		backgroundColor: "#D2DCEB",
 		flex: 1,
 		display: "flex",
+		justifyContent:"center",
 	},
 	containerBtn: {
 		height: Height * 6 / 100,
@@ -111,8 +120,11 @@ const styles = StyleSheet.create({
 	},
 	centeredFlatList: {
 		flex: 1,
+		display:"flex",
 		justifyContent: "center", // Center vertically
 		alignItems: "center", // Center horizontall
-		marginLeft: "1%"
+		paddingTop:5,
+		paddingLeft:"2.5%",
+		paddingBottom:"2%"
 	},
 })

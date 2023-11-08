@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from "react-native";
 
-export function ReactionBox({ emojis, sortEmoji }) {
+export function ReactionBox({ emojis, sortEmoji, handleEmoji }) {
 
   const [isBoxOpen, setIsBoxOpen] = useState(false);
   const [selectedEmoji, setSelectedEmoji] = useState(null);
@@ -12,17 +12,17 @@ export function ReactionBox({ emojis, sortEmoji }) {
 
   const handleEmojiClick = (emoji) => {
     setSelectedEmoji(emoji);
+    handleEmoji(emoji)
     toggleBox()
   };
 
-  console.log("top 3: ", sortEmoji);
 
   return (
     <View>
-      <View style={{ justifyContent: "center", alignItems: "center", display:"flex", flexDirection:"row" }}>
+      <View style={{ justifyContent: "center", alignItems: "center", display: "flex", flexDirection: "row" }}>
         {sortEmoji !== undefined ?
-          sortEmoji.map(emoji => (
-            <TouchableOpacity key={emoji?.id} onPress={toggleBox} style={styles.reactionBoxAbsolute}>
+          sortEmoji.map((emoji, index) => (
+            <TouchableOpacity key={index} onPress={toggleBox} style={styles.reactionBoxAbsolute}>
               <Image
                 source={{ uri: emoji?.url }}
                 style={{ width: 35, height: 35 }}
@@ -30,24 +30,34 @@ export function ReactionBox({ emojis, sortEmoji }) {
             </TouchableOpacity>
           ))
           :
-          <View style={{ justifyContent: "center", alignItems: "center", }}>
-            <TouchableOpacity onPress={toggleBox} style={styles.reactionBoxAbsolute}>
-              <Image
-                source={require("../../../assets/R_Emoji.png")}
-                style={{ width: 45, height: 45 }}
-              />
-            </TouchableOpacity>
-          </View>
+          sortEmoji === undefined && selectedEmoji !== null ?
+            <View style={{ justifyContent: "center", alignItems: "center", }}>
+              <TouchableOpacity onPress={toggleBox} style={styles.reactionBoxAbsolute}>
+                <Image
+                  source={{ uri: selectedEmoji?.url }}
+                  style={{ width: 25, height: 25 }}
+                />
+              </TouchableOpacity>
+            </View>
+            :
+            <View style={{ justifyContent: "center", alignItems: "center", }}>
+              <TouchableOpacity onPress={toggleBox} style={styles.reactionBoxAbsolute}>
+                <Image
+                  source={require("../../../assets/emoji9.png")}
+                  style={{ width: 25, height: 25 }}
+                />
+              </TouchableOpacity>
+            </View>
         }
       </View>
       {isBoxOpen && (
         <View style={styles.expandedBox}>
           {/* Contenido de la caja expandida */}
-          <View style={{ display: "flex", alignItems: "center", flexDirection: "row", justifyContent: "space-between" }}>
+          <View style={{ display: "flex", alignItems: "center", flexDirection: "row", justifyContent: "center" }}>
             {
               emojis ?
-                emojis.map(emoji => (
-                  <TouchableOpacity onPress={() => handleEmojiClick(emoji)}>
+                emojis.map((emoji, index) => (
+                  <TouchableOpacity key={index} onPress={() => handleEmojiClick(emoji)}>
                     <Image
                       source={{ uri: emoji.url }}
                       style={{ width: 32, height: 30 }}
@@ -61,7 +71,6 @@ export function ReactionBox({ emojis, sortEmoji }) {
         </View>
       )}
     </View>
-
   )
 }
 
@@ -78,9 +87,9 @@ const styles = StyleSheet.create({
   },
   expandedBox: {
     position: "absolute",
-    bottom:55,
-    right:0,
-    width: Dimensions.get('window').width - 45, // Ancho de la pantalla
+    bottom: 55,
+    right: -7.5,
+    width: Dimensions.get('window').width - 37, // Ancho de la pantalla
     height: 50,
     alignItems: "center",
     justifyContent: "center",
@@ -96,8 +105,8 @@ const styles = StyleSheet.create({
     elevation: 5, // Para Android
   },
   reactionBoxAbsolute: {
-    display:"flex",
-    flexDirection:"row",
+    display: "flex",
+    flexDirection: "row",
     borderRadius: 50,
     backgroundColor: "white",
     width: 50,
