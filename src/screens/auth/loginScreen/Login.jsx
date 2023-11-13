@@ -8,6 +8,7 @@ import { loginAuth } from "../../../redux/actions";
 import { InputLogin } from "./InputLogin";
 import LinearGradient from "react-native-linear-gradient";
 import { ContainerWithBackground } from "../../ContainerWithBackground";
+import AwesomeAlert from "react-native-awesome-alerts";
 
 const height = Dimensions.get("screen").height
 
@@ -16,9 +17,40 @@ export default function Login({ navigation }) {
 	const dispatch = useDispatch()
 	const { setUserData } = useContext(UserContext)
 	const [inputValue, setInputValue] = useState(false)
+	const [showAlert, setShowAlert] = useState(false)
+	const [showAlert2, setShowAlert2] = useState(false)
 	const { control, handleSubmit, watch } = useForm()
 
+	const showAlerts = (show, setShow, titulo, msg, text) => {
+		return (
+			<AwesomeAlert
+				show={show}
+				showProgress={false}
+				title={titulo}
+				message={msg}
+				closeOnTouchOutside={true}
+				closeOnHardwareBackPress={false}
+				showConfirmButton={true}
+				confirmText={text}
+				confirmButtonColor="#DD6B55"
+				onConfirmPressed={() => setShow(false)}
+			/>
+		);
+	}
+
+	const getAlert = () => {
+		return (
+			<AwesomeAlert
+				show={showAlert2}
+				showProgress={true}
+				progressColor="black"
+				progressSize={50}
+			/>
+		)
+	}
+
 	function authentication(data) {
+		setShowAlert2(true)
 		dispatch(loginAuth(data.dniUser, data.passUser))
 			.then((response) => {
 				if (response.payload.status === 200) {
@@ -33,12 +65,15 @@ export default function Login({ navigation }) {
 						telefono: response.payload.data.usuario.telefono,
 						contrato: response.payload.data.usuario.contrato
 					})
+					setShowAlert2(false)
 					navigation.navigate("landing")
 				}
 			})
 			.catch((error) => {
+				setShowAlert2(false)
 				// Manejo los errores que puedan ocurrir en la acción loginAuth
 				console.log("Error, datos Incorrectos", error);
+				setShowAlert(true)
 			});
 		// navigation.navigate("landing")
 	}
@@ -103,6 +138,8 @@ export default function Login({ navigation }) {
 					</View>
 				</View>
 			</View>
+			{showAlerts(showAlert, setShowAlert, "Error!", "Es posible que tus datos sean incorrectos, verifícalos", "Ok")}
+			{showAlert2 ? getAlert() : null}
 		</ContainerWithBackground>
 
 	)

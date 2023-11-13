@@ -22,10 +22,10 @@ export default function Register({ navigation }) {
 	const { control, handleSubmit, setValue, watch} = useForm()
 
 	const dispatch = useDispatch()
-	const [showAlert, setShowAlert] = useState(false)
 	const [showAlert1, setShowAlert1] = useState(false)
 	const [showAlert2, setShowAlert2] = useState(false)
 	const [showAlert3, setShowAlert3] = useState(false)
+	const [showAlert4, setShowAlert4] = useState(false)
 	const { setUserData } = useContext(UserContext)
 	const [toggleCheckBox, setToggleCheckBox] = useState(false)
 	const [itemsArray, setItemsArray] = useState([])
@@ -33,26 +33,7 @@ export default function Register({ navigation }) {
 	const pwd = watch("userpass")
 	const allContratos = useSelector((state) => state.allContratos)
 
-	// const data = [
-	// 	{
-	// 		label: "ASD", value: "asd"
-	// 	},
-	// 	{
-	// 		label: "A", value: "a"
-	// 	},
-	// 	{
-	// 		label: "S", value: "s"
-	// 	},
-	// 	{
-	// 		label: "H", value: "h"
-	// 	},
-	// 	{
-	// 		label: "Y", value: "y"
-	// 	},
-	// 	{
-	// 		label: "Jota", value: "jota"
-	// 	},
-	// ]
+	
 	const [isOpen, setIsOpen] = useState(false)
 	const [currentValue, setCurrentValue] = useState([])
 
@@ -82,7 +63,16 @@ export default function Register({ navigation }) {
 		);
 	}
 
-	console.log("select: ",selectedItems)
+	const getAlert = () => {
+    return (
+      <AwesomeAlert
+        show={showAlert4}
+        showProgress={true}
+        progressColor="black"
+        progressSize={50}
+      />
+    )
+  }
 
 	async function handleSubmitRegister(data) {
 		// navigation.navigate("registerOk")
@@ -96,6 +86,7 @@ export default function Register({ navigation }) {
 		else if (selectedItems && toggleCheckBox) {
 			const numeroContrato = selectedItems[0]
 			// console.log(numeroContrato)
+			setShowAlert4(true)
 			try {
 				await axios.post(`${API_URL}/usuarios`,
 					{
@@ -137,14 +128,13 @@ export default function Register({ navigation }) {
 		}
 	}
 
+	//cada vez que se seleccione un elemento, el picker se cerrará automáticamente.
 	const onSelectedItemsChange = (selectedItems) => {
 		// Set Selected Items
 		setSelectedItems(selectedItems);
+		setIsOpen(!isOpen)
 	};
 
-	const openPicker = () => {
-		setIsOpen(!isOpen)
-	}
 
 
 	return (
@@ -164,7 +154,7 @@ export default function Register({ navigation }) {
 								items={itemsArray}
 								open={isOpen}
 								value={selectedItems}
-								setOpen={openPicker}
+								setOpen={setIsOpen}
 								setValue={(val) => { onSelectedItemsChange(val) }}
 								autoScroll
 								placeholder="Contrato"
@@ -179,7 +169,7 @@ export default function Register({ navigation }) {
 								style={{borderColor:"#CDD1DF"}}
 							/>
 							:
-							<Text>
+							<Text style={{color:"black"}}>
 								Cargando numeros de contrato...
 							</Text>
 					}
@@ -278,11 +268,12 @@ export default function Register({ navigation }) {
 							<CustomInput
 								control={control}
 								placeholder="Repite tu contraseña"
-								name="userpass"
+								name="userpassrepeat"
 								secureTextEntry
 								numeric="numeric"
 								rules={{
 									required: true,
+									validate: value => value === pwd || "Las Contraseñas no coinciden",
 									minLength: {
 										value: 8,
 										message: "La Contraseña debe tener un minimo de 8 caracteres"
@@ -331,6 +322,7 @@ export default function Register({ navigation }) {
 			{showAlerts(showAlert1, setShowAlert1, "Error", "Debes seleccionar un contrato", "Ok")}
 			{showAlerts(showAlert2, setShowAlert2, "Error!", "Debes aceptar Terminos y Politica de privacidad", "Ok")}
 			{showAlerts(showAlert3, setShowAlert3, "Error!", "Es posible que ya te hayas registrado", "Ok")}
+			{getAlert()}
 		</View>
 	)
 }

@@ -60,7 +60,7 @@ export function ReactionBox({ emojis, sortEmoji, handleEmoji }) {
                   <TouchableOpacity key={index} onPress={() => handleEmojiClick(emoji)}>
                     <Image
                       source={{ uri: emoji.url }}
-                      style={{ width: 32, height: 30 }}
+                      style={{ width: 30, height: 30 }}
                     />
                   </TouchableOpacity>
                 ))
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
   },
   expandedBox: {
     position: "absolute",
-    bottom: 55,
+    bottom: 50,
     right: -7.5,
     width: Dimensions.get('window').width - 37, // Ancho de la pantalla
     height: 50,

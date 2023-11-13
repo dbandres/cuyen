@@ -19,16 +19,12 @@ export function Muro({ navigation}) {
 	const dispatch = useDispatch()
 
 	useEffect(()=>{
-		console.log("se actualizo")
 		dispatch(getAllPost(userdata.contrato))
 	},[control])
 
 	function controlDispatch(){
-		console.log("llego aca")
 		setControl(!control)
 	}
-
-
 
 	return (
 		<View style={styles.container}>
@@ -110,9 +106,9 @@ const styles = StyleSheet.create({
 		    shadowRadius: 2,
 		  },
 		  android: {
-		    elevation: 9,
-				shadowColor: 'rgba(0, 0, 0, 0.25)',
-				shadowOffset: { width: 0, height: 2 },
+		    elevation: 1,
+				shadowColor: 'rgba(0, 0, 0, 0.11)',
+				shadowOffset: { width: 0, height: 1 },
 		    shadowOpacity: 1,
 		    shadowRadius: 2,
 		  },

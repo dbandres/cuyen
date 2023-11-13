@@ -1,4 +1,4 @@
-import { LOGIN_AUTH, SET_CURRENT_USER, GET_ALL_CONTRATO, GET_ALL_POST, GET_ALL_EMOJIS } from "./actions";
+import { LOGIN_AUTH, SET_CURRENT_USER, GET_ALL_CONTRATO, GET_ALL_POST, GET_ALL_EMOJIS, GET_ALL_INICIO_ORDER } from "./actions";
 
 
 const initialState = {
@@ -6,7 +6,8 @@ const initialState = {
   currentUser: "",
   allContratos: [],
   allPost: [],
-  allEmojis: []
+  allEmojis: [],
+  allInicioOrder: []
 }
 
 function rootReducer(state = initialState, action) {
@@ -35,6 +36,11 @@ function rootReducer(state = initialState, action) {
       return {
         ...state,
         allEmojis: action.payload
+      }
+    case GET_ALL_INICIO_ORDER:
+      return {
+        ...state,
+        allInicioOrder: action.payload
       }
     default:
       return state

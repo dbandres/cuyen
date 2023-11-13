@@ -39,15 +39,20 @@ export const ForgotPassword1 = ({ navigation, route }) => {
             <CheckBox
               disabled={false}
               value={toggleCheckBox}
+              boxType="square"
               onValueChange={(newValue) => setToggleCheckBox(newValue)}
+              onCheckColor="black"
+							tintColor="black"
+							tintColors={{ false: "black" }}
+							lineWidth={1.5}
             />
             {
               email ?
-                <Text>
+                <Text style={{color:"black"}}>
                   {email}
                 </Text>
                 :
-                <Text>
+                <Text style={{color:"black"}}>
                   E-mail
                 </Text>
             }

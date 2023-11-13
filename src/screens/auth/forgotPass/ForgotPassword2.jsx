@@ -38,14 +38,14 @@ export default function ForgotPassword2({ navigation, route }) {
   },[])
 
   console.log(numerosDigitos)
-  useEffect(()=>{
-    if (numerosDigitos.length === 4) {
-      setValue('codigo1', numerosDigitos[0]);
-      setValue('codigo2', numerosDigitos[1]);
-      setValue('codigo3', numerosDigitos[2]);
-      setValue('codigo4', numerosDigitos[3]);
-    }
-  },[numerosDigitos, setValue])
+  // useEffect(()=>{
+  //   if (numerosDigitos.length === 4) {
+  //     setValue('codigo1', numerosDigitos[0]);
+  //     setValue('codigo2', numerosDigitos[1]);
+  //     setValue('codigo3', numerosDigitos[2]);
+  //     setValue('codigo4', numerosDigitos[3]);
+  //   }
+  // },[numerosDigitos, setValue])
 
 
   function compararNumAleatorio(data) {
@@ -156,7 +156,7 @@ export default function ForgotPassword2({ navigation, route }) {
               />
             </View>
           </View>
-          <View style={{ top: 70, width: "100%" }}>
+          <View style={{ top: 60, width: "100%" }}>
             <View style={{ height: "22%", width: "100%" }}>
               <ButtonCustom
                 text="Enviar"

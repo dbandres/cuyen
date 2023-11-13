@@ -4,6 +4,7 @@ import { UserContext } from "../../../context/UserContext";
 import { FormContact } from "../intoScreen/FormContact";
 import { Footer } from "../intoScreen/Footer";
 import { HeaderLanding } from "./HeaderLanding";
+import { PromosVigentes } from "../intoScreen/PromosVigentes";
 
 const Width = Dimensions.get("screen").width
 const Height = Dimensions.get("window").height
@@ -43,37 +44,7 @@ export function Landing({navigation}) {
           </View>
         </View>
         <View style={{ height: Height * 0.52 }}>
-          <ScrollView
-            horizontal={true}
-            style>
-            <View style={{ height: 350, width: 320, margin: 14, borderRadius: 10 }}>
-              <View>
-                <Image
-                  source={{
-                    uri: "https://i.pinimg.com/originals/b3/bf/07/b3bf07752356862bcd3e77ff3d879a0a.png"
-                  }}
-                  style={{ width: "100%", height: "100%", borderRadius: 10 }}
-                />
-              </View>
-              <TouchableOpacity style={{ position: "absolute", left: "10%", bottom: "10%", backgroundColor: "#3462BF", width: "60%", height: "12%", alignItems: "center", justifyContent: "center", borderRadius: 20 }}>
-                <Text style={{ color: "white", fontWeight: "600", fontSize: 20 }}>Ver más</Text>
-              </TouchableOpacity>
-            </View>
-
-            <View style={{ height: 350, width: 320, margin: 14, borderRadius: 10 }}>
-              <View>
-                <Image
-                  source={{
-                    uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjOdyNm2jjiIZ0lpqW8vPPfMWCiYDyV0dKdw&usqp=CAU"
-                  }}
-                  style={{ width: "100%", height: "100%", borderRadius: 10 }}
-                />
-              </View>
-              <TouchableOpacity style={{ position: "absolute", left: "10%", bottom: "10%", backgroundColor: "#3462BF", width: "60%", height: "12%", alignItems: "center", justifyContent: "center", borderRadius: 20 }}>
-                <Text style={{ color: "white", fontWeight: "600", fontSize: 20 }}>Ver más</Text>
-              </TouchableOpacity>
-            </View>
-          </ScrollView>
+          <PromosVigentes/>
         </View>
         <View style={{ alignItems: "center", paddingTop: 10 }}>
           <View style={{ width: "82%", justifyContent: "flex-start", display: "flex", flexDirection: "row" }}>

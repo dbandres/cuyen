@@ -4,7 +4,8 @@ export const LOGIN_AUTH = "LOGIN_AUTH";
 export const SET_CURRENT_USER = "SET_CURRENT_USER";
 export const GET_ALL_CONTRATO = "GET_ALL_CONTRATO";
 export const GET_ALL_POST = "GET_ALL_POST";
-export const GET_ALL_EMOJIS = "GET_ALL_EMOJIS"
+export const GET_ALL_EMOJIS = "GET_ALL_EMOJIS";
+export const GET_ALL_INICIO_ORDER = "GET_ALL_INICIO_ORDER";
 
 
 export function loginAuth(usuario, contraseña) {
@@ -87,6 +88,26 @@ export function getAllEmojis(){
 			})
 			return dispatch({
 				type: GET_ALL_EMOJIS,
+				payload: response.data
+			})
+		}
+	} catch (error) {
+		console.log('Error de Axios:', error);
+	}
+}
+
+export function getAllInicioOrder(){
+	try {
+		return async function(dispatch){
+			let response = await axios.get(`${API_URL}/inicio/order`,
+			{
+				headers:{
+					'x-access-token': `${token}`,
+					"Content-Type": "application/json",
+				}
+			})
+			return dispatch({
+				type: GET_ALL_INICIO_ORDER,
 				payload: response.data
 			})
 		}

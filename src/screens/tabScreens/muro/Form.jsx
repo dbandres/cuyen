@@ -12,6 +12,9 @@ import { API_URL, token } from "../../../api";
 import { UserContext } from "../../../context/UserContext";
 import { useDispatch } from "react-redux";
 import { getAllPost } from "../../../redux/actions";
+import { Gesture, GestureDetector, GestureHandlerRootView } from "react-native-gesture-handler";
+import Animated, { useSharedValue, useAnimatedStyle } from "react-native-reanimated";
+
 
 const Height = Dimensions.get("screen").height
 
@@ -30,6 +33,56 @@ export function Form({ navigation }) {
     comentario: '',
     img: [],
   });
+
+  // probamos la funcion de Pinch
+  const escalaImg = useSharedValue(1)
+  const focoX = useSharedValue(0)
+  const focoY = useSharedValue(0)
+
+  const centroImagen = {
+    x: 200 / 2,
+    y: 300 / 2
+  }
+
+  const onPinchEvent = Gesture.Pinch()
+    .onStart((e) => {
+      focoX.value = e.focalX;
+      focoY.value = e.focalY
+    })
+    .onUpdate((e) => {
+      escalaImg.value = e.scale
+      console.log("escala: ", escalaImg)
+    })
+
+  const estiloAnimado = useAnimatedStyle(() => ({
+    transform: [
+      {
+        translateX: focoX.value
+      },
+      {
+        translateY: focoY.value
+      },
+      {
+        translateX: -centroImagen.x
+      },
+      {
+        translateY: -centroImagen.y
+      },
+      { scale: escalaImg.value },
+      {
+        translateX: -focoX.value
+      },
+      {
+        translateY: -focoY.value
+      },
+      {
+        translateX: centroImagen.x
+      },
+      {
+        translateY: centroImagen.y
+      },
+    ]
+  }))
 
 
   const getAlert = () => {
@@ -103,7 +156,6 @@ export function Form({ navigation }) {
         },
       );
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('Permiso a galeria otorgado');
         openImageLibrary()
       } else {
         console.log('Permiso a galeria denegado');
@@ -120,7 +172,6 @@ export function Form({ navigation }) {
     console.log(res)
     if (res === RESULTS.GRANTED) {
       setCameraGranted(true);
-      console.log("Permiso Camera garantizado")
       openCamera()
     } else if (res === RESULTS.DENIED) {
       const res2 = await request(permission);
@@ -135,7 +186,6 @@ export function Form({ navigation }) {
     }, response => {
       try {
         if (response) {
-          console.log("open camera: ", response)
           const newImage = { uri: response.assets[0].uri, type: response.assets[0].type, name: response.assets[0].fileName }
           addImageUri(newImage);
         }
@@ -150,14 +200,13 @@ export function Form({ navigation }) {
 
   const openImageLibrary = () => {
     launchImageLibrary({
-      mediaType: 'mixed', quality: 0.5, selectionLimit: 5
+      mediaType: 'mixed', quality: 0.5, selectionLimit: 5,
     }, response => {
       if (response.didCancel) {
         console.log('El usuario canceló la selección');
       } else if (response.error) {
         console.log('Ocurrió un error: ', response.error);
       } else {
-        console.log("estado del response: ", response)
         // Aquí puedes manejar la imagen o video seleccionado
         console.log(JSON.stringify(response, null, 3))
 
@@ -199,7 +248,7 @@ export function Form({ navigation }) {
           })
             .then((res) => {
               if (res.status === 200) {
-                console.log(res.data)
+                console.log("esto es res: ",res)
                 responsesArray.push(res.data);
                 cadenaUrl = "[" + responsesArray.join(", ") + "]"; // "[url1, url2]"
 
@@ -230,7 +279,7 @@ export function Form({ navigation }) {
             console.log("NO SE PUDO PUBLICAR")
           }
         })
-      }, 10000)
+      }, 15000)
     }
     else {
       axios.post(`${API_URL}/muro/${userdata.contrato}`, {
@@ -257,111 +306,116 @@ export function Form({ navigation }) {
   }
 
 
+
   return (
     <ScrollView style={styles.container}>
       <Header children="Publicar" navigation={navigation} />
-      <View style={{ flex: 1, alignItems: "center", paddingTop: 5 }}>
-        <View style={{ backgroundColor: "white", width: "93%", height: imageRender.length !== 0 ? 617 : 253, borderRadius: 20, }}>
-          {
-            imageRender.length !== 0 ?
-              <View style={{ height: imageRender.length !== 0 ? "56%" : "0%", alignItems: "center", borderRadius: 10, margin: 8 }}>
-                <Swiper style={{ height: "100%", borderRadius: 10 }}>
-                  {
-                    imageRender.map((img, index) => (
-                      <View key={index} style={{ justifyContent: 'center', alignItems: 'center' }}>
-                        {
-                          img.type.includes("video") ?
-                            <Video
-                              source={{ uri: img.uri }}
-                              style={styles.video}
-                              controls={true} // Muestra controles de reproducción
-                              resizeMode="contain"
+      <GestureHandlerRootView>
+        <View style={{ flex: 1, alignItems: "center", paddingTop: 5 }}>
+          <View style={{ backgroundColor: "white", width: "93%", height: imageRender.length !== 0 ? 617 : 253, borderRadius: 20, }}>
+            {
+              imageRender.length !== 0 ?
+                <View style={{ height: imageRender.length !== 0 ? "56%" : "0%", alignItems: "center", borderRadius: 10, margin: 8 }}>
+                  <Swiper style={{ height: "100%", borderRadius: 10 }}>
+                    {
+                      imageRender.map((img, index) => (
+                        <View key={index} style={{ justifyContent: 'center', alignItems: 'center', height: "100%", borderRadius: 20 }}>
+                          {
+                            img.type.includes("video") ?
+                              <Video
+                                source={{ uri: img.uri }}
+                                style={styles.video}
+                                controls={true} // Muestra controles de reproducción
+                                resizeMode="contain"
 
+                              />
+                              :
+                              <GestureDetector gesture={onPinchEvent}>
+                                <Animated.Image
+                                  source={{
+                                    uri: img.uri
+                                  }}
+                                  style={[styles.imgAnimada, estiloAnimado]}
+                                />
+                              </GestureDetector>
+                          }
+                          {showAlert && (
+                            <AwesomeAlert
+                              show={showAlert}
+                              showProgress={false}
+                              title="Límite de imágenes alcanzado"
+                              message="Solo se pueden adjuntar 5 imagenes por publicacion!"
+                              closeOnTouchOutside={true}
+                              closeOnHardwareBackPress={false}
+                              showConfirmButton={true}
+                              confirmText="OK"
+                              onConfirmPressed={() => setShowAlert(false)}
                             />
-                            :
-                            <Image
-                              source={{
-                                uri: img.uri
-                              }}
-                              style={{ width: 350, height: 350, borderRadius: 10, objectFit: "cover" }}
-                            />
-                        }
-                        {showAlert && (
-                          <AwesomeAlert
-                            show={showAlert}
-                            showProgress={false}
-                            title="Límite de imágenes alcanzado"
-                            message="Solo se pueden adjuntar 5 imagenes por publicacion!"
-                            closeOnTouchOutside={true}
-                            closeOnHardwareBackPress={false}
-                            showConfirmButton={true}
-                            confirmText="OK"
-                            onConfirmPressed={() => setShowAlert(false)}
-                          />
-                        )}
-                        <TouchableOpacity
-                          style={{ position: 'absolute', top: 10, right: 10, backgroundColor: 'red', borderRadius: 20, padding: 5 }}
-                          onPress={() => removeItem(index)}
-                        >
-                          <Text style={{ color: 'white' }}>Eliminar</Text>
-                        </TouchableOpacity>
-                      </View>
-                    ))
-                  }
-                </Swiper>
+                          )}
+                          <TouchableOpacity
+                            style={{ position: 'absolute', top: 10, right: 10, backgroundColor: 'red', borderRadius: 20, padding: 5 }}
+                            onPress={() => removeItem(index)}
+                          >
+                            <Text style={{ color: 'white' }}>Eliminar</Text>
+                          </TouchableOpacity>
+                        </View>
+                      ))
+                    }
+                  </Swiper>
+                </View>
+                :
+                null
+            }
+            <View style={{ height: "60%" }}>
+              <View style={{ display: "flex", justifyContent: "flex-start", alignItems: "center", height: 130 }}>
+                <TextInput
+                  placeholder="Escribe tu comentario..."
+                  onChangeText={handleTextChange}
+                  value={texto}
+                  textAlignVertical="top"
+                  multiline={true} // Permite múltiples líneas
+                  numberOfLines={4} // Número de líneas visibles (ajusta según tus necesidades)
+                  style={styles.textArea}
+                  maxLength={160} // Establecer el número máximo de caracteres
+                  placeholderTextColor="#CDD1DF"
+                />
+                <View style={{ width: "100%", paddingLeft: 10 }}>
+                  <Text style={{ fontSize: 10, color: "#000000" }}>Caracteres restantes: {160 - texto.length}</Text>
+                </View>
               </View>
-              :
-              null
-          }
-          <View style={{ height: "60%" }}>
-            <View style={{ display: "flex", justifyContent: "flex-start", alignItems: "center", height: 130 }}>
-              <TextInput
-                placeholder="Escribe tu comentario..."
-                onChangeText={handleTextChange}
-                value={texto}
-                textAlignVertical="top"
-                multiline={true} // Permite múltiples líneas
-                numberOfLines={4} // Número de líneas visibles (ajusta según tus necesidades)
-                style={styles.textArea}
-                maxLength={160} // Establecer el número máximo de caracteres
-                placeholderTextColor="#CDD1DF"
-              />
-              <View style={{ width: "100%", paddingLeft: 10 }}>
-                <Text style={{ fontSize: 10, color: "#000000" }}>Caracteres restantes: {160 - texto.length}</Text>
+              <View style={{ height: 50, alignItems: "center", display: "flex", flexDirection: "row", justifyContent: "flex-end", width: "97%" }}>
+                <Text style={{ fontSize: 12, fontWeight: "600", color: "#7899FF", marginRight: "3%" }}>
+                  Agregar a tu publicacion
+                </Text>
+                <TouchableOpacity onPress={requestGalleryPermission}>
+                  <Image
+                    source={require('../../../assets/Picture.png')}
+                    style={{ width: 50, height: 50, marginRight: "3%" }}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleCameraPermission}>
+                  <Image
+                    source={require('../../../assets/Videos.png')}
+                    style={{ width: 50, height: 50, }}
+                  />
+                </TouchableOpacity>
               </View>
-            </View>
-            <View style={{ height: 50, alignItems: "center", display: "flex", flexDirection: "row", justifyContent: "flex-end", width: "97%" }}>
-              <Text style={{ fontSize: 12, fontWeight: "600", color: "#7899FF", marginRight: "3%" }}>
-                Agregar a tu publicacion
-              </Text>
-              <TouchableOpacity onPress={requestGalleryPermission}>
-                <Image
-                  source={require('../../../assets/Picture.png')}
-                  style={{ width: 50, height: 50, marginRight: "3%" }}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={handleCameraPermission}>
-                <Image
-                  source={require('../../../assets/Videos.png')}
-                  style={{ width: 50, height: 50, }}
-                />
-              </TouchableOpacity>
-            </View>
-            <View style={{ height: 47, width: "100%", alignItems: "center", justifyContent: "center", display: "flex", marginTop: "5%" }}>
-              <View style={{ width: "95%" }}>
-                <ButtonCustom
-                  text="Publicar"
-                  color={texto !== " " && disabledBtn !== true ? "#FF3D00" : "#CDD1DF"}
-                  onPress={armadoDePublicacion}
-                  disabled={disabledBtn}
-                />
+              <View style={{ height: 47, width: "100%", alignItems: "center", justifyContent: "center", display: "flex", marginTop: "5%" }}>
+                <View style={{ width: "95%" }}>
+                  <ButtonCustom
+                    text="Publicar"
+                    color={texto !== " " && disabledBtn !== true ? "#FF3D00" : "#CDD1DF"}
+                    onPress={armadoDePublicacion}
+                    disabled={disabledBtn}
+                  />
+                </View>
               </View>
             </View>
           </View>
+          {showAlert2 ? getAlert() : null}
+          {showAlertOK ? getAlertOk() : null}
         </View>
-        {showAlert2 ? getAlert() : null}
-        {showAlertOK ? getAlertOk() : null}
-      </View>
+      </GestureHandlerRootView>
     </ScrollView>
   )
 }
@@ -439,4 +493,5 @@ const styles = StyleSheet.create({
     height: "75%", // Ajusta la altura según tus necesidades
     color: "#000000"
   },
+  imgAnimada: { width: 340, height: 340, borderRadius: 10, resizeMode: "stretch" }
 })
