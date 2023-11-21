@@ -3,16 +3,11 @@ import LinearGradient from "react-native-linear-gradient"
 
 const Height = Dimensions.get("screen").height
 
-export const Header = ({children, navigation}) => {
-
-  const openDrawer = () => {
-		navigation.openDrawer();
-	};
+export const HeaderFolleto = ({children, navigation}) => {
 
 	const goBack = () => {
 		navigation.goBack();
 	}
-
 
   return (
     <View style={styles.containerBtn}>
@@ -28,16 +23,10 @@ export const Header = ({children, navigation}) => {
             source={require("../../../assets/arrow_back_ios.png")}
             style={{ width: 24, height: 24 }}
           />
-          <Text style={{ fontWeight: '600', fontSize: 12, lineHeight: 14, color: "white", }}>Volver</Text>
+          <Text style={{ fontWeight: '600', fontSize: 12, lineHeight: 14, color: "white", marginLeft: "3%"}}>Volver</Text>
         </TouchableOpacity>
         <TouchableOpacity style={{ display: "flex", flexDirection: "row", alignItems: "center", paddingRight: "3%" }}>
           <Text style={{ fontWeight: '600', fontSize: 14, lineHeight: 17, color: "white", marginRight: "3%" }}>{children}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={{ justifyContent: "center" }} onPress={openDrawer}>
-          <Image
-            source={require("../../../assets/menuHmb.png")}
-            style={{ width: 24, height: 24 }}
-          />
         </TouchableOpacity>
       </View>
     </View>
@@ -58,7 +47,7 @@ const styles = StyleSheet.create({
 		left: 0,
 		width: '100%',
 		height: '100%',
-		justifyContent: 'space-around',
+		justifyContent: 'space-between',
 		flexDirection: "row",
 	},
   gradient: {

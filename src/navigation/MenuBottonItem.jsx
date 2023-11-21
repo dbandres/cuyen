@@ -2,7 +2,6 @@ import { Text, TouchableOpacity, View, Image } from "react-native"
 
 
 export const MenuBottonItem = ({ text, onPress, img }) => {
-  console.log(img)
   return (
     <View style={{ width: "100%", justifyContent: "center", height: "25%" }}>
       <TouchableOpacity

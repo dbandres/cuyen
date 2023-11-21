@@ -92,6 +92,7 @@ export function Form({ navigation }) {
         showProgress={true}
         progressColor="black"
         progressSize={50}
+        closeOnTouchOutside={false}
       />
     )
   }
@@ -228,7 +229,6 @@ export function Form({ navigation }) {
   };
 
   const armadoDePublicacion = () => {
-    let cadenaUrl;
     if (imageRender.length !== 0) {
       setShowAlert2(true)
       const responsesArray = [];
@@ -250,8 +250,6 @@ export function Form({ navigation }) {
               if (res.status === 200) {
                 console.log("esto es res: ",res)
                 responsesArray.push(res.data);
-                cadenaUrl = "[" + responsesArray.join(", ") + "]"; // "[url1, url2]"
-
               }
             })
         } catch (error) {
@@ -259,9 +257,9 @@ export function Form({ navigation }) {
         }
       });
       setTimeout(() => {
-        console.log("esto es url spaces: ", cadenaUrl)
+        console.log("esto es url spaces: ", responsesArray)
         axios.post(`${API_URL}/muro/${userdata.contrato}`, {
-          image: cadenaUrl,
+          image: responsesArray,
           texto: texto
         },
           {
@@ -493,5 +491,5 @@ const styles = StyleSheet.create({
     height: "75%", // Ajusta la altura según tus necesidades
     color: "#000000"
   },
-  imgAnimada: { width: 340, height: 340, borderRadius: 10, resizeMode: "stretch" }
+  imgAnimada: { width: 340, height: 340, borderRadius: 10, resizeMode: "cover" }
 })

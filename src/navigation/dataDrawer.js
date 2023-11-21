@@ -18,6 +18,11 @@ export const data = [
     text: "Ver ubicación del viaje",
     route: 'ubiViaje',
     img: "ubiViaje" // Ruta de la imagen como una cadena
+  },
+  {
+    text: "Gestión del Viaje",
+    route: 'gesViaje',
+    img: "gesViaje" // Ruta de la imagen como una cadena
   }
   // Agrega más objetos de datos si es necesario
 ];

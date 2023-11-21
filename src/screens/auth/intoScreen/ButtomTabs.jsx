@@ -8,7 +8,7 @@ export const ButtomTabs = ({navigation}) => {
   }
 
   return (
-    <View style={{ backgroundColor: "#162962", height: "10%", alignItems: "center", justifyContent: "space-around", flexDirection: "row", width:"100%" }}>
+    <View style={{ backgroundColor: "#162962", height: 74, alignItems: "center", justifyContent: "space-around", flexDirection: "row", width:"100%" }}>
       <View style={{ justifyContent: "center", alignItems: "center", height: "60%" }}>
         <TouchableOpacity style={{ bottom: 8 }}>
           <Image

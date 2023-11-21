@@ -70,13 +70,13 @@ export default function Register({ navigation }) {
         showProgress={true}
         progressColor="black"
         progressSize={50}
+				closeOnTouchOutside={false}
       />
     )
   }
 
 	async function handleSubmitRegister(data) {
 		// navigation.navigate("registerOk")
-		console.log(data)
 		if (selectedItems.length == 0 && toggleCheckBox) {
 			setShowAlert1(true)
 		}
@@ -84,8 +84,6 @@ export default function Register({ navigation }) {
 			setShowAlert2(true)
 		}
 		else if (selectedItems && toggleCheckBox) {
-			const numeroContrato = selectedItems[0]
-			// console.log(numeroContrato)
 			setShowAlert4(true)
 			try {
 				await axios.post(`${API_URL}/usuarios`,
@@ -94,10 +92,11 @@ export default function Register({ navigation }) {
 						nombre: data.username,
 						apellido: data.userlastname,
 						email: data.useremail,
-						contrato: numeroContrato,
+						contrato: selectedItems,
 						password: data.userpass,
-						rol: "padre",
-						telefono: data.userphone
+						rol: "Coordinador",
+						telefono: data.userphone,
+						estado: "true"
 					},
 					{
 						headers: {
@@ -108,7 +107,7 @@ export default function Register({ navigation }) {
 				)
 					.then((res) => {
 						if (res.status === 200) {
-							console.log("ESto es la respuesta: ",JSON.stringify(res.data, null ,3))
+							console.log("ESto es la respuesta: ",JSON.stringify(res.config, null ,3))
 							setUserData({
 								jwt: res.data,
 								nombre: data.username,
@@ -116,14 +115,18 @@ export default function Register({ navigation }) {
 								email: data.useremail,
 								usuario: data.userdni,
 								telefono: data.userphone,
-								contrato: numeroContrato
+								contrato: selectedItems[0],
+								rol: "Coordinador"
 							})
 							navigation.navigate("registerOk")
 						}
 					})
 			} catch (error) {
 				console.log('Error de Axios:', error);
-				setShowAlert3(true)
+				setShowAlert4(false)
+				setTimeout(()=>{
+					setShowAlert3(true)
+				},2000)
 			}
 		}
 	}

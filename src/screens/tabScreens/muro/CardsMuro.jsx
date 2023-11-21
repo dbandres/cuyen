@@ -8,23 +8,17 @@ import axios from "axios";
 import { API_URL, token } from "../../../api";
 
 const Height = Dimensions.get("screen").height
+
 export function CardsMuro({ data, controlDispatch }) {
 
   // console.log(JSON.stringify(data))
-  const [uriImg, setUri] = useState("")
   const [emojiPubli, setEmojiPubli] = useState([])
   const [totalReacciones, setTotalReacciones] = useState("")
   const dispatch = useDispatch()
   const allEmojis = useSelector((state) => state.allEmojis)
 
-  const transformUriImag = (dataImage) => {
-    const cadenaModificada = dataImage.slice(1, dataImage.length - 1).toString();
-    const separarCadena = cadenaModificada.split(", ")
-    setUri(separarCadena);
-  }
 
   useEffect(() => {
-    transformUriImag(data.image)
     calcularTotalEmojisPorPost(data.emoji)
     if (allEmojis.length === 0) {
       dispatch(getAllEmojis())
@@ -107,14 +101,14 @@ export function CardsMuro({ data, controlDispatch }) {
   return (
     <>
       {
-        uriImg && uriImg[0] !== "" ?
+        data.image.length !== 0 ?
           <View style={styles.container}>
             <View style={styles.cardContainer}>
               <View style={styles.imageContainer}>
                 <Swiper
                 >
                   {
-                    uriImg?.map((img, index) => (
+                    data.image?.map((img, index) => (
                       <View key={index} style={styles.swiperSlide}>
                         <Image
                           source={{ uri: img }}

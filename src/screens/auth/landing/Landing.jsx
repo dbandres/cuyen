@@ -44,7 +44,7 @@ export function Landing({navigation}) {
           </View>
         </View>
         <View style={{ height: Height * 0.52 }}>
-          <PromosVigentes/>
+          <PromosVigentes navigation={navigation}/>
         </View>
         <View style={{ alignItems: "center", paddingTop: 10 }}>
           <View style={{ width: "82%", justifyContent: "flex-start", display: "flex", flexDirection: "row" }}>

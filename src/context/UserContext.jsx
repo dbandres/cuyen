@@ -10,7 +10,8 @@ export function UserProvider({children}){
         email: "",
         usuario: "",
         telefono: "",
-        contrato: ""
+        contrato: "",
+        rol: ""
     });
 
     return(

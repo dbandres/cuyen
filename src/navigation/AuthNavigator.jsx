@@ -5,21 +5,21 @@ import axios from 'axios';
 import DrawerNavigator from "./DrawerNavigator";
 import ForgotPassword2 from "../screens/auth/forgotPass/ForgotPassword2";
 import { ForgotPassword3 } from "../screens/auth/forgotPass/ForgotPassword3";
-import { Intro } from "../screens/auth/intoScreen/Intro";
 import { RegisterOk } from "../screens/auth/registerScreen/RegisterOk";
 import { ForgotPassword1 } from "../screens/auth/forgotPass/ForgotPassword1";
 import { FinishForgotPass } from "../screens/auth/forgotPass/FinishForgotPass";
+import { RouteInto } from "../screens/auth/intoScreen/RouteInto";
 
 const { createStackNavigator } = require("@react-navigation/stack");
 
 const Stack = createStackNavigator()
-axios.defaults.baseURL = 'http://192.168.1.5:4002'
+axios.defaults.baseURL = 'https://www.turismocuyen.com.ar'
 
 export default function AuthNavigator() {
 	return (
 		<Stack.Navigator
 		>
-			<Stack.Screen name="introScreen" component={Intro} options={{ headerShown: false }} />
+			<Stack.Screen name="introScreen" component={RouteInto} options={{ headerShown: false }} />
 			<Stack.Screen name="login" component={Login} options={{ headerShown: false }} />
 			<Stack.Screen name="register" component={Register} options={{ headerShown: false }} />
 			<Stack.Screen name="registerOk" component={RegisterOk} options={{ headerShown: false }} />

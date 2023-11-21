@@ -45,6 +45,7 @@ export default function Login({ navigation }) {
 				showProgress={true}
 				progressColor="black"
 				progressSize={50}
+				closeOnTouchOutside={false}
 			/>
 		)
 	}
@@ -63,7 +64,8 @@ export default function Login({ navigation }) {
 						email: response.payload.data.usuario.email,
 						usuario: response.payload.data.usuario.usuario,
 						telefono: response.payload.data.usuario.telefono,
-						contrato: response.payload.data.usuario.contrato
+						contrato: response.payload.data.usuario.contrato,
+						rol: response.payload.data.usuario.rol
 					})
 					setShowAlert2(false)
 					navigation.navigate("landing")

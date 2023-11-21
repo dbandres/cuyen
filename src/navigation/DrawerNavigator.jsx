@@ -1,6 +1,5 @@
-import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
+import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigation/drawer';
 import { StyleSheet, View, Text, Image } from "react-native"
-import { Landing } from '../screens/auth/landing/Landing';
 import { InfoDelViaje } from '../screens/tabScreens/InfoDelViaje';
 import { CargaPasajero } from '../screens/tabScreens/CargaPasajero';
 import { Ubicacion } from '../screens/tabScreens/Ubicacion';
@@ -10,13 +9,15 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { RouteMuro } from '../screens/tabScreens/muro/RouteMuro';
 import { UserContext } from '../context/UserContext';
 import { useContext} from "react";
+import { Folleto } from '../screens/auth/intoScreen/Folleto';
+import { RouteLanding } from '../screens/auth/landing/RouteLanding';
+import { RouteGestion } from '../screens/tabScreens/gestionViaje/RouteGestion';
 
 
 
 const CustomDrawerContent = ({ navigation }) => {
 
 	const { userdata } = useContext(UserContext)
-
 
 	return (
 		<DrawerContentScrollView style={{ backgroundColor: "#3462BF", flex: 1 }}>
@@ -67,12 +68,22 @@ const CustomDrawerContent = ({ navigation }) => {
 					</View>
 					{
 						data.map((d, index) => (
+							(userdata.rol == "Coordinador" && d.text === "Gestión del Viaje") ||
+							(userdata.rol == "Coordinador" && d.text === "Muro de publicaciones") ?
 							<MenuBottonItem
 								key={index}
 								text={d.text}
 								onPress={() => navigation.navigate(d.route)}
 								img={d.img}
-							/>
+							/>:
+							(userdata.rol !== "Coordinador" && d.text !== "Gestión del Viaje") ?
+							<MenuBottonItem
+								key={index}
+								text={d.text}
+								onPress={() => navigation.navigate(d.route)}
+								img={d.img}
+							/>:
+							null
 						))
 					}
 				</View>
@@ -109,13 +120,14 @@ function DrawerNavigator() {
 				drawerActiveBackgroundColor: "orange",
 			}}
 		>
-			<Drawer.Screen name="Inicio" component={Landing} options={{ headerShown: false }} />
+			<Drawer.Screen name="Inicio" component={RouteLanding} options={{ headerShown: false }} />
 			<Drawer.Screen name="info-viaje" component={InfoDelViaje} options={{ headerShown: false }} />
 			<Drawer.Screen name="carga-pasajero " component={CargaPasajero} options={{ headerShown: false }} />
 			<Drawer.Screen name="muro" component={RouteMuro} options={{ headerShown: false }} />
 			<Drawer.Screen name="ubiViaje" component={Ubicacion} options={{ headerShown: false }} />
-			{/* <Drawer.Screen name="Gestionar viaje" component={GestionViaje} options={{ headerShown: false }} />
-			<Drawer.Screen name="Gestionar muro" component={GestionMuro} options={{ headerShown: false }} />
+			<Drawer.Screen name="folleto-screen" component={Folleto} options={{ headerShown: false }}/>
+			<Drawer.Screen name="gesViaje" component={RouteGestion} options={{ headerShown: false }} />
+			{/*<Drawer.Screen name="Gestionar muro" component={GestionMuro} options={{ headerShown: false }} />
 			<Drawer.Screen name="Ajustes" component={Settings} options={{ headerShown: false }} /> */}
 		</Drawer.Navigator>
 	);

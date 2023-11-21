@@ -1,31 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect} from "react";
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllInicioOrder } from "../../../redux/actions";
 
-export function PromosVigentes() {
+export function PromosVigentes({navigation}) {
 
   const dispatch = useDispatch()
   const allInicioOrder = useSelector((state) => state.allInicioOrder)
-  const [uriImg, setUri] = useState([])
-  const [render, setRender] = useState(false)
-
-  const transformUriImag = (dataImage) => {
-    const cadenaModificada = dataImage.slice(2, dataImage.length - 2).toString();
-    const separarCadena = cadenaModificada.split(", ")
-    setUri((prevUri) => [...prevUri, ...separarCadena]);
-  }
 
   useEffect(() => {
-    dispatch(getAllInicioOrder())
-    if(allInicioOrder.length !==0){
-      allInicioOrder.forEach(element => {
-        transformUriImag(element.image)
-      });
-    }
+      dispatch(getAllInicioOrder())
   }, [])
-
-  console.log(uriImg)
 
   return (
     <>
@@ -35,17 +20,17 @@ export function PromosVigentes() {
             horizontal={true}
             style>
             {
-              allInicioOrder.map((promo) => (
-                <View key={promo.id} style={{ height: 350, width: 320, margin: 14, borderRadius: 10 }}>
+              allInicioOrder?.map((post, index) => (
+                <View key={index} style={{ height: 350, width: 320, margin: 14, borderRadius: 10 }}>
                   <View>
                     <Image
                       source={{
-                        uri: promo.image
+                        uri: post.image
                       }}
                       style={{ width: "100%", height: "100%", borderRadius: 10 }}
                     />
                   </View>
-                  <TouchableOpacity style={{ position: "absolute", left: "10%", bottom: "10%", backgroundColor: "#3462BF", width: "60%", height: "12%", alignItems: "center", justifyContent: "center", borderRadius: 20 }}>
+                  <TouchableOpacity onPress={()=>{navigation.navigate("folleto-screen", {post})}} style={{ position: "absolute", left: "10%", bottom: "10%", backgroundColor: "#3462BF", width: "60%", height: "12%", alignItems: "center", justifyContent: "center", borderRadius: 20 }}>
                     <Text style={{ color: "white", fontWeight: "600", fontSize: 20 }}>Ver más</Text>
                   </TouchableOpacity>
                 </View>
