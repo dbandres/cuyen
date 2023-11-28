@@ -36,7 +36,9 @@
 		</dict>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>Necesitamos acceder a tu ubicación para mostrarla en un mapa</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Necesitamos acceder a tu ubicación en segundo plano para mantenerte informado sobre tu Ubicacion.</string>
 
 	<key>NSCameraUsageDescription</key>
   <string>App wants to access camera</string>

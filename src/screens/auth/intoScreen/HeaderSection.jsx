@@ -6,7 +6,7 @@ const Height = Dimensions.get("window").height
 
 export function HeaderSection({scrollToContacto}) {
   return (
-    <>
+    <View>
       <View style={{ height: Height * 0.25 }}>
         <LinearGradient
           start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} colors={['#FF3D00', '#FFB800']}
@@ -39,7 +39,7 @@ export function HeaderSection({scrollToContacto}) {
           />
         </TouchableOpacity>
       </View>
-    </>
+    </View>
   )
 }
 

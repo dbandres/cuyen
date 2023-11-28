@@ -5,6 +5,7 @@ import { FormContact } from "../intoScreen/FormContact";
 import { Footer } from "../intoScreen/Footer";
 import { HeaderLanding } from "./HeaderLanding";
 import { PromosVigentes } from "../intoScreen/PromosVigentes";
+import { InfoImportante } from "../intoScreen/InfoImportante";
 
 const Width = Dimensions.get("screen").width
 const Height = Dimensions.get("window").height
@@ -35,7 +36,7 @@ export function Landing({navigation}) {
 
   return (
     <View style={styles.constainer}>
-      <ScrollView ref={scrollViewRef}>
+      <ScrollView ref={scrollViewRef} style={{width:"100%"}}>
         <HeaderLanding openDrawer={openDrawer} scrollToContacto={scrollToContacto}/>
         <View style={{ alignItems: "center", }}>
           <View style={{ width: "82%", justifyContent: "flex-start", display: "flex", flexDirection: "row" }}>
@@ -43,7 +44,7 @@ export function Landing({navigation}) {
             <Text style={{ fontSize: 14, color: "#564C71" }}>vigentes</Text>
           </View>
         </View>
-        <View style={{ height: Height * 0.52 }}>
+        <View style={{ height: Height * 0.52, justifyContent:"center", alignItems:"center"}}>
           <PromosVigentes navigation={navigation}/>
         </View>
         <View style={{ alignItems: "center", paddingTop: 10 }}>
@@ -52,31 +53,8 @@ export function Landing({navigation}) {
             <Text style={{ fontSize: 14, color: "#564C71" }}>importante</Text>
           </View>
         </View>
-        <View style={{ height: Height * 0.45 }}>
-          <ScrollView
-            horizontal={true}
-            style>
-            <View style={{ height: 286, width: 320, backgroundColor: "white", margin: 14, borderRadius: 10 }}>
-              <View style={{ height: "30%", justifyContent: "center", margin: "5%" }}>
-                <Text style={{ fontSize: 20, fontWeight: "400", lineHeight: 24, color:"#564C71" }}>Titulo de Informacion Importante</Text>
-              </View>
-              <View style={{ height: "45%", justifyContent: "center", borderTopColor: "#162962", borderTopWidth: 3 }}>
-                <View style={{ margin: "5%" }}>
-                  <Text style={{ fontSize: 15, fontWeight: "400", lineHeight: 24, color:"#564C71" }}>Monitoreando y controlando cada situación del viaje, cada traslado, cada comida, cada inquietud, cada movimiento, cada consulta, todo.</Text>
-                </View>
-              </View>
-            </View>
-            <View style={{ height: 286, width: 320, backgroundColor: "white", margin: 14, borderRadius: 10 }}>
-              <View style={{ height: "30%", justifyContent: "center", margin: "5%" }}>
-                <Text style={{ fontSize: 20, fontWeight: "400", lineHeight: 24, color:"#564C71" }}>Titulo de Informacion Importante</Text>
-              </View>
-              <View style={{ height: "45%", justifyContent: "center", borderTopColor: "#162962", borderTopWidth: 3 }}>
-                <View style={{ margin: "5%" }}>
-                  <Text style={{ fontSize: 15, fontWeight: "400", lineHeight: 24, color:"#564C71" }}>Monitoreando y controlando cada situación del viaje, cada traslado, cada comida, cada inquietud, cada movimiento, cada consulta, todo.</Text>
-                </View>
-              </View>
-            </View>
-          </ScrollView>
+        <View style={{ height: Height * 0.45, justifyContent:"center", alignItems:"center" }}>
+          <InfoImportante/>
         </View>
         <FormContact ref={contactoRef}/>
         <View style={{height:500}}>

@@ -1,4 +1,4 @@
-import { LOGIN_AUTH, SET_CURRENT_USER, GET_ALL_CONTRATO, GET_ALL_POST, GET_ALL_EMOJIS, GET_ALL_INICIO_ORDER } from "./actions";
+import { LOGIN_AUTH, SET_CURRENT_USER, GET_ALL_CONTRATO, GET_ALL_POST, GET_ALL_EMOJIS, GET_ALL_INICIO_ORDER, GET_ALL_TEXTO_ORDER, GET_ALL_COLEGIOS_X_VIAJE, GET_ALL_PASAJEROS_X_COLEGIO, GET_ALL_PASAJEROS_X_COLEGIO_FILTER } from "./actions";
 
 
 const initialState = {
@@ -7,7 +7,11 @@ const initialState = {
   allContratos: [],
   allPost: [],
   allEmojis: [],
-  allInicioOrder: []
+  allInicioOrder: [],
+  allTextoOrder: [],
+  colegiosPorViaje: [],
+  pasajerosPorColegio: [],
+  pasajeroPorColegioFilter: []
 }
 
 function rootReducer(state = initialState, action) {
@@ -42,6 +46,36 @@ function rootReducer(state = initialState, action) {
         ...state,
         allInicioOrder: action.payload
       }
+    case GET_ALL_TEXTO_ORDER:
+      return {
+        ...state,
+        allTextoOrder: action.payload
+      }
+    case GET_ALL_COLEGIOS_X_VIAJE:
+      return {
+        ...state,
+        colegiosPorViaje: action.payload
+      }
+    case GET_ALL_PASAJEROS_X_COLEGIO:
+      return {
+        ...state,
+        pasajerosPorColegio: action.payload
+      }
+    case GET_ALL_PASAJEROS_X_COLEGIO_FILTER:
+      // Combina el estado actual con la carga útil de la acción
+      const nuevoPasajeroPorColegioFilter = [...state.pasajeroPorColegioFilter, ...action.payload];
+
+      // Utilizar filter para eliminar duplicados por ID
+      const pasajeroSinDuplicados = nuevoPasajeroPorColegioFilter.filter(
+        (elemento, indice, array) =>
+          array.findIndex(e => e.id === elemento.id) === indice
+      );
+        console.log(JSON.stringify(pasajeroSinDuplicados, null, 3));
+      // Actualizar el estado con el array sin duplicados
+      return {
+        ...state,
+        pasajeroPorColegioFilter: pasajeroSinDuplicados,
+      };
     default:
       return state
   }

@@ -6,57 +6,92 @@ import { UserContext } from "../../../context/UserContext";
 import { useContext, useEffect } from "react";
 import axios from "axios";
 import { token } from "../../../api";
+import AwesomeAlert from "react-native-awesome-alerts";
 
 export function GestionViaje({ navigation }) {
 
-	const [selectedValue, setSelectedValue] = useState(null);
 	const { userdata } = useContext(UserContext)
 	const [open, setOpen] = useState(false);
 	const [value, setValue] = useState(null);
 	const [items, setItems] = useState([]);
+	const [showAlert2, setShowAlert2] = useState(false)
+
 
 	useEffect(() => {
-		axios.post("/coordinador",
-			{
-				"contratos": [userdata.contrato]
-			},
-			{
+		try {
+			axios.post("/coordinador", {
+				"contratos": userdata.contrato
+			}, {
 				headers: {
 					'x-access-token': `${token}`,
 					"Content-Type": "application/json",
 				}
 			}
-		).then((res) => {
-			if (res.status === 200) {
-				const newItems = res.data.map((data) => ({
-					label: data.escuelas,
-					value: data.travelId
-				}))
-				setItems(newItems)
-			}
-		})
+			).then((res) => {
+				if (res.status === 200) {
+					console.log(res.data)
+					setItems(prevItems => [
+						...prevItems,
+						...res.data.map((data, index) => ({
+							label: data.escuelas,
+							value: data.travelId,
+							key: index.toString(),
+						}))
+					]);
+				}
+			})
+		} catch (error) {
+			console.log(error)
+		}
 	}, [])
 
-	useEffect(()=>{
-		navigation.navigate("gestionDePasajerosTwo")
-	},[value !== null])
+
+	//cada vez que se seleccione un elemento, el picker se cerrará automáticamente.
+	const onSelectedItemsChange = (selectedItems) => {
+		setShowAlert2(true)
+		// Set Selected Items
+		setTimeout(() => {
+			setValue(selectedItems);
+			setShowAlert2(false)
+		}, 5000)
+	};
+
+	const getAlert = () => {
+		return (
+			<AwesomeAlert
+				show={showAlert2}
+				showProgress={true}
+				progressColor="black"
+				progressSize={50}
+				closeOnTouchOutside={false}
+			/>
+		)
+	}
+
+	useEffect(() => {
+		if (value !== null) {
+			setTimeout(() => {
+				navigation.navigate("gestionDePasajerosTwo", { data: value })
+			}, 500)
+		}
+	}, [value])
 
 	return (
 		<View style={styles.container}>
 			<Header children="Gestión de Pasajeros" navigation={navigation} />
 			<View style={{ width: "100%", justifyContent: "flex-start", alignItems: "center", display: "flex", height: "100%" }}>
-				<View style={{ width: "90%", height: 100, alignItems: "center", justifyContent: "center" }}>
+				<View style={{ width: "90%", height: 110, alignItems: "center", justifyContent: "center" }}>
 					<DropDownPicker
 						items={items}
 						value={value}
 						open={open}
 						setItems={setItems}
 						setOpen={setOpen}
-						setValue={setValue}
+						setValue={(val) => { onSelectedItemsChange(val) }}
 						placeholder="Identificador del viaje"
 						placeholderStyle={{ color: "#CDD1DF" }}
 						mode="BADGE"
-						multiple={true}
+						multiple={false}
 						dropDownContainerStyle={{
 							borderColor: "#D2DCEB",
 						}}
@@ -70,14 +105,17 @@ export function GestionViaje({ navigation }) {
 						searchPlaceholderTextColor="#D2DCEB"
 						itemSeparator={false}
 						searchable={true}
+						item
 						badgeColors={["#FF3D00"]}
 						badgeDotColors={["white"]}
 						badgeTextStyle={{ color: "white" }}
 						style={{ borderColor: "#CDD1DF" }}
 						labelStyle={{ color: "green" }}
+						textStyle={{fontSize:12}}
 					/>
 				</View>
 			</View>
+			{showAlert2 ? getAlert() : null}
 		</View>
 	)
 }
