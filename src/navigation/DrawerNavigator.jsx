@@ -12,6 +12,7 @@ import { useContext} from "react";
 import { Folleto } from '../screens/auth/intoScreen/Folleto';
 import { RouteLanding } from '../screens/auth/landing/RouteLanding';
 import { RouteGestion } from '../screens/tabScreens/gestionViaje/RouteGestion';
+import Auth from '../api/auth';
 
 
 
@@ -92,7 +93,7 @@ const CustomDrawerContent = ({ navigation }) => {
 				<View style={{ width: "80%" }}>
 					<View style={{ borderBottomWidth: 1, borderColor: "#8CCBF9" }}>
 					</View>
-					<View style={{ display: "flex", flexDirection: "row", height: 50, alignItems: "center" }}>
+					<TouchableOpacity onPress={()=>Auth.singOut()} style={{ display: "flex", flexDirection: "row", height: 50, alignItems: "center"}}>
 						<Image
 							source={require("../assets/salir.png")}
 							style={{ width: 24, height: 26 }}
@@ -100,7 +101,7 @@ const CustomDrawerContent = ({ navigation }) => {
 						<Text style={{ color: "#8CCBF9", marginLeft: "3%" }}>
 							Cerrar sesión
 						</Text>
-					</View>
+					</TouchableOpacity>
 				</View>
 			</View>
 			{/* <DrawerItemList {...props} /> */}

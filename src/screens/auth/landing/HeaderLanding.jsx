@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     width: "100%",
     height: Height * 0.07,
-    top: Height * 0.035,
+    top: Height * 0.045,
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "row",

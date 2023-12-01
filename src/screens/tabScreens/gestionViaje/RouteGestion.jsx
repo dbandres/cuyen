@@ -1,5 +1,6 @@
 import { GestionIniciarViaje } from "./GestionIniciarViaje";
 import { GestionViaje } from "./GestionViaje";
+import { GestionViajeOK } from "./GestionViajeOK";
 import { GestionViajeTwo } from "./GestionViajeTwo";
 
 
@@ -15,6 +16,7 @@ export const RouteGestion =()=>{
       <Stack.Screen name="gestion de pasajeros" component={GestionViaje} options={{ headerShown: false }} />
       <Stack.Screen name="gestionDePasajerosTwo" component={GestionViajeTwo} options={{ headerShown: false }}/>
       <Stack.Screen name="gestionIniciarViaje" component={GestionIniciarViaje} options={{ headerShown: false }}/>
+      <Stack.Screen name="gestionViajeOK" component={GestionViajeOK} options={{ headerShown: false }}/>
 		</Stack.Navigator>
   )
 }

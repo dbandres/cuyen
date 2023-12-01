@@ -11,9 +11,7 @@ import { Provider } from 'react-redux';
 import store from './src/redux/store';
 import { UserProvider } from './src/context/UserContext';
 
-
 export default function App() {
-
   return (
     <Provider store={store}>
       <UserProvider>

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "112291740921",
+    "project_id": "cuyenapp",
+    "storage_bucket": "cuyenapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:112291740921:android:54138ac260249d17197628",
+        "android_client_info": {
+          "package_name": "com.cuyenapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBAPg-baZd0yVLfGA8kBGHCPa6iyukZ2M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

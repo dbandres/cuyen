@@ -12,6 +12,7 @@ import { getAllContratos } from "../../../redux/actions";
 import DropDownPicker from "react-native-dropdown-picker";
 import LinearGradient from "react-native-linear-gradient";
 import { API_URL, token } from "../../../api";
+import Auth from "../../../api/auth";
 
 
 
@@ -84,7 +85,7 @@ export default function Register({ navigation }) {
 			setShowAlert2(true)
 		}
 		else if (selectedItems && toggleCheckBox) {
-			setShowAlert4(true)
+			// setShowAlert4(true)
 			try {
 				await axios.post(`${API_URL}/usuarios`,
 					{
@@ -94,7 +95,7 @@ export default function Register({ navigation }) {
 						email: data.useremail,
 						contrato: selectedItems,
 						password: data.userpass,
-						rol: "Coordinador",
+						rol: "Padre",
 						telefono: data.userphone,
 						estado: "true"
 					},
@@ -107,7 +108,7 @@ export default function Register({ navigation }) {
 				)
 					.then((res) => {
 						if (res.status === 200) {
-							console.log("ESto es la respuesta: ",JSON.stringify(res.config, null ,3))
+							console.log("ESto es la respuesta: ",JSON.stringify(res, null ,3))
 							setUserData({
 								jwt: res.data,
 								nombre: data.username,
@@ -116,8 +117,9 @@ export default function Register({ navigation }) {
 								usuario: data.userdni,
 								telefono: data.userphone,
 								contrato: selectedItems[0],
-								rol: "Coordinador"
+								rol: "Padre"
 							})
+							Auth.signUp(data.useremail, data.userpass)
 							navigation.navigate("registerOk")
 						}
 					})

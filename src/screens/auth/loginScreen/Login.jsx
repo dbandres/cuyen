@@ -9,6 +9,7 @@ import { InputLogin } from "./InputLogin";
 import LinearGradient from "react-native-linear-gradient";
 import { ContainerWithBackground } from "../../ContainerWithBackground";
 import AwesomeAlert from "react-native-awesome-alerts";
+import Auth from "../../../api/auth";
 
 const height = Dimensions.get("screen").height
 
@@ -51,12 +52,14 @@ export default function Login({ navigation }) {
 	}
 
 	function authentication(data) {
+		// Auth.signIn("balmaceda.d265@gmail.com", "12341234")
 		setShowAlert2(true)
 		dispatch(loginAuth(data.dniUser, data.passUser))
 			.then((response) => {
 				if (response.payload.status === 200) {
 					// accedo a la respuesta de la acción
 					console.log(JSON.stringify(response.payload.data, null, 3))
+					//Auth.signIn("balmaceda.d265@gmail.com", "12341234")
 					setUserData({
 						jwt: response.payload.data.token,
 						nombre: response.payload.data.usuario.nombre,
@@ -67,8 +70,9 @@ export default function Login({ navigation }) {
 						contrato: response.payload.data.usuario.contrato,
 						rol: response.payload.data.usuario.rol
 					})
+					Auth.signIn(response.payload.data.usuario.id,response.payload.data.usuario.email, response.payload.data.usuario.password)
 					setShowAlert2(false)
-					navigation.navigate("landing")
+					// navigation.navigate("landing")
 				}
 			})
 			.catch((error) => {

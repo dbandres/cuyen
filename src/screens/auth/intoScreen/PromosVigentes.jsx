@@ -30,7 +30,7 @@ export function PromosVigentes({navigation}) {
                       style={{ width: "100%", height: "100%", borderRadius: 10 }}
                     />
                   </View>
-                  <TouchableOpacity onPress={()=>{navigation.navigate("folleto-screen", {post})}} style={{ position: "absolute", left: "10%", bottom: "10%", backgroundColor: "#3462BF", width: "60%", height: "12%", alignItems: "center", justifyContent: "center", borderRadius: 20 }}>
+                  <TouchableOpacity onPress={()=>{navigation.navigate("folleto-screen", {post})}} style={{ position: "absolute", left: "20%",bottom: "10%", backgroundColor: "#3462BF", width: "60%", height: "12%", alignItems: "center", justifyContent: "center", borderRadius: 20 }}>
                     <Text style={{ color: "white", fontWeight: "600", fontSize: 20 }}>Ver más</Text>
                   </TouchableOpacity>
                 </View>

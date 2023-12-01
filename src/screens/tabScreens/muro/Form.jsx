@@ -14,6 +14,7 @@ import { useDispatch } from "react-redux";
 import { getAllPost } from "../../../redux/actions";
 import { Gesture, GestureDetector, GestureHandlerRootView } from "react-native-gesture-handler";
 import Animated, { useSharedValue, useAnimatedStyle } from "react-native-reanimated";
+import { MuroContext } from "./MuroContext";
 
 
 const Height = Dimensions.get("screen").height
@@ -33,6 +34,7 @@ export function Form({ navigation }) {
     comentario: '',
     img: [],
   });
+  const { actualizarDato } = useContext(MuroContext);
 
   // probamos la funcion de Pinch
   const escalaImg = useSharedValue(1)
@@ -112,6 +114,7 @@ export function Form({ navigation }) {
         onConfirmPressed={() => {
           setShowAlert(false)
           navigation.navigate("publicaciones")
+          actualizarDato()
           dispatch(getAllPost(userdata.contrato))
         }}
       />
@@ -258,7 +261,7 @@ export function Form({ navigation }) {
       });
       setTimeout(() => {
         console.log("esto es url spaces: ", responsesArray)
-        axios.post(`${API_URL}/muro/${userdata.contrato}`, {
+        axios.post(`${API_URL}/muro/${userdata.contrato[0]}`, {
           image: responsesArray,
           texto: texto
         },
@@ -280,8 +283,10 @@ export function Form({ navigation }) {
       }, 15000)
     }
     else {
-      axios.post(`${API_URL}/muro/${userdata.contrato}`, {
-        image: "",
+      console.log("solo texto");
+      console.log(texto);
+      axios.post(`${API_URL}/muro/${userdata.contrato[0]}`, {
+        image: [""],
         texto: texto
       },
         {

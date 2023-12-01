@@ -98,10 +98,12 @@ export function CardsMuro({ data, controlDispatch }) {
     }
   }
 
+  console.log(data.image.length);
+
   return (
     <>
       {
-        data.image.length !== 0 ?
+        data.image.length !== 1 ?
           <View style={styles.container}>
             <View style={styles.cardContainer}>
               <View style={styles.imageContainer}>

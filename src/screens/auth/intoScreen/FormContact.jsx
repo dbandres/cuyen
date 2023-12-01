@@ -62,6 +62,7 @@ export const FormContact = React.forwardRef((props, ref) => {
   }
 
   const handleSubmitFormulario=(data)=>{
+    console.log(data);
     if(data.mensaje && data.namecomplete && data.phone && data.useremail){
       setShowAlert2(true)
       try {

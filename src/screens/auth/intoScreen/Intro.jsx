@@ -1,5 +1,4 @@
 import { Text, View, StyleSheet, Dimensions, Image, ScrollView, TouchableOpacity, findNodeHandle } from "react-native";
-import {HeaderSection} from "./HeaderSection"
 import { FormContact } from "./FormContact";
 import { useRef } from "react";
 import { ButtomTabs } from "./ButtomTabs";
