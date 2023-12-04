@@ -8,17 +8,33 @@ import { data } from './dataDrawer';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { RouteMuro } from '../screens/tabScreens/muro/RouteMuro';
 import { UserContext } from '../context/UserContext';
-import { useContext} from "react";
+import { useContext } from "react";
 import { Folleto } from '../screens/auth/intoScreen/Folleto';
 import { RouteLanding } from '../screens/auth/landing/RouteLanding';
 import { RouteGestion } from '../screens/tabScreens/gestionViaje/RouteGestion';
 import Auth from '../api/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
 const CustomDrawerContent = ({ navigation }) => {
 
-	const { userdata } = useContext(UserContext)
+	const { userdata, setUserData } = useContext(UserContext)
+
+	const singOutSession = () => {
+		Auth.singOut()
+		AsyncStorage.removeItem("userStorage")
+		setUserData({
+			apellido: "",
+			contrato: "",
+			email: "",
+			jwt: "",
+			nombre: "",
+			rol: "",
+			telefono: "",
+			usuario: ""
+		})
+	}
 
 	return (
 		<DrawerContentScrollView style={{ backgroundColor: "#3462BF", flex: 1 }}>
@@ -53,10 +69,10 @@ const CustomDrawerContent = ({ navigation }) => {
 			</View>
 			<View style={{ alignItems: "center" }}>
 				<View style={{ height: 250, width: "80%", marginTop: "15%" }}>
-					<View style={{ height: "30%",  marginBottom:"10%"}}>
-						<View style={{  height: "70%", display: "flex", justifyContent: "space-between", flexDirection:"row" }}>
-							<View style={{width:"50%"}}>
-								<Text style={{fontWeight:"700", color:"white"}}>{userdata.apellido.toUpperCase()} {userdata.nombre}</Text>
+					<View style={{ height: "30%", marginBottom: "10%" }}>
+						<View style={{ height: "70%", display: "flex", justifyContent: "space-between", flexDirection: "row" }}>
+							<View style={{ width: "50%" }}>
+								<Text style={{ fontWeight: "700", color: "white" }}>{userdata.apellido.toUpperCase()} {userdata.nombre}</Text>
 							</View>
 							<TouchableOpacity>
 								<Image
@@ -70,21 +86,21 @@ const CustomDrawerContent = ({ navigation }) => {
 					{
 						data.map((d, index) => (
 							(userdata.rol == "Coordinador" && d.text === "Gestión del Viaje") ||
-							(userdata.rol == "Coordinador" && d.text === "Muro de publicaciones") ?
-							<MenuBottonItem
-								key={index}
-								text={d.text}
-								onPress={() => navigation.navigate(d.route)}
-								img={d.img}
-							/>:
-							(userdata.rol !== "Coordinador" && d.text !== "Gestión del Viaje") ?
-							<MenuBottonItem
-								key={index}
-								text={d.text}
-								onPress={() => navigation.navigate(d.route)}
-								img={d.img}
-							/>:
-							null
+								(userdata.rol == "Coordinador" && d.text === "Muro de publicaciones") ?
+								<MenuBottonItem
+									key={index}
+									text={d.text}
+									onPress={() => navigation.navigate(d.route)}
+									img={d.img}
+								/> :
+								(userdata.rol !== "Coordinador" && d.text !== "Gestión del Viaje") ?
+									<MenuBottonItem
+										key={index}
+										text={d.text}
+										onPress={() => navigation.navigate(d.route)}
+										img={d.img}
+									/> :
+									null
 						))
 					}
 				</View>
@@ -93,7 +109,7 @@ const CustomDrawerContent = ({ navigation }) => {
 				<View style={{ width: "80%" }}>
 					<View style={{ borderBottomWidth: 1, borderColor: "#8CCBF9" }}>
 					</View>
-					<TouchableOpacity onPress={()=>Auth.singOut()} style={{ display: "flex", flexDirection: "row", height: 50, alignItems: "center"}}>
+					<TouchableOpacity onPress={singOutSession} style={{ display: "flex", flexDirection: "row", height: 50, alignItems: "center" }}>
 						<Image
 							source={require("../assets/salir.png")}
 							style={{ width: 24, height: 26 }}
@@ -126,7 +142,7 @@ function DrawerNavigator() {
 			<Drawer.Screen name="carga-pasajero " component={CargaPasajero} options={{ headerShown: false }} />
 			<Drawer.Screen name="muro" component={RouteMuro} options={{ headerShown: false }} />
 			<Drawer.Screen name="ubiViaje" component={Ubicacion} options={{ headerShown: false }} />
-			<Drawer.Screen name="folleto-screen" component={Folleto} options={{ headerShown: false }}/>
+			<Drawer.Screen name="folleto-screen" component={Folleto} options={{ headerShown: false }} />
 			<Drawer.Screen name="gesViaje" component={RouteGestion} options={{ headerShown: false }} />
 			{/*<Drawer.Screen name="Gestionar muro" component={GestionMuro} options={{ headerShown: false }} />
 			<Drawer.Screen name="Ajustes" component={Settings} options={{ headerShown: false }} /> */}

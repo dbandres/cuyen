@@ -6,10 +6,10 @@ import { ButtonCustom } from "../../../components/ButtomCustom";
 import { UserContext } from "../../../context/UserContext";
 import { loginAuth } from "../../../redux/actions";
 import { InputLogin } from "./InputLogin";
-import LinearGradient from "react-native-linear-gradient";
 import { ContainerWithBackground } from "../../ContainerWithBackground";
 import AwesomeAlert from "react-native-awesome-alerts";
 import Auth from "../../../api/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const height = Dimensions.get("screen").height
 
@@ -70,7 +70,8 @@ export default function Login({ navigation }) {
 						contrato: response.payload.data.usuario.contrato,
 						rol: response.payload.data.usuario.rol
 					})
-					Auth.signIn(response.payload.data.usuario.id,response.payload.data.usuario.email, response.payload.data.usuario.password)
+					AsyncStorage.setItem("userStorage", JSON.stringify(response.payload.data))
+					Auth.signIn(response.payload.data.usuario.email, response.payload.data.usuario.password)
 					setShowAlert2(false)
 					// navigation.navigate("landing")
 				}

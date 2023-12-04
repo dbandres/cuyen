@@ -6,6 +6,7 @@ import { Footer } from "../intoScreen/Footer";
 import { HeaderLanding } from "./HeaderLanding";
 import { PromosVigentes } from "../intoScreen/PromosVigentes";
 import { InfoImportante } from "../intoScreen/InfoImportante";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Width = Dimensions.get("screen").width
 const Height = Dimensions.get("window").height
