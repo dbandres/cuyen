@@ -19,7 +19,7 @@ import { MuroContext } from "./MuroContext";
 
 const Height = Dimensions.get("screen").height
 
-export function Form({ navigation }) {
+export function Form({ navigation, route}) {
 
   const [texto, setTexto] = useState('');
   const [imageRender, setImageRender] = useState([]);
@@ -35,6 +35,7 @@ export function Form({ navigation }) {
     img: [],
   });
   const { actualizarDato } = useContext(MuroContext);
+  const id = route.params?.travelId 
 
   // probamos la funcion de Pinch
   const escalaImg = useSharedValue(1)
@@ -45,6 +46,8 @@ export function Form({ navigation }) {
     x: 200 / 2,
     y: 300 / 2
   }
+
+  console.log("id: ",id);
 
   const onPinchEvent = Gesture.Pinch()
     .onStart((e) => {
@@ -115,7 +118,7 @@ export function Form({ navigation }) {
           setShowAlert(false)
           navigation.navigate("publicaciones")
           actualizarDato()
-          dispatch(getAllPost(userdata.contrato))
+          dispatch(getAllPost(id))
         }}
       />
     )
@@ -261,7 +264,7 @@ export function Form({ navigation }) {
       });
       setTimeout(() => {
         console.log("esto es url spaces: ", responsesArray)
-        axios.post(`${API_URL}/muro/${userdata.contrato[0]}`, {
+        axios.post(`${API_URL}/muro/post/${id}`, {
           image: responsesArray,
           texto: texto
         },
@@ -285,8 +288,7 @@ export function Form({ navigation }) {
     else {
       console.log("solo texto");
       console.log(texto);
-      axios.post(`${API_URL}/muro/${userdata.contrato[0]}`, {
-        image: [""],
+      axios.post(`${API_URL}/muro/post/${id}`, {
         texto: texto
       },
         {

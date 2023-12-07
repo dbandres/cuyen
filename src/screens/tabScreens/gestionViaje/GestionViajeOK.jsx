@@ -1,12 +1,13 @@
 import { Image, StyleSheet, View } from "react-native";
 import { useEffect } from "react";
 
-export function GestionViajeOK({navigation}) {
+export function GestionViajeOK({navigation, route}) {
+
+  const { totalSwitchesEnabled } = route.params
 
   useEffect(()=>{
-    console.log("hola");
     setTimeout(()=>{
-      navigation.navigate("gestion de pasajeros")
+      navigation.navigate("gestionViajeFinalizar", { totalSwitchesEnabled })
     },2000)
   },[])
 

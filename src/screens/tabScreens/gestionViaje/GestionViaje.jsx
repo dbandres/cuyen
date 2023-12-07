@@ -5,12 +5,14 @@ import { useState } from "react";
 import { UserContext } from "../../../context/UserContext";
 import { useContext, useEffect } from "react";
 import axios from "axios";
-import { token } from "../../../api";
+import { API_URL, token } from "../../../api";
 import AwesomeAlert from "react-native-awesome-alerts";
+import { GestioViajeContext } from "./GestionViajeContext";
 
 export function GestionViaje({ navigation }) {
 
 	const { userdata } = useContext(UserContext)
+	const { actualizarDato } = useContext(GestioViajeContext)
 	const [open, setOpen] = useState(false);
 	const [value, setValue] = useState(null);
 	const [items, setItems] = useState([]);
@@ -70,8 +72,10 @@ export function GestionViaje({ navigation }) {
 
 	useEffect(() => {
 		if (value !== null) {
+			actualizarDato(value)
 			setTimeout(() => {
 				navigation.navigate("gestionDePasajerosTwo", { data: value })
+				setValue(null)
 			}, 500)
 		}
 	}, [value])
@@ -111,7 +115,7 @@ export function GestionViaje({ navigation }) {
 						badgeTextStyle={{ color: "white" }}
 						style={{ borderColor: "#CDD1DF" }}
 						labelStyle={{ color: "green" }}
-						textStyle={{fontSize:12}}
+						textStyle={{ fontSize: 12 }}
 					/>
 				</View>
 			</View>

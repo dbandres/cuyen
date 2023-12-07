@@ -40,16 +40,16 @@ export function CurrentUser(user) {
 	};
 }
 
-export function getAllContratos(){
+export function getAllContratos() {
 	try {
-		return async function(dispatch){
+		return async function (dispatch) {
 			let response = await axios.get(`${API_URL}/contrato`,
-			{
-				headers:{
-					'x-access-token': `${token}`,
-					"Content-Type": "application/json",
-				}
-			})
+				{
+					headers: {
+						'x-access-token': `${token}`,
+						"Content-Type": "application/json",
+					}
+				})
 			return dispatch({
 				type: GET_ALL_CONTRATO,
 				payload: response.data
@@ -60,36 +60,43 @@ export function getAllContratos(){
 	}
 }
 
-export function getAllPost(contrato){
+export function getAllPost(travelId) {
+	console.log("actions: ", travelId);
 	try {
-		return async function(dispatch){
-			let response = await axios.get(`${API_URL}/muro/${contrato}`,
-			{
-				headers:{
-					'x-access-token': `${token}`,
-					"Content-Type": "application/json",
-				}
-			})
-			return dispatch({
-				type: GET_ALL_POST,
-				payload: response.data
-			})
-		}
+		return async function (dispatch) {
+			try {
+				let response = await axios.get(`${API_URL}/muro/get/${travelId}`, {
+					headers: {
+						'x-access-token': `${token}`,
+						'Content-Type': 'application/json',
+					},
+				});
+				console.log(response.data);
+				return dispatch({
+					type: GET_ALL_POST,
+					payload: response.data,
+				});
+			} catch (error) {
+				// Manejar errores aquí si es necesario
+				console.error(`Error para travelId ${travelId}:`, error);
+				throw error;
+			}
+		};
 	} catch (error) {
 		console.log('Error de Axios:', error);
 	}
 }
 
-export function getAllEmojis(){
+export function getAllEmojis() {
 	try {
-		return async function(dispatch){
+		return async function (dispatch) {
 			let response = await axios.get(`${API_URL}/emoji`,
-			{
-				headers:{
-					'x-access-token': `${token}`,
-					"Content-Type": "application/json",
-				}
-			})
+				{
+					headers: {
+						'x-access-token': `${token}`,
+						"Content-Type": "application/json",
+					}
+				})
 			return dispatch({
 				type: GET_ALL_EMOJIS,
 				payload: response.data
@@ -100,16 +107,16 @@ export function getAllEmojis(){
 	}
 }
 
-export function getAllInicioOrder(){
+export function getAllInicioOrder() {
 	try {
-		return async function(dispatch){
+		return async function (dispatch) {
 			let response = await axios.get(`${API_URL}/inicio/order`,
-			{
-				headers:{
-					'x-access-token': `${token}`,
-					"Content-Type": "application/json",
-				}
-			})
+				{
+					headers: {
+						'x-access-token': `${token}`,
+						"Content-Type": "application/json",
+					}
+				})
 			return dispatch({
 				type: GET_ALL_INICIO_ORDER,
 				payload: response.data
@@ -120,16 +127,16 @@ export function getAllInicioOrder(){
 	}
 }
 
-export function getAllTextoOrder(){
+export function getAllTextoOrder() {
 	try {
-		return async function(dispatch){
+		return async function (dispatch) {
 			let response = await axios.get(`${API_URL}/texto/order`,
-			{
-				headers:{
-					'x-access-token': `${token}`,
-					"Content-Type": "application/json",
-				}
-			})
+				{
+					headers: {
+						'x-access-token': `${token}`,
+						"Content-Type": "application/json",
+					}
+				})
 			return dispatch({
 				type: GET_ALL_TEXTO_ORDER,
 				payload: response.data
@@ -140,74 +147,74 @@ export function getAllTextoOrder(){
 	}
 }
 
-export function getAllColegiosXViaje(num){
+export function getAllColegiosXViaje(num) {
 	try {
-		return async function(dispatch){
+		return async function (dispatch) {
 			let response = await axios.get(`${API_URL}/coordinador/${num}`,
-			{
-				headers:{
-					'x-access-token': `${token}`,
-					"Content-Type": "application/json",
-				}
-			})
+				{
+					headers: {
+						'x-access-token': `${token}`,
+						"Content-Type": "application/json",
+					}
+				})
 			return dispatch({
 				type: GET_ALL_COLEGIOS_X_VIAJE,
 				payload: response.data
 			})
 		}
 	} catch (error) {
-		console.log('Error de Axios:', error);
+		console.log('Error de Axios getAllColegiosXViaje:', error);
 	}
 }
 
 export function getAllPasajerosXColegio(nums) {
-  return async function(dispatch) {
-    try {
-      // Crear un array de promesas para cada solicitud individual
-      const promesas = nums.map(async (num) => {
-        return axios.get(`${API_URL}/pasajero/${num}`, {
-          headers: {
-            'x-access-token': `${token}`,
-            'Content-Type': 'application/json',
-          },
-        });
-      });
+	return async function (dispatch) {
+		try {
+			// Crear un array de promesas para cada solicitud individual
+			const promesas = nums.map(async (num) => {
+				return axios.get(`${API_URL}/pasajero/${num}`, {
+					headers: {
+						'x-access-token': `${token}`,
+						'Content-Type': 'application/json',
+					},
+				});
+			});
 
-      // Esperar a que todas las promesas se completen
-      const respuestas = await Promise.all(promesas);
-      // Extraer la data de cada respuesta
-      const dataCombinada = respuestas.map((respuesta) => respuesta.data);
+			// Esperar a que todas las promesas se completen
+			const respuestas = await Promise.all(promesas);
+			// Extraer la data de cada respuesta
+			const dataCombinada = respuestas.map((respuesta) => respuesta.data);
 
-      // Actualizar el estado de Redux con la data combinada
-      dispatch({
-        type: GET_ALL_PASAJEROS_X_COLEGIO,
-        payload: dataCombinada.flat(),
-      });
-    } catch (error) {
-      console.log('Error de Axios:', error);
-    }
-  };
+			// Actualizar el estado de Redux con la data combinada
+			dispatch({
+				type: GET_ALL_PASAJEROS_X_COLEGIO,
+				payload: dataCombinada.flat(),
+			});
+		} catch (error) {
+			console.log('Error de Axios getAllPasajerosXColegio:', error);
+		}
+	};
 }
 
 export function getAllPasajerosXColegioFilter(num) {
-  return async function(dispatch) {
-    try {
-      const response = await axios.get(`${API_URL}/pasajero/${num}`, {
-        headers: {
-          'x-access-token': `${token}`,
-          'Content-Type': 'application/json',
-        },
-      });
+	return async function (dispatch) {
+		try {
+			const response = await axios.get(`${API_URL}/pasajero/${num}`, {
+				headers: {
+					'x-access-token': `${token}`,
+					'Content-Type': 'application/json',
+				},
+			});
 
-      // Filtrar la data por 'presente'
-      const pasajerosFiltrados = response.data.filter((pasajero) => pasajero.presente === "true");
+			// Filtrar la data por 'presente'
+			const pasajerosFiltrados = response.data.filter((pasajero) => pasajero.presente === "true");
 
-      return dispatch({
-        type: GET_ALL_PASAJEROS_X_COLEGIO_FILTER,
-        payload: pasajerosFiltrados,
-      });
-    } catch (error) {
-      console.log('Error de Axios:', error)
-    }
-  };
+			return dispatch({
+				type: GET_ALL_PASAJEROS_X_COLEGIO_FILTER,
+				payload: pasajerosFiltrados,
+			});
+		} catch (error) {
+			console.log('Error de Axios getAllPasajerosXColegioFilter:', error)
+		}
+	};
 }

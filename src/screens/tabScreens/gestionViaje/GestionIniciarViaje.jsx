@@ -2,14 +2,18 @@ import { View, Text, StyleSheet, TouchableOpacity, Image, Platform } from "react
 import { Header } from "../muro/Header"
 import { PERMISSIONS, check, request } from "react-native-permissions";
 import Geolocation from "react-native-geolocation-service"
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import AwesomeAlert from "react-native-awesome-alerts";
+import { GestioViajeContext } from "./GestionViajeContext";
+import axios from "axios";
+import { API_URL, token } from "../../../api";
 
 export function GestionIniciarViaje({ navigation, route }) {
 
   const { totalSwitchesEnabled } = route.params
   const [initialPosition, setInitialPosition] = useState("")
   const [showAlert2, setShowAlert2] = useState(false)
+  const { miDato } = useContext(GestioViajeContext)
 
   const returnView = () => {
     navigation.goBack();
@@ -25,6 +29,28 @@ export function GestionIniciarViaje({ navigation, route }) {
         closeOnTouchOutside={false}
       />
     )
+  }
+
+  const changeStatusViaje = () => {
+    console.log("Comenzó el viaje");
+    const locationString = JSON.stringify(initialPosition)
+    try {
+      axios.put(`${API_URL}/viaje/${miDato}`,
+        {
+          "inicioViaje": true,
+          "ultimaUbic": locationString
+        },
+        {
+          headers: {
+            'x-access-token': `${token}`,
+            "Content-Type": "application/json",
+          }
+        }
+      )
+        .then((res) => console.log(res.data))
+    } catch (error) {
+      console.log("error en change status viaje: ", error);
+    }
   }
 
   const checkLocationPermissions = async () => {
@@ -58,7 +84,6 @@ export function GestionIniciarViaje({ navigation, route }) {
         console.log("No sse otorgaron los permisos");
       }
     }
-    console.log(permissionsStatus);
   }
 
   const getLocation = () => {
@@ -83,9 +108,10 @@ export function GestionIniciarViaje({ navigation, route }) {
 
   useEffect(() => {
     if (initialPosition !== "") {
+      changeStatusViaje()
       setTimeout(() => {
         setShowAlert2(false)
-        navigation.navigate("gestionViajeOK")
+        navigation.navigate("gestionViajeOK", { totalSwitchesEnabled })
       }, 2000)
     }
   }, [initialPosition])

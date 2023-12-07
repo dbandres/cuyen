@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Animated, Image, Switch, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, Animated, Image, Switch, ActivityIndicator, FlatList } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllPasajerosXColegio } from '../../../redux/actions';
 import { ButtonCustom } from '../../../components/ButtomCustom';
@@ -11,7 +11,7 @@ export function ComponenteExpandible({ index, data, seteo, setModificandoTotal, 
   const [isExpanded, setIsExpanded] = useState(false);
   const dispatch = useDispatch()
   const [contentHeight, setContentHeight] = useState(0);
-  const [heightAnim] = useState(new Animated.Value(70)); // Inicia con la altura mínima
+  const [heightAnim] = useState(new Animated.Value(80)); // Inicia con la altura mínima
   const contentRef = useRef(null);
   const [isEnabledGlobal, setIsEnabledGlobal] = useState(false);
   const [color, setColor] = useState(false)
@@ -70,9 +70,11 @@ export function ComponenteExpandible({ index, data, seteo, setModificandoTotal, 
       // Mide la altura del contenido cuando se expande
       contentRef.current.measure((x, y, width, height) => {
         setContentHeight(height);
+        console.log(pasajerosFilter.length);
         console.log("he: ", height);
+        const value = pasajerosFilter.length * 10
         Animated.timing(heightAnim, {
-          toValue: pasajerosPorColegio ? height + (pasajerosFilter.length * 90) : height + 330, // Ajusta según tus necesidades
+          toValue: 380, // Ajusta según tus necesidades
           //toValue: height + 480,
           duration: 100,
           useNativeDriver: false,
@@ -96,16 +98,15 @@ export function ComponenteExpandible({ index, data, seteo, setModificandoTotal, 
 
   useEffect(() => {
     // if (pasajerosFilter.length === 0) {
-      obtenerPasajerosActivosIniciales()
-      const pasajerosFiltrados = pasajerosPorColegio.filter((pasajero) => pasajero.contratos === data.num)
-        .map((pasajero) => ({
-          ...pasajero,
-          isEnabled: pasajero.presente === "true" ? true : false,
-        }));
-      setPasajerosFilter(pasajerosFiltrados)
+    obtenerPasajerosActivosIniciales()
+    const pasajerosFiltrados = pasajerosPorColegio.filter((pasajero) => pasajero.contratos === data.num)
+      .map((pasajero) => ({
+        ...pasajero,
+        isEnabled: pasajero.presente === "true" ? true : false,
+      }));
+    setPasajerosFilter(pasajerosFiltrados)
     // }
   }, [pasajerosPorColegio])
-
 
   const toggleExpand = () => {
     // Envía el índice del componente al padre para gestionar la expansión individual
@@ -143,8 +144,6 @@ export function ComponenteExpandible({ index, data, seteo, setModificandoTotal, 
         }
       }
     });
-
-    console.log(arrayResult);
 
     // Método reduce para sumar los valores
     const suma = arrayResult.reduce((acumulador, valorActual) => acumulador + valorActual, 0);
@@ -216,7 +215,7 @@ export function ComponenteExpandible({ index, data, seteo, setModificandoTotal, 
         </View>
         <View style={{ alignItems: "center", justifyContent: "center", width: "100%" }}>
           {
-            isExpanded ?
+            isExpanded?
               <View style={{ alignItems: "center", justifyContent: "center", width: "100%" }}>
                 <View style={{ width: "95%", height: 80, borderBottomWidth: 1, borderColor: "#CDD1DF" }}>
                   <View style={{ width: "100%", height: "50%", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
@@ -240,18 +239,24 @@ export function ComponenteExpandible({ index, data, seteo, setModificandoTotal, 
                 </View>
                 {
                   pasajerosFilter ?
-                    pasajerosFilter.map((pasajero, index) => (
-                      <View key={index} style={{ height: 40, width: "100%", justifyContent: "center", alignItems: "center" }}>
-                        <View style={{ width: "95%", height: "95%", alignItems: "center", justifyContent: "space-between", display: "flex", flexDirection: "row" }}>
-                          <Text style={{ fontWeight: "400", fontSize: 12, lineHeight: 14, color: "#564C71" }}>{pasajero.nombre}, {pasajero.apellido}</Text>
-                          <Switch
-                            onValueChange={() => toggleSwitch(index)}
-                            value={pasajerosFilter[index]?.isEnabled || false}
-                            trackColor={{ false: '#D9D9D9', true: '#93E396' }}
-                          />
+                    <FlatList
+                      style={{ maxHeight: 160, maxWidth:"100%"}}
+                      data={pasajerosFilter}
+                      keyExtractor={(item, index) => index.toString()}
+                      renderItem={({ item, index }) => (
+                        <View style={{ height: 40, width: "100%", justifyContent: "center", alignItems: "center" }}>
+                          <View style={{ width: "95%", height: "95%", alignItems: "center", justifyContent: "space-between", display: "flex", flexDirection: "row" }}>
+                            <Text style={{ fontWeight: "400", fontSize: 12, lineHeight: 14, color: "#564C71" }}>{item.nombre}, {item.apellido}</Text>
+                            <Switch
+                              onValueChange={() => toggleSwitch(index)}
+                              value={item.isEnabled || false}
+                              trackColor={{ false: '#D9D9D9', true: '#93E396' }}
+                              style={{alignSelf:"flex-end"}}
+                            />
+                          </View>
                         </View>
-                      </View>
-                    ))
+                      )}
+                    />
                     :
                     <View style={{ justifyContent: "center", alignItems: "center", width: "100%" }}>
                       <ActivityIndicator size="small" color="#0000ff" />

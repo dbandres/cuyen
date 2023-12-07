@@ -2,11 +2,12 @@ import { StyleSheet, Text, View, Animated, TouchableOpacity, Alert } from "react
 import { Header } from "../muro/Header";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
-import { getAllColegiosXViaje, getAllPasajerosXColegio, getAllPasajerosXColegioFilter } from "../../../redux/actions";
-import { ScrollView } from "react-native-gesture-handler";
+import { getAllColegiosXViaje, getAllPasajerosXColegio } from "../../../redux/actions";
 import { ComponenteExpandible } from "./ComponenteExpandible";
 import { ButtonCustom } from "../../../components/ButtomCustom";
 import AwesomeAlert from "react-native-awesome-alerts";
+import axios from "axios";
+import { token } from "../../../api";
 
 
 
@@ -19,6 +20,8 @@ export function GestionViajeTwo({ navigation, route }) {
   const [totalSwitchesEnabled, setTotalSwitchesEnabled] = useState(0);
   const [modificTotal, setModificTotal] = useState(0)
   const [showAlert, setShowAlert] = useState(false)
+  const [showAlert2, setShowAlert2] = useState(false)
+  const [showAlert3, setShowAlert3] = useState(false)
 
   const arrayDeNumeros = colegiosPorViaje.map(colegio => colegio.num);
 
@@ -32,7 +35,19 @@ export function GestionViajeTwo({ navigation, route }) {
     setShowAlert(false);
   };
 
-  const seteo = (value) =>{
+  const getAlert = () => {
+    return (
+      <AwesomeAlert
+        show={showAlert2}
+        showProgress={true}
+        progressColor="black"
+        progressSize={50}
+        closeOnTouchOutside={false}
+      />
+    )
+  }
+
+  const seteo = (value) => {
     setTotalSwitchesEnabled(value)
   }
 
@@ -40,7 +55,66 @@ export function GestionViajeTwo({ navigation, route }) {
     setModificTotal(value)
   }
 
+  const show = () =>{
+    setShowAlert3(true)
+  }
+  const hideAlert3 = () => {
+    setShowAlert3(false);
+  };
+
+  const getAlert2 = () => {
+    return (
+      <AwesomeAlert
+        show={showAlert3}
+        showProgress={false}
+        title="El viaje ya está iniciado"
+        message={`Pasajeros confirmados : ${totalSwitchesEnabled}`}
+        closeOnTouchOutside={false}
+        closeOnHardwareBackPress={false}
+        showConfirmButton={true}
+        confirmText="Aceptar"
+        confirmButtonColor="#DD6B55"
+        onConfirmPressed={() => {
+          hideAlert3();
+          navigation.navigate("gestionViajeFinalizar", { totalSwitchesEnabled })
+        }}
+      />
+    )
+  }
+
   useEffect(() => {
+    console.log("tengo data");
+    setShowAlert2(true)
+    try {
+      axios.get(`/viaje/${data[0]}`,
+        {
+          headers: {
+            'x-access-token': `${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      ).then((res) => {
+        if (res.status === 200) {
+          if (res.data.inicioViaje === true && res.data.finViaje === false) {
+            setShowAlert2(false)
+            show()
+          } else if (res.data.inicioViaje === true && res.data.finViaje === true) {
+            setShowAlert2(false)
+            console.error("El viaje ya finalizo! ")
+            navigation.navigate("gestion de pasajeros")
+          } else {
+            setShowAlert2(false)
+            console.log("Controlar Alumnos Presentes!");
+          }
+        }
+      })
+    } catch (error) {
+      console.log("error en el use Effect: ", error);
+    }
+  }, [data])
+
+  useEffect(() => {
+    console.log("data: ", data);
     dispatch(getAllColegiosXViaje(data[0]))
     dispatch(getAllPasajerosXColegio(arrayDeNumeros))
   }, [])
@@ -50,10 +124,7 @@ export function GestionViajeTwo({ navigation, route }) {
     dispatch(getAllPasajerosXColegio(arrayDeNumeros))
   }, [showAlert])
 
-  console.log("enabled ", totalSwitchesEnabled);
-  console.log("modi: ", modificTotal);
-
-  const calculoTotal = (valor1, valor2) =>{
+  const calculoTotal = (valor1, valor2) => {
     return valor1 + valor2
   }
   function handleConfirmar() {
@@ -68,28 +139,28 @@ export function GestionViajeTwo({ navigation, route }) {
   return (
     <View style={styles.container}>
       <Header children="Gestión de Pasajeros" navigation={navigation} />
-      <ScrollView>
-        <View style={{ width: "100%", justifyContent: "flex-start", alignItems: "center", display: "flex", height: "100%" }}>
-          <View style={{ height: 70, width: 331, backgroundColor: "white", marginTop: "10%", borderRadius: 10, justifyContent: "center", padding: "5%" }}>
-            <Text style={{ fontWeight: "800", fontSize: 12, lineHeight: 14, color: "#564C71" }}>Pasajeros del viaje</Text>
-          </View>
-          <View>
-            {
-              colegiosPorViaje?.map((col, index) => (
-                <ComponenteExpandible key={index} index={index} data={col} seteo={seteo} setModificandoTotal={setModificandoTotal} arrayDeNumeros={arrayDeNumeros} pasajerosPorColegio={pasajerosPorColegio}/>
-              ))
-            }
-          </View>
-          <View style={{ width: 331, height: 40, marginTop: "5%", marginBottom: 10 }}>
-            <ButtonCustom
-              text="Confirmar pasajeros"
-              color={totalSwitchesEnabled === 0 ? "#CDD1DF" : "#FF3D00"}
-              disabled={totalSwitchesEnabled === 0 ? true : false}
-              onPress={handleConfirmar}
-            />
-          </View>
+      <View style={{ width: "100%", justifyContent: "flex-start", alignItems: "center", display: "flex", height: "100%" }}>
+        <View style={{ height: 70, width: 331, backgroundColor: "white", marginTop: "10%", borderRadius: 10, justifyContent: "center", padding: "5%" }}>
+          <Text style={{ fontWeight: "800", fontSize: 12, lineHeight: 14, color: "#564C71" }}>Pasajeros del viaje</Text>
         </View>
-      </ScrollView>
+        <View>
+          {
+            colegiosPorViaje?.map((col, index) => (
+              <ComponenteExpandible key={index} index={index} data={col} seteo={seteo} setModificandoTotal={setModificandoTotal} arrayDeNumeros={arrayDeNumeros} pasajerosPorColegio={pasajerosPorColegio} />
+            ))
+          }
+        </View>
+        <View style={{ width: 331, height: 40, marginTop: "5%", marginBottom: 10 }}>
+          <ButtonCustom
+            text="Confirmar pasajeros"
+            color={totalSwitchesEnabled === 0 ? "#CDD1DF" : "#FF3D00"}
+            disabled={totalSwitchesEnabled === 0 ? true : false}
+            onPress={handleConfirmar}
+          />
+        </View>
+      </View>
+      {showAlert2 ? getAlert() : null}
+      {showAlert3 ? getAlert2() : null}
       <AwesomeAlert
         show={showAlert}
         showProgress={false}

@@ -98,12 +98,12 @@ export function CardsMuro({ data, controlDispatch }) {
     }
   }
 
-  console.log(data.image.length);
+  console.log(data.image);
 
   return (
     <>
       {
-        data.image.length !== 1 ?
+        data.image !== null ?
           <View style={styles.container}>
             <View style={styles.cardContainer}>
               <View style={styles.imageContainer}>
@@ -202,7 +202,7 @@ export function CardsMuro({ data, controlDispatch }) {
 const styles = StyleSheet.create({
   container: {
     height: Height * 69 / 100,
-    width: "100%",
+    width: 380,
   },
   cardContainer: {
     height: Height * 66 / 100,
@@ -212,14 +212,14 @@ const styles = StyleSheet.create({
   },
   cardContainerSinImg: {
     height: Height * 20 / 100,
-    width: "100%",
+    width: 370,
     backgroundColor: "white",
     borderRadius: 20,
     alignItems: "center",
     justifyContent: "center",
   },
   containerSupre: {
-    width: "100%",
+    width: 380,
     height: Height * 22 / 100,
     alignItems: "center",
     justifyContent: "flex-start",
