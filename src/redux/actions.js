@@ -71,7 +71,7 @@ export function getAllPost(travelId) {
 						'Content-Type': 'application/json',
 					},
 				});
-				console.log(response.data);
+				console.log("aca? ",response.data);
 				return dispatch({
 					type: GET_ALL_POST,
 					payload: response.data,

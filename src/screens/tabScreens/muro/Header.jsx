@@ -13,8 +13,6 @@ export const Header = ({ children, navigation, noGoBack }) => {
     navigation.goBack();
   }
 
-  console.log(noGoBack);
-
   return (
     <View style={styles.containerBtn}>
       <LinearGradient

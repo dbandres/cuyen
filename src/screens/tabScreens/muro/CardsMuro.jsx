@@ -70,7 +70,7 @@ export function CardsMuro({ data, controlDispatch }) {
         }
       });
     } else {
-      console.log("es null", emojis)
+      console.log("es null emojis", emojis)
     }
     setTotalReacciones(totalEmojis)
   }
@@ -98,7 +98,6 @@ export function CardsMuro({ data, controlDispatch }) {
     }
   }
 
-  console.log(data.image);
 
   return (
     <>

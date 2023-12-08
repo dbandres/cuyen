@@ -12,6 +12,8 @@ export function PromosVigentes({navigation}) {
       dispatch(getAllInicioOrder())
   }, [])
 
+  console.log("promos: ",JSON.stringify(allInicioOrder, null,3));
+
   return (
     <>
       {

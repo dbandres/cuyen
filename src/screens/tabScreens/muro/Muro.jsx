@@ -8,6 +8,7 @@ import { getAllPost } from "../../../redux/actions";
 import { MuroContext } from "./MuroContext";
 import axios from "axios";
 import { token } from "../../../api";
+import AwesomeAlert from "react-native-awesome-alerts";
 
 
 const Height = Dimensions.get("screen").height
@@ -20,6 +21,9 @@ export function Muro({ navigation }) {
 	const [control, setControl] = useState(false)
 	const [travelId, setTravelId] = useState("")
 	const allPost = useSelector((state) => state.allPost)
+	const [error, setError] = useState("")
+	const [disabled, setDisabled] = useState(false)
+	const [showAlert, setShowAlert] = useState(false)
 	const dispatch = useDispatch()
 
 	useEffect(() => {
@@ -29,7 +33,6 @@ export function Muro({ navigation }) {
 	}, [travelId])
 
 	useEffect(() => {
-		console.log("hola");
 		if(control === true && travelId !== ""){
 			dispatch(getAllPost(travelId))
 			setControl(false)
@@ -40,29 +43,57 @@ export function Muro({ navigation }) {
 		setControl(!control)
 	}
 
+	const getAlert = () => {
+    return (
+      <AwesomeAlert
+        show={showAlert}
+        showProgress={false}
+        title="Error"
+        message={`${error.message}`}
+        closeOnTouchOutside={false}
+        closeOnHardwareBackPress={false}
+        showConfirmButton={true}
+        confirmText="Aceptar"
+        confirmButtonColor="#008000"
+        onConfirmPressed={() => {
+          navigation.navigate("gesViaje")
+        }}
+      />
+    )
+  }
+
 	useEffect(() => {
-		try {
-			axios.put("/coordinador", {
-				"contratos": userdata.contrato
-			}, {
-				headers: {
-					'x-access-token': `${token}`,
-					"Content-Type": "application/json",
-				}
+		const fetchData = async () => {
+			try {
+				const response = await axios.put("coordinador", {
+					"contratos": userdata.contrato
+				}, {
+					headers: {
+						'x-access-token': `${token}`,
+						"Content-Type": "application/json",
+					}
+				})
+				const id = response.data.map((res) => res.id)
+				setTravelId(id.toString());
+			} catch (error) {
+				if (error.response) {
+          // El servidor respondió con un código de estado que no está en el rango 2xx
+          console.log('Error de respuesta:', error.response.data);
+					setError(error.response.data)
+					setDisabled(true)
+					setShowAlert(true)
+        } else if (error.request) {
+          // La solicitud fue realizada pero no se recibió ninguna respuesta
+          console.log('No se recibió respuesta del servidor.');
+        } else {
+          // Ocurrió un error durante la configuración de la solicitud
+          console.log('Error al configurar la solicitud:', error.message);
+        }
 			}
-			).then((res) => {
-				if (res.status === 200) {
-					console.log("res data: ",res.data);
-					const id = res.data.map((data)=>data.id)
-					setTravelId(id.toString())
-				}
-			})
-		} catch (error) {
-			console.log(error)
 		}
+		fetchData();
 	}, [])
 
-	console.log("id: ",travelId);
 
 	return (
 		<View style={styles.container}>
@@ -71,12 +102,12 @@ export function Muro({ navigation }) {
 				{
 					allPost.length != 0 ?
 						<FlatList
-						style={{maxWidth:"100%"}}
+							style={{ maxWidth: "100%" }}
 							data={allPost}
 							keyExtractor={(item) => item.id.toString()}
 							renderItem={({ item, index }) => (
 								<View key={item.id} style={styles.containerPublicacion}>
-									<CardsMuro data={item} controlDispatch={controlDispatch}/>
+									<CardsMuro data={item} controlDispatch={controlDispatch} />
 								</View>
 							)}
 						/>
@@ -92,7 +123,7 @@ export function Muro({ navigation }) {
 				userdata.rol !== "Padre" ?
 					<View style={{ backgroundColor: "#162962", height: "8%", alignItems: "center" }}>
 						<View style={{ width: "17%", bottom: "34%", backgroundColor: "#162962", alignItems: "center", justifyContent: "center", borderRadius: 50, height: "120%" }}>
-							<TouchableOpacity onPress={() => { navigation.navigate("publicar", {travelId})}}>
+							<TouchableOpacity disabled={disabled} onPress={() => { navigation.navigate("publicar", { travelId }) }}>
 								<Image
 									source={require("../../../assets/add.png")}
 									style={{ width: 40, height: 40 }}
@@ -104,6 +135,7 @@ export function Muro({ navigation }) {
 					:
 					null
 			}
+			{showAlert ? getAlert() : null}
 		</View>
 	)
 }

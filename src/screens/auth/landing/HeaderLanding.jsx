@@ -1,4 +1,4 @@
-import { View, Text, Dimensions, Image, StyleSheet } from "react-native"
+import { View, Text, Dimensions, Image, StyleSheet, Linking } from "react-native"
 import { TouchableOpacity } from "react-native-gesture-handler"
 import LinearGradient from "react-native-linear-gradient"
 import { useRoute } from '@react-navigation/native';
@@ -9,6 +9,12 @@ const Height = Dimensions.get("window").height
 export const HeaderLanding = ({ openDrawer, scrollToContacto }) => {
   const route = useRoute();
   console.log(route);
+
+  const abrirLink = (linkUrl) => {
+    const url = linkUrl;
+    Linking.openURL(url)
+      .catch((err) => console.error('Error al abrir el enlace:', err));
+  };
 
   return (
     <View style={{ height: "16%", alignItems:"center" }}>
@@ -49,13 +55,13 @@ export const HeaderLanding = ({ openDrawer, scrollToContacto }) => {
         />
       </View>
       <View style={styles.containerBottons}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={()=>{abrirLink("https://www.instagram.com/cuyenturismo/")}}>
           <Image
             source={require("../../../assets/insta.png")}
             style={{ height: 55, width: 50, marginRight: "2%" }}
           />
         </TouchableOpacity>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={()=>{abrirLink("https://www.facebook.com/cuyenturismo/?locale=es_LA")}}>
           <Image
             source={require("../../../assets/Facebo.png")}
             style={{ height: 55, width: 50, marginRight: "2%" }}

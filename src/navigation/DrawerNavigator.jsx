@@ -1,5 +1,5 @@
 import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigation/drawer';
-import { StyleSheet, View, Text, Image } from "react-native"
+import { StyleSheet, View, Text, Image, Linking } from "react-native"
 import { InfoDelViaje } from '../screens/tabScreens/InfoDelViaje';
 import { CargaPasajero } from '../screens/tabScreens/CargaPasajero';
 import { Ubicacion } from '../screens/tabScreens/Ubicacion';
@@ -36,6 +36,12 @@ const CustomDrawerContent = ({ navigation }) => {
 		})
 	}
 
+	const abrirLink = (linkUrl) => {
+    const url = linkUrl;
+    Linking.openURL(url)
+      .catch((err) => console.error('Error al abrir el enlace:', err));
+  };
+
 	return (
 		<DrawerContentScrollView style={{ backgroundColor: "#3462BF", flex: 1 }}>
 			<View style={styles.drawerHeader}>
@@ -47,13 +53,13 @@ const CustomDrawerContent = ({ navigation }) => {
 			</View>
 			<View style={{ height: 70, alignItems: "center", position: "absolute", top: "25%", left: "20%" }}>
 				<View style={{ width: "80%", height: "100%", display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "flex-end" }}>
-					<TouchableOpacity>
+					<TouchableOpacity onPress={()=>{abrirLink("https://www.instagram.com/cuyenturismo/")}}>
 						<Image
 							source={require("../assets/insta.png")}
 							style={{ width: 32, height: 32 }}
 						/>
 					</TouchableOpacity>
-					<TouchableOpacity>
+					<TouchableOpacity onPress={()=>{abrirLink("https://www.facebook.com/cuyenturismo/?locale=es_LA")}}>
 						<Image
 							source={require("../assets/Facebook.png")}
 							style={{ width: 32, height: 32 }}
