@@ -8,12 +8,15 @@ import { ComponenteExpandibleFinal } from "./ComponenteExpandibleFinal";
 import AwesomeAlert from "react-native-awesome-alerts";
 import { token } from "../../../api";
 import axios from "axios";
+import { stopBackgroundService } from "./backgroundService";
+
+
 
 
 export function GestionViajeFinalizar({ navigation, route }) {
 
   const { totalSwitchesEnabled } = route.params
-  const { miDato } = useContext(GestioViajeContext)
+  const { miDato, actualizarDato } = useContext(GestioViajeContext)
   const [showAlert3, setShowAlet3] = useState(false)
   const colegiosPorViaje = useSelector((state) => state.colegiosPorViaje)
   const pasajerosPorColegio = useSelector((state) => state.pasajerosPorColegio)
@@ -21,7 +24,7 @@ export function GestionViajeFinalizar({ navigation, route }) {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    dispatch(getAllColegiosXViaje(miDato))
+    dispatch(getAllColegiosXViaje(miDato.dato))
     dispatch(getAllPasajerosXColegio(arrayDeNumeros))
   }, [])
 
@@ -44,7 +47,6 @@ export function GestionViajeFinalizar({ navigation, route }) {
   const hideAlert3 = () => {
     setShowAlet3(false);
   };
-
   const getAlert2 = () => {
     return (
       <AwesomeAlert
@@ -56,7 +58,8 @@ export function GestionViajeFinalizar({ navigation, route }) {
         showConfirmButton={true}
         confirmText="Aceptar"
         confirmButtonColor="#DD6B55"
-        onConfirmPressed={() => {
+        onConfirmPressed={async () => {
+          await stopBackgroundService();
           hideAlert3();
           navigation.navigate("gestion de pasajeros")
         }}
@@ -65,9 +68,9 @@ export function GestionViajeFinalizar({ navigation, route }) {
   }
 
   const finalizarViaje = () => {
-    console.log("Finalizó el viaje");
+    console.log(miDato);
     try {
-      axios.put(`/viaje/${miDato}`,
+      axios.put(`/viaje/${miDato.dato}`,
         {
           "finViaje": true,
         },
@@ -77,7 +80,7 @@ export function GestionViajeFinalizar({ navigation, route }) {
             "Content-Type": "application/json",
           }
         }
-      ).then((res)=>{
+      ).then((res) => {
         if (res.status === 200) {
           setShowAlet3(true)
         }

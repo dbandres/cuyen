@@ -64,6 +64,13 @@ export function ComponenteExpandible({ index, data, seteo, setModificandoTotal, 
     });
   };
 
+  useEffect(()=>{
+    console.log("cambio pasajeros");
+    if(isEnabledGlobal !== false){
+      obtenerPasajerosActivosIniciales()
+    }
+  },[pasajerosFilter])
+
 
   useEffect(() => {
     if (isExpanded) {
@@ -122,7 +129,7 @@ export function ComponenteExpandible({ index, data, seteo, setModificandoTotal, 
     if (!pasajerosFilter) {
       return [];
     }
-    const pasajerosActivos = pasajerosFilter.filter((pasajero) => pasajero.isEnabled && pasajero.presente);
+    const pasajerosActivos = pasajerosFilter.filter((pasajero) => pasajero.isEnabled === true || pasajero.presente === true);
     return pasajerosActivos.length;
   };
   contador = obtenerPasajerosActivos();
@@ -159,7 +166,6 @@ export function ComponenteExpandible({ index, data, seteo, setModificandoTotal, 
       const pasajero = pasajerosFilter[index].presente == element.isEnabled.toString();
       console.log(pasajero);
       if (pasajero === false) {
-        console.log(element);
         axios.put(`${API_URL}/pasajero/${element.id}`, {
           "presente": element.isEnabled
         },

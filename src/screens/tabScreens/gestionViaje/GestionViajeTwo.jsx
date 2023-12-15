@@ -124,8 +124,18 @@ export function GestionViajeTwo({ navigation, route }) {
     dispatch(getAllPasajerosXColegio(arrayDeNumeros))
   }, [showAlert])
 
+  useEffect(()=>{
+    if(modificTotal !== 0){
+      console.log("total: ",totalSwitchesEnabled);
+      console.log("modificado: ", modificTotal);
+      const result = calculoTotal(totalSwitchesEnabled, modificTotal)
+      setTotalSwitchesEnabled(result)
+      setModificTotal(0)
+    }
+  },[modificTotal])
+
   const calculoTotal = (valor1, valor2) => {
-    return valor1 + valor2
+    return valor1 + (valor2)
   }
   function handleConfirmar() {
     console.log(calculoTotal(totalSwitchesEnabled, modificTotal));
@@ -134,6 +144,7 @@ export function GestionViajeTwo({ navigation, route }) {
     setModificTotal(0)
     showAlertFunc()
   }
+
 
 
   return (

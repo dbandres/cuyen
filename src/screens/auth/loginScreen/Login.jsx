@@ -52,14 +52,12 @@ export default function Login({ navigation }) {
 	}
 
 	function authentication(data) {
-		// Auth.signIn("balmaceda.d265@gmail.com", "12341234")
 		setShowAlert2(true)
 		dispatch(loginAuth(data.dniUser, data.passUser))
 			.then((response) => {
 				if (response.payload.status === 200) {
 					// accedo a la respuesta de la acción
 					console.log(JSON.stringify(response.payload.data, null, 3))
-					//Auth.signIn("balmaceda.d265@gmail.com", "12341234")
 					setUserData({
 						jwt: response.payload.data.token,
 						nombre: response.payload.data.usuario.nombre,

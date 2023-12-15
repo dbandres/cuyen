@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, Dimensions, Image, Platform } from "react-native";
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { CardsMuro } from "./CardsMuro";
 import { Header } from "./Header";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,6 +9,7 @@ import { MuroContext } from "./MuroContext";
 import axios from "axios";
 import { token } from "../../../api";
 import AwesomeAlert from "react-native-awesome-alerts";
+import { useFocusEffect } from "@react-navigation/native";
 
 
 const Height = Dimensions.get("screen").height
@@ -27,13 +28,13 @@ export function Muro({ navigation }) {
 	const dispatch = useDispatch()
 
 	useEffect(() => {
-		if(travelId !== ""){
+		if (travelId) {
 			dispatch(getAllPost(travelId))
 		}
 	}, [travelId])
 
 	useEffect(() => {
-		if(control === true && travelId !== ""){
+		if (control === true && travelId !== "") {
 			dispatch(getAllPost(travelId))
 			setControl(false)
 		}
@@ -44,55 +45,75 @@ export function Muro({ navigation }) {
 	}
 
 	const getAlert = () => {
-    return (
-      <AwesomeAlert
-        show={showAlert}
-        showProgress={false}
-        title="Error"
-        message={`${error.message}`}
-        closeOnTouchOutside={false}
-        closeOnHardwareBackPress={false}
-        showConfirmButton={true}
-        confirmText="Aceptar"
-        confirmButtonColor="#008000"
-        onConfirmPressed={() => {
-          navigation.navigate("gesViaje")
-        }}
-      />
-    )
-  }
+		return (
+			<AwesomeAlert
+				show={showAlert}
+				showProgress={false}
+				title="Error"
+				message={`${error.message}`}
+				closeOnTouchOutside={false}
+				closeOnHardwareBackPress={false}
+				showConfirmButton={true}
+				confirmText="Aceptar"
+				confirmButtonColor="#008000"
+				onConfirmPressed={() => {
+					setShowAlert(false)
+					navigation.navigate("gesViaje")
+				}}
+			/>
+		)
+	}
 
-	useEffect(() => {
-		const fetchData = async () => {
-			try {
-				const response = await axios.put("coordinador", {
-					"contratos": userdata.contrato
-				}, {
-					headers: {
-						'x-access-token': `${token}`,
-						"Content-Type": "application/json",
+	useFocusEffect(
+		React.useCallback(() => {
+				console.log('La pantalla GestionViaje obtuvo el enfoque');
+				// Puedes agregar aquí la lógica específica que deseas ejecutar cuando la pantalla obtiene el enfoque.
+				// Puedes realizar la lógica de carga de datos, actualizaciones, etc.
+				const fetchData = async () => {
+					try {
+						const response = await axios.put("coordinador", {
+							"contratos": userdata.contrato
+						}, {
+							headers: {
+								'x-access-token': `${token}`,
+								"Content-Type": "application/json",
+							}
+						})
+						const id = response.data.map((res) => res.id)
+						setTravelId(id.toString());
+					} catch (error) {
+						if(userdata.rol !== "Padre"){
+							if (error.response) {
+								// El servidor respondió con un código de estado que no está en el rango 2xx
+								console.log('Error de respuesta:', error.response.data);
+								setError(error.response.data)
+								setDisabled(true)
+								setShowAlert(true)
+							} else if (error.request) {
+								// La solicitud fue realizada pero no se recibió ninguna respuesta
+								console.log('No se recibió respuesta del servidor.');
+							} else {
+								// Ocurrió un error durante la configuración de la solicitud
+								console.log('Error al configurar la solicitud:', error.message);
+							}
+						}else{
+							setError("No hay publicaciones")
+						}
 					}
-				})
-				const id = response.data.map((res) => res.id)
-				setTravelId(id.toString());
-			} catch (error) {
-				if (error.response) {
-          // El servidor respondió con un código de estado que no está en el rango 2xx
-          console.log('Error de respuesta:', error.response.data);
-					setError(error.response.data)
-					setDisabled(true)
-					setShowAlert(true)
-        } else if (error.request) {
-          // La solicitud fue realizada pero no se recibió ninguna respuesta
-          console.log('No se recibió respuesta del servidor.');
-        } else {
-          // Ocurrió un error durante la configuración de la solicitud
-          console.log('Error al configurar la solicitud:', error.message);
-        }
-			}
-		}
-		fetchData();
-	}, [])
+				}
+				fetchData();
+
+				return () => {
+					// La función de limpieza se ejecutará cuando el componente se desmonte
+					console.log('El componente se está desmontando');
+					// Realiza acciones de limpieza aquí, por ejemplo, restablece el estado
+					setDisabled(false);
+					setShowAlert(false);
+					setError("")
+				};
+
+		}, [])
+	)
 
 
 	return (
@@ -100,7 +121,7 @@ export function Muro({ navigation }) {
 			<Header children="Publicaciones" navigation={navigation} />
 			<View style={styles.centeredFlatList}>
 				{
-					allPost.length != 0 ?
+					allPost.length != 0 && error.length === 0 ?
 						<FlatList
 							style={{ maxWidth: "100%" }}
 							data={allPost}
@@ -169,7 +190,7 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 	},
 	containerPublicacion: {
-		borderRadius: 20,
+		borderRadius: 25,
 		alignItems: "center", // Center horizontally within the container
 		width: "97%",
 		marginBottom: "5%",
@@ -183,10 +204,10 @@ const styles = StyleSheet.create({
 			},
 			android: {
 				elevation: 1,
-				shadowColor: 'rgba(0, 0, 0, 0.11)',
+				shadowColor: 'rgba(0, 0, 0, 0.05)',
 				shadowOffset: { width: 0, height: 1 },
 				shadowOpacity: 1,
-				shadowRadius: 2,
+				shadowRadius: 1,
 			},
 		}),
 	},

@@ -19,7 +19,7 @@ import { MuroContext } from "./MuroContext";
 
 const Height = Dimensions.get("screen").height
 
-export function Form({ navigation, route}) {
+export function Form({ navigation, route }) {
 
   const [texto, setTexto] = useState('');
   const [imageRender, setImageRender] = useState([]);
@@ -28,14 +28,14 @@ export function Form({ navigation, route}) {
   const dispatch = useDispatch()
   const [showAlert, setShowAlert] = useState(false);
   const [showAlertOK, setShowAlertOK] = useState(false)
-  const [disabledBtn, setDisabledBtn] = useState(false)
+  const [disabledBtn, setDisabledBtn] = useState(true)
   const [showAlert2, setShowAlert2] = useState(false)
   const [postData, setPostData] = useState({
     comentario: '',
     img: [],
   });
   const { actualizarDato } = useContext(MuroContext);
-  const id = route.params?.travelId 
+  const id = route.params?.travelId
 
   // probamos la funcion de Pinch
   const escalaImg = useSharedValue(1)
@@ -47,7 +47,7 @@ export function Form({ navigation, route}) {
     y: 300 / 2
   }
 
-  console.log("id: ",id);
+  console.log("id: ", id);
 
   const onPinchEvent = Gesture.Pinch()
     .onStart((e) => {
@@ -129,6 +129,8 @@ export function Form({ navigation, route}) {
     if (newText.length <= 160) {
       setTexto(newText);
       setPostData({ comentario: newText });
+      // Actualizar el estado disableBtn
+      setDisabledBtn(newText.trim() === ''); // Si el texto está vacío, disableBtn será true, de lo contrario, será false
     }
   };
 
@@ -144,10 +146,8 @@ export function Form({ navigation, route}) {
   useEffect(() => {
     if (imageRender.length > 5) {
       setShowAlert(true)
-      setDisabledBtn(true)
     } else {
       setShowAlert(false)
-      setDisabledBtn(false)
     }
   }, [imageRender])
 
@@ -254,7 +254,7 @@ export function Form({ navigation, route}) {
           })
             .then((res) => {
               if (res.status === 200) {
-                console.log("esto es res: ",res)
+                console.log("esto es res: ", res)
                 responsesArray.push(res.data);
               }
             })
@@ -310,7 +310,7 @@ export function Form({ navigation, route}) {
     }
   }
 
-
+  console.log("disable :", disabledBtn);
 
   return (
     <ScrollView style={styles.container}>
@@ -409,7 +409,7 @@ export function Form({ navigation, route}) {
                 <View style={{ width: "95%" }}>
                   <ButtonCustom
                     text="Publicar"
-                    color={texto !== " " && disabledBtn !== true ? "#FF3D00" : "#CDD1DF"}
+                    color={texto.length !== 0 ? "#FF3D00" : "#CDD1DF"}
                     onPress={armadoDePublicacion}
                     disabled={disabledBtn}
                   />

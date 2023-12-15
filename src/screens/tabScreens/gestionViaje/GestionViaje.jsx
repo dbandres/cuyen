@@ -1,13 +1,14 @@
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from "react-native";
 import { Header } from "../muro/Header";
 import DropDownPicker from "react-native-dropdown-picker";
-import { useState } from "react";
+import React, { useState } from "react";
 import { UserContext } from "../../../context/UserContext";
 import { useContext, useEffect } from "react";
 import axios from "axios";
 import { API_URL, token } from "../../../api";
 import AwesomeAlert from "react-native-awesome-alerts";
 import { GestioViajeContext } from "./GestionViajeContext";
+import { useFocusEffect } from "@react-navigation/native";
 
 export function GestionViaje({ navigation }) {
 
@@ -17,35 +18,84 @@ export function GestionViaje({ navigation }) {
 	const [value, setValue] = useState(null);
 	const [items, setItems] = useState([]);
 	const [showAlert2, setShowAlert2] = useState(false)
+	// 	console.log("actualizo!");
+
+	// 	const fetchData = async () => {
+	// 		try {
+	// 			const res = await axios.post("/coordinador", {
+	// 				"contratos": userdata.contrato
+	// 			}, {
+	// 				headers: {
+	// 					'x-access-token': `${token}`,
+	// 					"Content-Type": "application/json",
+	// 				}
+	// 			});
+
+	// 			if (res.status === 200) {
+	// 				console.log("res! data: ", res.data)
+	// 				setItems(prevItems => [
+	// 					...prevItems,
+	// 					...res.data.map((data, index) => ({
+	// 						label: data.escuelas,
+	// 						value: data.travelId,
+	// 						key: index.toString(),
+	// 					}))
+	// 				]);
+	// 			}
+	// 		} catch (error) {
+	// 			console.log(error);
+	// 		}
+	// 	};
+
+	// 	fetchData();
+	// }, []);
+
+	console.log(userdata);
 
 
-	useEffect(() => {
-		try {
-			axios.post("/coordinador", {
-				"contratos": userdata.contrato
-			}, {
-				headers: {
-					'x-access-token': `${token}`,
-					"Content-Type": "application/json",
+	useFocusEffect(
+    React.useCallback(() => {
+      console.log('La pantalla GestionViaje obtuvo el enfoque');
+      // Puedes agregar aquí la lógica específica que deseas ejecutar cuando la pantalla obtiene el enfoque.
+      // Puedes realizar la lógica de carga de datos, actualizaciones, etc.
+			const fetchData = async () => {
+				try {
+					const res = await axios.post("/coordinador", {
+						"contratos": userdata.contrato
+					}, {
+						headers: {
+							'x-access-token': `${token}`,
+							"Content-Type": "application/json",
+						}
+					});
+	
+					if (res.status === 200) {
+						console.log("res! data: ", res.data)
+						setItems(prevItems => [
+							...prevItems,
+							...res.data.map((data, index) => ({
+								label: data.escuelas,
+								value: data.travelId,
+								key: index.toString(),
+							}))
+						]);
+					}
+				} catch (error) {
+					console.log(error);
 				}
-			}
-			).then((res) => {
-				if (res.status === 200) {
-					console.log(res.data)
-					setItems(prevItems => [
-						...prevItems,
-						...res.data.map((data, index) => ({
-							label: data.escuelas,
-							value: data.travelId,
-							key: index.toString(),
-						}))
-					]);
-				}
-			})
-		} catch (error) {
-			console.log(error)
-		}
-	}, [])
+			};
+	
+			fetchData();
+
+      return () => {
+        // La función de limpieza se ejecutará cuando el componente se desmonte
+        console.log('El componente se está desmontando');
+        // Realiza acciones de limpieza aquí, por ejemplo, restablece el estado
+        setItems([]);
+        setValue(null);
+      };
+    }, [])
+	)
 
 
 	//cada vez que se seleccione un elemento, el picker se cerrará automáticamente.
@@ -72,7 +122,9 @@ export function GestionViaje({ navigation }) {
 
 	useEffect(() => {
 		if (value !== null) {
-			actualizarDato(value)
+			actualizarDato({
+				dato: value
+			})
 			setTimeout(() => {
 				navigation.navigate("gestionDePasajerosTwo", { data: value })
 				setValue(null)
@@ -116,6 +168,7 @@ export function GestionViaje({ navigation }) {
 						style={{ borderColor: "#CDD1DF" }}
 						labelStyle={{ color: "green" }}
 						textStyle={{ fontSize: 12 }}
+						translation={{NOTHING_TO_SHOW: "Sin viajes disponibles"}}
 					/>
 				</View>
 			</View>

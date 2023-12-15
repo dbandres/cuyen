@@ -7,13 +7,19 @@ import AwesomeAlert from "react-native-awesome-alerts";
 import { GestioViajeContext } from "./GestionViajeContext";
 import axios from "axios";
 import { API_URL, token } from "../../../api";
+import { startBackgroundService } from './backgroundService';
+
 
 export function GestionIniciarViaje({ navigation, route }) {
 
   const { totalSwitchesEnabled } = route.params
-  const [initialPosition, setInitialPosition] = useState("")
   const [showAlert2, setShowAlert2] = useState(false)
-  const { miDato } = useContext(GestioViajeContext)
+  const { miDato, actualizarDato } = useContext(GestioViajeContext)
+  const [initialPosition, setInitialPosition] = useState(false)
+
+  const viajeIniciado = (value) => {
+    setInitialPosition(value)
+  }
 
   const returnView = () => {
     navigation.goBack();
@@ -31,14 +37,12 @@ export function GestionIniciarViaje({ navigation, route }) {
     )
   }
 
-  const changeStatusViaje = () => {
-    console.log("Comenzó el viaje");
-    const locationString = JSON.stringify(initialPosition)
+  const changeStatusViaje = async (location) => {
     try {
-      axios.put(`${API_URL}/viaje/${miDato}`,
+      await axios.put(`${API_URL}/viaje/${miDato.dato}`,
         {
           "inicioViaje": true,
-          "ultimaUbic": locationString
+          "ultimaUbic": location
         },
         {
           headers: {
@@ -47,22 +51,66 @@ export function GestionIniciarViaje({ navigation, route }) {
           }
         }
       )
-        .then((res) => console.log(res.data))
+        .then((res) => {
+          if (res.status === 200) {
+            viajeIniciado(true)
+            console.log("location enviada con exito");
+          }
+        })
     } catch (error) {
       console.log("error en change status viaje: ", error);
     }
   }
 
+  const sendLocationToBackend = async (location) => {
+    // Enviar location al backend
+    console.log('Ubicación enviada al backend:', location);
+    changeStatusViaje(JSON.stringify(location))
+
+  };
+
+  const LocationTask = async () => {
+    try {
+      const location = await getCurrentLocation();
+      await sendLocationToBackend(location);
+    } catch (error) {
+      console.error('Error al obtener la ubicación:', error.code, error.message);
+    }
+  };
+
+  const getCurrentLocation = () => {
+    return new Promise((resolve, reject) => {
+      Geolocation.getCurrentPosition(
+        (position) => {
+          const latitude = position.coords.latitude;
+          const longitude = position.coords.longitude;
+          console.log('Ubicación actualizada:', { latitude, longitude });
+          resolve({ latitude, longitude });
+        },
+        (error) => {
+          reject(error);
+        },
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+      );
+    });
+  };
+  
+
+  const yourTask = async () => {
+    console.log('Ejecutando tarea en segundo plano...');
+    // Realiza la tarea que necesites en segundo plano
+  };
+
   const checkLocationPermissions = async () => {
-    setShowAlert2(true)
+    // setShowAlert2(true)
     let permissionsStatus;
     if (Platform.OS === 'ios') {
       // permissionsStatus = await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
       permissionsStatus = await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
       if (permissionsStatus === "granted") {
-        getLocation()
+        console.log("Se otorgaron los permisos");
       } else {
-        console.log("No sse otorgaron los permisos");
+        console.log("No se otorgaron los permisos");
       }
     } else {
       // permissionsStatus = await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
@@ -71,50 +119,29 @@ export function GestionIniciarViaje({ navigation, route }) {
         if (Platform.Version >= 29) {
           const backgroundPermissionStatus = await request(PERMISSIONS.ANDROID.ACCESS_BACKGROUND_LOCATION)
           if (backgroundPermissionStatus === 'granted') {
+            startBackgroundService(LocationTask)
             console.log("Permisos para ubicacion en segundo plano Garantizados");
-            getLocation()
-            //setInterval(getLocation, 60000); // Actualizar la ubicación cada 10 segundos
           } else {
             console.log('No se otorgaron los permisos de ubicación en segundo plano');
           }
         }
-        getLocation()
-        //setInterval(getLocation, 60000); // Actualizar la ubicación cada 10 segundos
       } else {
-        console.log("No sse otorgaron los permisos");
+        console.log("No se otorgaron los permisos");
       }
     }
   }
 
-  const getLocation = () => {
-    Geolocation.getCurrentPosition(
-      (position) => {
-        setInitialPosition(prevState => {
-          const latitude = position.coords.latitude;
-          const longitude = position.coords.longitude;
-          console.log('Ubicación anterior:', prevState);
-          console.log('Ubicación actualizada:', { latitude, longitude });
-
-          // Actualizar el estado combinando el estado anterior con el nuevo
-          return { ...prevState, latitude, longitude };
-        });
-      },
-      (error) => {
-        console.error('Error al obtener la ubicación:', error.code, error.message);
-      },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-    );
-  };
-
   useEffect(() => {
-    if (initialPosition !== "") {
-      changeStatusViaje()
+    if (initialPosition !== false) {
       setTimeout(() => {
         setShowAlert2(false)
         navigation.navigate("gestionViajeOK", { totalSwitchesEnabled })
-      }, 2000)
+      }, 4000)
     }
+
   }, [initialPosition])
+
+  console.log(miDato.dato);
 
 
   return (

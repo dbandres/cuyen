@@ -98,6 +98,19 @@ export function CardsMuro({ data, controlDispatch }) {
     }
   }
 
+  //Funcion para decodificar la fecha
+  const fechaOriginal = data.createdAt;
+  // Crear un objeto Date a partir de la cadena de fecha
+  const fecha = new Date(fechaOriginal);
+  // Definir opciones de formato para la fecha
+  const opcionesDeFormato = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  };
+  // Obtener la fecha formateada
+  const fechaFormateada = fecha.toLocaleDateString('es-ES', opcionesDeFormato);
+  // console.log(fechaFormateada);
 
   return (
     <>
@@ -129,10 +142,10 @@ export function CardsMuro({ data, controlDispatch }) {
               <View style={{ width: "100%", alignItems: "center", height: "30%" }}>
                 <View style={{ width: "90%", alignItems: "flex-start", justifyContent: "center", height: "20%" }}>
                   <Text style={{ color: "#949AAF", fontSize: 12, fontWeight: "400", lineHeight: 14 }}>
-                    Fecha de publicacion
+                    {fechaFormateada}
                   </Text>
                 </View>
-                <View style={{ justifyContent: "center", alignItems: "center", display: "flex", flexDirection: "row", position: "absolute", bottom: -20, right: 10 }}>
+                <View style={{ justifyContent: "center", alignItems: "center", display: "flex", flexDirection: "row", position: "absolute", bottom: -13, right: 10, }}>
                   {
                     emojisTop3.length !== 0 ?
                       <View >
@@ -202,10 +215,12 @@ const styles = StyleSheet.create({
   container: {
     height: Height * 69 / 100,
     width: 380,
+    justifyContent: "flex-start",
+    alignItems: "center"
   },
   cardContainer: {
-    height: Height * 66 / 100,
-    width: "100%",
+    height: Height * 67.1 / 100,
+    width: "97%",
     backgroundColor: "white",
     borderRadius: 20,
   },
@@ -236,7 +251,7 @@ const styles = StyleSheet.create({
   swiperSlide: {
     justifyContent: 'center',
     alignItems: 'center',
-    height:"100%",
+    height: "100%",
   },
   reactionBoxAbsoluteSinImg: {
     position: 'absolute',

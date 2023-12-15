@@ -3,7 +3,9 @@ import React, { createContext, useState } from 'react';
 export const GestioViajeContext = createContext();
 
 export const GestionViajeProvider = ({ children }) => {
-  const [miDato, setMiDato] = useState("");
+  const [miDato, setMiDato] = useState({
+    dato: "",
+  });
 
   const actualizarDato = (data) => {
     setMiDato(data);

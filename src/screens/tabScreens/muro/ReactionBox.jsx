@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
   expandedBox: {
     position: "absolute",
     bottom: 50,
-    right: -7.5,
+    right: -4,
     width: Dimensions.get('window').width - 37, // Ancho de la pantalla
     height: 50,
     alignItems: "center",
@@ -118,8 +118,8 @@ const styles = StyleSheet.create({
       width: 0,
       height: 4, // Altura del desenfoque
     },
-    shadowOpacity: 0.25, // Opacidad de la sombra
+    shadowOpacity: 0.11, // Opacidad de la sombra
     shadowRadius: 4, // Radio del desenfoque
-    elevation: 5, // Para Android
+    elevation: 2, // Para Android
   },
 })
