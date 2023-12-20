@@ -36,7 +36,7 @@ export default function Register({ navigation }) {
 
 	
 	const [isOpen, setIsOpen] = useState(false)
-	const [currentValue, setCurrentValue] = useState([])
+	const [error, setError] = useState(null);
 
 	useEffect(() => {
 		dispatch(getAllContratos())
@@ -85,7 +85,8 @@ export default function Register({ navigation }) {
 			setShowAlert2(true)
 		}
 		else if (selectedItems && toggleCheckBox) {
-			// setShowAlert4(true)
+			setShowAlert4(true)
+			Auth.signUp(data.useremail, data.userpass)
 			try {
 				await axios.post(`${API_URL}/usuarios`,
 					{
@@ -119,7 +120,6 @@ export default function Register({ navigation }) {
 								contrato: selectedItems[0],
 								rol: "Padre"
 							})
-							Auth.signUp(data.useremail, data.userpass)
 							navigation.navigate("registerOk")
 						}
 					})

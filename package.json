@@ -41,7 +41,7 @@
     "react-native-sectioned-multi-select": "^0.10.0",
     "react-native-swiper": "^1.6.0",
     "react-native-tab-view": "^3.5.2",
-    "react-native-vector-icons": "^10.0.0",
+    "react-native-vector-icons": "^10.0.3",
     "react-native-video": "^5.2.1",
     "react-redux": "^8.1.2",
     "redux": "^4.2.1",

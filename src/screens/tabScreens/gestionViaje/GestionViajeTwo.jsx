@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Animated, TouchableOpacity, Alert } from "react-native";
+import { StyleSheet, Text, View, Animated, TouchableOpacity, Alert, ScrollView } from "react-native";
 import { Header } from "../muro/Header";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
@@ -55,7 +55,7 @@ export function GestionViajeTwo({ navigation, route }) {
     setModificTotal(value)
   }
 
-  const show = () =>{
+  const show = () => {
     setShowAlert3(true)
   }
   const hideAlert3 = () => {
@@ -124,15 +124,15 @@ export function GestionViajeTwo({ navigation, route }) {
     dispatch(getAllPasajerosXColegio(arrayDeNumeros))
   }, [showAlert])
 
-  useEffect(()=>{
-    if(modificTotal !== 0){
-      console.log("total: ",totalSwitchesEnabled);
+  useEffect(() => {
+    if (modificTotal !== 0) {
+      console.log("total: ", totalSwitchesEnabled);
       console.log("modificado: ", modificTotal);
       const result = calculoTotal(totalSwitchesEnabled, modificTotal)
       setTotalSwitchesEnabled(result)
       setModificTotal(0)
     }
-  },[modificTotal])
+  }, [modificTotal])
 
   const calculoTotal = (valor1, valor2) => {
     return valor1 + (valor2)
@@ -150,26 +150,28 @@ export function GestionViajeTwo({ navigation, route }) {
   return (
     <View style={styles.container}>
       <Header children="Gestión de Pasajeros" navigation={navigation} />
-      <View style={{ width: "100%", justifyContent: "flex-start", alignItems: "center", display: "flex", height: "100%" }}>
-        <View style={{ height: 70, width: 331, backgroundColor: "white", marginTop: "10%", borderRadius: 10, justifyContent: "center", padding: "5%" }}>
-          <Text style={{ fontWeight: "800", fontSize: 12, lineHeight: 14, color: "#564C71" }}>Pasajeros del viaje</Text>
+      <ScrollView>
+        <View style={{ width: "100%", justifyContent: "flex-start", alignItems: "center", display: "flex", height: "100%" }}>
+          <View style={{ height: 70, width: 331, backgroundColor: "white", marginTop: "10%", borderRadius: 10, justifyContent: "center", padding: "5%" }}>
+            <Text style={{ fontWeight: "800", fontSize: 12, lineHeight: 14, color: "#564C71" }}>Pasajeros del viaje</Text>
+          </View>
+          <View>
+            {
+              colegiosPorViaje?.map((col, index) => (
+                <ComponenteExpandible key={index} index={index} data={col} seteo={seteo} setModificandoTotal={setModificandoTotal} arrayDeNumeros={arrayDeNumeros} pasajerosPorColegio={pasajerosPorColegio} />
+              ))
+            }
+          </View>
+          <View style={{ width: 331, height: 40, marginTop: "5%", marginBottom: 10 }}>
+            <ButtonCustom
+              text="Confirmar pasajeros"
+              color={totalSwitchesEnabled === 0 ? "#CDD1DF" : "#FF3D00"}
+              disabled={totalSwitchesEnabled === 0 ? true : false}
+              onPress={handleConfirmar}
+            />
+          </View>
         </View>
-        <View>
-          {
-            colegiosPorViaje?.map((col, index) => (
-              <ComponenteExpandible key={index} index={index} data={col} seteo={seteo} setModificandoTotal={setModificandoTotal} arrayDeNumeros={arrayDeNumeros} pasajerosPorColegio={pasajerosPorColegio} />
-            ))
-          }
-        </View>
-        <View style={{ width: 331, height: 40, marginTop: "5%", marginBottom: 10 }}>
-          <ButtonCustom
-            text="Confirmar pasajeros"
-            color={totalSwitchesEnabled === 0 ? "#CDD1DF" : "#FF3D00"}
-            disabled={totalSwitchesEnabled === 0 ? true : false}
-            onPress={handleConfirmar}
-          />
-        </View>
-      </View>
+      </ScrollView>
       {showAlert2 ? getAlert() : null}
       {showAlert3 ? getAlert2() : null}
       <AwesomeAlert

@@ -109,7 +109,7 @@ export function GestionViajeFinalizar({ navigation, route }) {
             source={require("../../../assets/bus.png")}
             style={{ width: 24, height: 24, marginRight: 10 }}
           />
-          <Text style={{ fontWeight: "700", fontSize: 14, lineHeight: 16 }}>
+          <Text style={{ fontWeight: "700", fontSize: 14, lineHeight: 16, color: "#564C71" }}>
             Viaje en Curso
           </Text>
         </View>

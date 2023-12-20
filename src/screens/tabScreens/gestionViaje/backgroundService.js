@@ -23,7 +23,7 @@ export const startBackgroundService = (yourTask) => {
   // Ejecuta yourTask cada 15 minutos
   intervalId = setInterval(() => {
     yourTask();
-  }, 0.5 * 60 * 1000);
+  }, 0.1 * 60 * 1000);
 };
 
 export const stopBackgroundService = async () => {

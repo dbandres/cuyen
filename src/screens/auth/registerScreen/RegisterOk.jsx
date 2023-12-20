@@ -7,7 +7,7 @@ import { useEffect } from "react";
 export const RegisterOk = ({ navigation }) => {
 
   const goToHome = () => {
-    navigation.navigate("landing")
+    navigation.navigate("login")
   }
 
   useEffect(() => {

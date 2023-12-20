@@ -5,7 +5,7 @@ export function InfoDelViaje(){
     return(
         <View>
             <Text>
-                InfoDelViaje
+            InfoDelViaje
             </Text>
         </View>
     )

@@ -94,15 +94,9 @@ export function GestionIniciarViaje({ navigation, route }) {
       );
     });
   };
-  
-
-  const yourTask = async () => {
-    console.log('Ejecutando tarea en segundo plano...');
-    // Realiza la tarea que necesites en segundo plano
-  };
 
   const checkLocationPermissions = async () => {
-    // setShowAlert2(true)
+    setShowAlert2(true)
     let permissionsStatus;
     if (Platform.OS === 'ios') {
       // permissionsStatus = await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
