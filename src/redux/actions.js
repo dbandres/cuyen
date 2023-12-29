@@ -10,6 +10,8 @@ export const GET_ALL_TEXTO_ORDER = "GET_ALL_TEXTO_ORDER";
 export const GET_ALL_COLEGIOS_X_VIAJE = "GET_ALL_COLEGIOS_X_VIAJE";
 export const GET_ALL_PASAJEROS_X_COLEGIO = "GET_ALL_PASAJEROS_X_COLEGIO";
 export const GET_ALL_PASAJEROS_X_COLEGIO_FILTER = "GET_ALL_PASAJEROS_X_COLEGIO_FILTER";
+export const GET_ITINERARIO = "GET_ITINERARIO";
+export const GET_DESTINO = "GET_DESTINO"; 
 
 
 export function loginAuth(usuario, contraseña) {
@@ -217,4 +219,42 @@ export function getAllPasajerosXColegioFilter(num) {
 			console.log('Error de Axios getAllPasajerosXColegioFilter:', error)
 		}
 	};
+}
+
+export function getItinerario(num){
+	return async function(dispatch){
+		try {
+			const response = await axios.get(`/itinerario/contract/${num}`,{
+				headers:{
+					'x-access-token': `${token}`,
+					'Content-Type': 'application/json',
+				}
+			})
+			return dispatch({
+				type: GET_ITINERARIO,
+				payload: response.data
+			})
+		} catch (error) {
+			console.log('Error de Axios getItinerario:', error)
+		}
+	}
+}
+
+export function getDestino(num){
+	return async function(dispatch){
+		try {
+			const response = await axios.get(`/nuevoviaje/${num}`,{
+				headers:{
+					'x-access-token': `${token}`,
+					'Content-Type': 'application/json',
+				}
+			})
+			return dispatch({
+				type: GET_DESTINO,
+				payload: response.data
+			})
+		} catch (error) {
+			console.log('Error de Axios getDestino:', error)
+		}
+	}
 }

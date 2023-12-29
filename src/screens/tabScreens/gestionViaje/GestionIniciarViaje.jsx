@@ -1,13 +1,15 @@
 import { View, Text, StyleSheet, TouchableOpacity, Image, Platform } from "react-native"
 import { Header } from "../muro/Header"
 import { PERMISSIONS, check, request } from "react-native-permissions";
-import Geolocation from "react-native-geolocation-service"
+// import Geolocation from "react-native-geolocation-service"
 import { useContext, useEffect, useState } from "react";
 import AwesomeAlert from "react-native-awesome-alerts";
 import { GestioViajeContext } from "./GestionViajeContext";
 import axios from "axios";
 import { API_URL, token } from "../../../api";
 import { startBackgroundService } from './backgroundService';
+
+import Geolocation from '@react-native-community/geolocation';
 
 
 export function GestionIniciarViaje({ navigation, route }) {
@@ -65,7 +67,7 @@ export function GestionIniciarViaje({ navigation, route }) {
   const sendLocationToBackend = async (location) => {
     // Enviar location al backend
     console.log('Ubicación enviada al backend:', location);
-    changeStatusViaje(JSON.stringify(location))
+    changeStatusViaje(location)
 
   };
 
@@ -80,18 +82,25 @@ export function GestionIniciarViaje({ navigation, route }) {
 
   const getCurrentLocation = () => {
     return new Promise((resolve, reject) => {
-      Geolocation.getCurrentPosition(
-        (position) => {
-          const latitude = position.coords.latitude;
-          const longitude = position.coords.longitude;
-          console.log('Ubicación actualizada:', { latitude, longitude });
-          resolve({ latitude, longitude });
-        },
-        (error) => {
-          reject(error);
-        },
-        { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-      );
+      try {
+        Geolocation.getCurrentPosition(
+          (info) => {
+            const latitude = info.coords.latitude;
+            const longitude = info.coords.longitude;
+            console.log('Ubicación actualizada:', { latitude, longitude });
+            resolve({ latitude, longitude });
+          },
+          (error) => {
+            reject(error);
+          },
+          { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+        );
+        // Geolocation.getCurrentPosition(info => console.log(info));
+      } catch (error) {
+        console.log("error: ", error);
+        // Captura errores sincrónicos (p. ej., si Geolocation.getCurrentPosition lanza una excepción)
+        reject(error);
+      }
     });
   };
 

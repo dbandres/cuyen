@@ -54,10 +54,10 @@ export function GestionViaje({ navigation }) {
 
 
 	useFocusEffect(
-    React.useCallback(() => {
-      console.log('La pantalla GestionViaje obtuvo el enfoque');
-      // Puedes agregar aquí la lógica específica que deseas ejecutar cuando la pantalla obtiene el enfoque.
-      // Puedes realizar la lógica de carga de datos, actualizaciones, etc.
+		React.useCallback(() => {
+			console.log('La pantalla GestionViaje obtuvo el enfoque');
+			// Puedes agregar aquí la lógica específica que deseas ejecutar cuando la pantalla obtiene el enfoque.
+			// Puedes realizar la lógica de carga de datos, actualizaciones, etc.
 			const fetchData = async () => {
 				try {
 					const res = await axios.post("/coordinador", {
@@ -68,33 +68,46 @@ export function GestionViaje({ navigation }) {
 							"Content-Type": "application/json",
 						}
 					});
-	
+
 					if (res.status === 200) {
 						console.log("res! data: ", res.data)
-						setItems(prevItems => [
-							...prevItems,
-							...res.data.map((data, index) => ({
-								label: data.escuelas,
-								value: data.travelId,
-								key: index.toString(),
-							}))
-						]);
+						const filterItem = res.data.filter((data)=>data.inicioViaje === true)
+						console.log("filter: ",filterItem);
+						if(filterItem.length !== 0){
+							setItems(prevItems => [
+								...prevItems,
+								...filterItem.map((data, index) => ({
+									label: data.escuelas,
+									value: data.travelId,
+									key: index.toString(),
+								}))
+							]);
+						}else{
+							setItems(prevItems => [
+								...prevItems,
+								...res.data.map((data, index) => ({
+									label: data.escuelas,
+									value: data.travelId,
+									key: index.toString(),
+								}))
+							]);
+						}
 					}
 				} catch (error) {
 					console.log(error);
 				}
 			};
-	
+
 			fetchData();
 
-      return () => {
-        // La función de limpieza se ejecutará cuando el componente se desmonte
-        console.log('El componente se está desmontando');
-        // Realiza acciones de limpieza aquí, por ejemplo, restablece el estado
-        setItems([]);
-        setValue(null);
-      };
-    }, [])
+			return () => {
+				// La función de limpieza se ejecutará cuando el componente se desmonte
+				console.log('El componente se está desmontando');
+				// Realiza acciones de limpieza aquí, por ejemplo, restablece el estado
+				setItems([]);
+				setValue(null);
+			};
+		}, [])
 	)
 
 
@@ -168,7 +181,7 @@ export function GestionViaje({ navigation }) {
 						style={{ borderColor: "#CDD1DF" }}
 						labelStyle={{ color: "green" }}
 						textStyle={{ fontSize: 12 }}
-						translation={{NOTHING_TO_SHOW: "Sin viajes disponibles"}}
+						translation={{ NOTHING_TO_SHOW: "Sin viajes disponibles" }}
 					/>
 				</View>
 			</View>

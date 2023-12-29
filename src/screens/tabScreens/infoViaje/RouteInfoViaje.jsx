@@ -22,7 +22,7 @@ export const RouteInfoViaje = () => {
 
           return (
             <Text style={{
-              color: focused ? '#FF3D00' : '#FFFFFF',
+              color: '#FFFFFF',
               fontSize: 12,
               textAlign: 'center',
               height: 30,
@@ -35,20 +35,28 @@ export const RouteInfoViaje = () => {
         },
         tabBarIcon: ({focused}) => {
           let iconName;
-
-          if (route.name === 'Contrato') {
-            iconName = <Image source={require(`../../../assets/contract.png`)} style={{width:24, height:24}}/>;
+          switch (route.name) {
+            case 'Contrato':
+              iconName = focused 
+              ? <Image source={require(`../../../assets/contract_color.png`)} style={{ width: 24, height: 24 }} />
+              : <Image source={require(`../../../assets/contract.png`)} style={{ width: 24, height: 24 }} />
+              break;
+            case 'Información del viaje':
+              iconName = focused 
+              ? <Image source={require(`../../../assets/concierge_color.png`)} style={{ width: 24, height: 24 }} />
+              : <Image source={require(`../../../assets/concierge.png`)} style={{ width: 24, height: 24 }} />
+              break;
+            case 'Itinerario del viaje':
+              iconName = focused
+              ? <Image source={require(`../../../assets/airport_shuttle_color.png`)} style={{ width: 24, height: 24 }} />
+              : <Image source={require(`../../../assets/airport_shuttle.png`)} style={{ width: 24, height: 24 }} />
+              break;
+            default:
+              iconName = focused
+              ? <Image source={require(`../../../assets/account_balance_wallet_color.png`)} style={{ width: 24, height: 24 }} />
+              : <Image source={require(`../../../assets/account_balance_wallet.png`)} style={{ width: 24, height: 24 }} />
+              break;
           }
-          else if(route.name === 'Información del viaje'){
-            iconName = <Image source={require(`../../../assets/concierge.png`)} style={{width:24, height:24}}/>;
-          }
-          else if(route.name === 'Itinerario del viaje'){
-            iconName = <Image source={require(`../../../assets/airport_shuttle.png`)} style={{width:24, height:24}}/>;
-          }
-          else{
-            iconName = <Image source={require(`../../../assets/account_balance_wallet.png`)} style={{width:24, height:24}}/>;
-          }
-          // Agrega más condiciones según las otras pestañas
 
           return (
             <View style={{ alignItems: 'center' }}>
