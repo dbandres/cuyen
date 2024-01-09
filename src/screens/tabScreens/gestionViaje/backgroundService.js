@@ -18,12 +18,24 @@ const options = {
 
 let intervalId;
 
-export const startBackgroundService = (yourTask) => {
-  BackgroundService.start(yourTask, options);
-  // Ejecuta yourTask cada 15 minutos
-  intervalId = setInterval(() => {
-    yourTask();
-  }, 10 * 60 * 1000);
+// export const startBackgroundService = (yourTask) => {
+//   BackgroundService.start(yourTask, options);
+//   // Ejecuta yourTask cada 15 minutos
+//   intervalId = setInterval(() => {
+//     yourTask();
+//   }, 10 * 60 * 1000);
+// };
+
+export const startBackgroundService = async (yourTask) => {
+  try {
+    await BackgroundService.start(yourTask, options);
+    // Ejecuta yourTask cada 15 minutos
+    intervalId = setInterval(() => {
+      yourTask();
+    }, 10 * 60 * 1000);
+  } catch (error) {
+    console.error('Error al iniciar el servicio en segundo plano:', error);
+  }
 };
 
 export const stopBackgroundService = async () => {

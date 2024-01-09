@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View, Animated, TouchableOpacity, Alert, ScrollView } from "react-native";
 import { Header } from "../muro/Header";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { getAllColegiosXViaje, getAllPasajerosXColegio } from "../../../redux/actions";
 import { ComponenteExpandible } from "./ComponenteExpandible";
 import { ButtonCustom } from "../../../components/ButtomCustom";
 import AwesomeAlert from "react-native-awesome-alerts";
 import axios from "axios";
 import { token } from "../../../api";
-
+import { useFocusEffect } from "@react-navigation/native";
 
 
 export function GestionViajeTwo({ navigation, route }) {
@@ -22,11 +22,7 @@ export function GestionViajeTwo({ navigation, route }) {
   const [showAlert, setShowAlert] = useState(false)
   const [showAlert2, setShowAlert2] = useState(false)
   const [showAlert3, setShowAlert3] = useState(false)
-
-  const arrayDeNumeros = colegiosPorViaje.map(colegio => colegio.num);
-
-  console.log(arrayDeNumeros);
-
+  let arrayDeNumeros;
   const showAlertFunc = () => {
     setShowAlert(true);
   };
@@ -116,8 +112,23 @@ export function GestionViajeTwo({ navigation, route }) {
   useEffect(() => {
     console.log("data: ", data);
     dispatch(getAllColegiosXViaje(data[0]))
-    dispatch(getAllPasajerosXColegio(arrayDeNumeros))
   }, [])
+
+  useFocusEffect(
+    React.useCallback(() => {
+      console.log("data: ", data);
+      if (colegiosPorViaje) {
+        arrayDeNumeros = colegiosPorViaje.map(colegio => colegio.num);
+        dispatch(getAllPasajerosXColegio(arrayDeNumeros));
+      }
+
+      // Limpieza (si es necesaria) al salir del enfoque
+      return () => {
+        // Código de limpieza si es necesario
+        arrayDeNumeros = 0;
+      };
+    }, [colegiosPorViaje])
+  );
 
   useEffect(() => {
     console.log("modifico");
@@ -145,7 +156,7 @@ export function GestionViajeTwo({ navigation, route }) {
     showAlertFunc()
   }
 
-
+  console.log("total pasajeros: ", pasajerosPorColegio.length);
 
   return (
     <View style={styles.container}>

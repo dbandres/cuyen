@@ -110,7 +110,6 @@ export function CardsMuro({ data, controlDispatch }) {
   };
   // Obtener la fecha formateada
   const fechaFormateada = fecha.toLocaleDateString('es-ES', opcionesDeFormato);
-  // console.log(fechaFormateada);
 
   return (
     <>
@@ -176,7 +175,7 @@ export function CardsMuro({ data, controlDispatch }) {
               <View style={{ width: "100%", alignItems: "center" }}>
                 <View style={{ width: "90%", alignItems: "flex-start", justifyContent: "center", height: "25%" }}>
                   <Text style={{ color: "#949AAF", fontSize: 12, fontWeight: "400", lineHeight: 14 }}>
-                    Fecha de publicacion
+                  {fechaFormateada}
                   </Text>
                 </View>
                 <View style={{ width: "90%", height: "50%", }}>

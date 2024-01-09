@@ -1,15 +1,13 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image, Platform } from "react-native"
+import { View, Text, StyleSheet, TouchableOpacity, Image, Platform, Alert } from "react-native"
 import { Header } from "../muro/Header"
-import { PERMISSIONS, check, request } from "react-native-permissions";
-// import Geolocation from "react-native-geolocation-service"
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import AwesomeAlert from "react-native-awesome-alerts";
 import { GestioViajeContext } from "./GestionViajeContext";
 import axios from "axios";
 import { API_URL, token } from "../../../api";
 import { startBackgroundService } from './backgroundService';
-
 import Geolocation from '@react-native-community/geolocation';
+import { checkLocationPermissions } from "./checkLocationPermissions";
 
 
 export function GestionIniciarViaje({ navigation, route }) {
@@ -18,6 +16,21 @@ export function GestionIniciarViaje({ navigation, route }) {
   const [showAlert2, setShowAlert2] = useState(false)
   const { miDato, actualizarDato } = useContext(GestioViajeContext)
   const [initialPosition, setInitialPosition] = useState(false)
+  const [showAlert, setShowAlert] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
+
+  const checkPermissions = async () => {
+    setShowAlert2(true)
+    const status = await checkLocationPermissions();
+    if (status === 'granted') {
+      startBackgroundService(LocationTask)
+    } else {
+      setShowAlert2(false);
+      setShowAlert(true);
+      setErrorMessage("Otorgando permisos, intente nuevamente!");
+    }
+  }
 
   const viajeIniciado = (value) => {
     setInitialPosition(value)
@@ -72,12 +85,12 @@ export function GestionIniciarViaje({ navigation, route }) {
   };
 
   const LocationTask = async () => {
-    try {
-      const location = await getCurrentLocation();
-      await sendLocationToBackend(location);
-    } catch (error) {
-      console.error('Error al obtener la ubicación:', error.code, error.message);
-    }
+      try {
+        const location = await getCurrentLocation();
+        await sendLocationToBackend(location)
+      } catch (error) {
+        console.error('Error al obtener la ubicación:', error.code, error.message);
+      }
   };
 
   const getCurrentLocation = () => {
@@ -91,48 +104,23 @@ export function GestionIniciarViaje({ navigation, route }) {
             resolve({ latitude, longitude });
           },
           (error) => {
+            setShowAlert2(false);
+            setShowAlert(true);
+            setErrorMessage("El dispositivo bloqueo la ubicacion, por favor otorgue los permisos desde el sistema para continuar.");
             reject(error);
           },
-          { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+          { enableHighAccuracy: true, timeout: 30000, maximumAge: 3600000 }
         );
-        // Geolocation.getCurrentPosition(info => console.log(info));
       } catch (error) {
-        console.log("error: ", error);
-        // Captura errores sincrónicos (p. ej., si Geolocation.getCurrentPosition lanza una excepción)
+        console.error("error: ", error);
         reject(error);
       }
     });
   };
 
-  const checkLocationPermissions = async () => {
-    setShowAlert2(true)
-    let permissionsStatus;
-    if (Platform.OS === 'ios') {
-      // permissionsStatus = await check(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
-      permissionsStatus = await request(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
-      if (permissionsStatus === "granted") {
-        console.log("Se otorgaron los permisos");
-      } else {
-        console.log("No se otorgaron los permisos");
-      }
-    } else {
-      // permissionsStatus = await check(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
-      permissionsStatus = await request(PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION);
-      if (permissionsStatus === "granted") {
-        if (Platform.Version >= 29) {
-          const backgroundPermissionStatus = await request(PERMISSIONS.ANDROID.ACCESS_BACKGROUND_LOCATION)
-          if (backgroundPermissionStatus === 'granted') {
-            startBackgroundService(LocationTask)
-            console.log("Permisos para ubicacion en segundo plano Garantizados");
-          } else {
-            console.log('No se otorgaron los permisos de ubicación en segundo plano');
-          }
-        }
-      } else {
-        console.log("No se otorgaron los permisos");
-      }
-    }
-  }
+  const hideAlert = () => {
+    setShowAlert(false);
+  };
 
   useEffect(() => {
     if (initialPosition !== false) {
@@ -143,9 +131,6 @@ export function GestionIniciarViaje({ navigation, route }) {
     }
 
   }, [initialPosition])
-
-  console.log(miDato.dato);
-
 
   return (
     <View style={styles.container}>
@@ -160,7 +145,7 @@ export function GestionIniciarViaje({ navigation, route }) {
         </View>
       </View>
       <View style={{ height: 100, justifyContent: "flex-end", alignItems: "center" }}>
-        <TouchableOpacity onPress={checkLocationPermissions} style={{ backgroundColor: "#37E67D", width: "90%", height: 73, borderRadius: 10, justifyContent: "space-around", display: "flex", flexDirection: "row", alignItems: "center" }}>
+        <TouchableOpacity onPress={checkPermissions} style={{ backgroundColor: "#37E67D", width: "90%", height: 73, borderRadius: 10, justifyContent: "space-around", display: "flex", flexDirection: "row", alignItems: "center" }}>
           <Image
             source={require("../../../assets/iniciarViaje.png")}
             style={{ width: 112, height: 24 }}
@@ -175,6 +160,19 @@ export function GestionIniciarViaje({ navigation, route }) {
         </TouchableOpacity>
       </View>
       {showAlert2 ? getAlert() : null}
+      <AwesomeAlert
+        show={showAlert}
+        showProgress={false}
+        title="Error"
+        message={errorMessage || "Hubo un error al obtener la ubicación."}
+        closeOnTouchOutside={true}
+        closeOnHardwareBackPress={false}
+        showCancelButton={false}
+        showConfirmButton={true}
+        confirmText="Aceptar"
+        confirmButtonColor="#DD6B55"
+        onConfirmPressed={() => hideAlert()}
+      />
     </View>
   )
 }

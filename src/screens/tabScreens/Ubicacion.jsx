@@ -13,19 +13,34 @@ export function Ubicacion({ navigation }) {
 	const destino = useSelector((state) => state.destino)
 	const { userdata } = useContext(UserContext)
 	const [fecha, setFecha] = useState("")
+	const [latitude, setLatitude] = useState("")
+	const [longitude, setLongitude] = useState("")
 
 	useFocusEffect(
 		React.useCallback(() => {
-			dispatch(getDestino(userdata.contrato[0]))
-			setTimeout(() => {
-				const fecha = new Date(destino.updatedAt)
-				// Obtener la hora y los minutos
-				const horas = fecha.getHours();
-				const minutos = fecha.getMinutes();
-				setFecha(`${horas}:${minutos}`)
-			}, 2000)
+			try {
+				dispatch(getDestino(userdata.contrato[0]))
+			} catch (error) {
+				console.log("Error en useFocusEffect: ", error);
+			}
 		}, [])
 	)
+
+	useEffect(() => {
+		if (destino.length !== 0) {
+			const fecha = new Date(destino.updatedAt)
+			// Obtener la hora y los minutos
+			const horas = fecha.getHours();
+			const minutos = fecha.getMinutes();
+			setFecha(`${horas}:${minutos}`)
+			if (destino.ultimaUbic !== null) {
+				setLatitude(destino.ultimaUbic.latitude)
+				setLongitude(destino.ultimaUbic.longitude)
+			} else {
+				console.log("No hay ubicacion...");
+			}
+		}
+	}, [destino])
 
 	// Estado para almacenar el nivel de zoom actual
 	const [zoomLevel, setZoomLevel] = useState(0.20);
@@ -72,22 +87,22 @@ export function Ubicacion({ navigation }) {
 					</View>
 				</View>
 				{
-					destino && destino?.ultimaUbic !== null ?
+					latitude !== "" && longitude !== "" ?
 						<View style={{ width: 373, height: 505, backgroundColor: "#FFFFFF", borderRadius: 10, marginBottom: 10 }}>
 							<MapView
 								provider={PROVIDER_GOOGLE}
 								style={{ height: 389, width: 373, borderRadius: 10 }}
 								initialRegion={{
-									latitude: destino?.ultimaUbic?.latitude,
-									longitude: destino?.ultimaUbic?.longitude,
+									latitude: latitude,
+									longitude: longitude,
 									latitudeDelta: zoomLevel, // Utilizar el nivel de zoom actual
 									longitudeDelta: zoomLevel,
 								}}
 							>
 								<Marker
 									coordinate={{
-										latitude: destino?.ultimaUbic?.latitude,
-										longitude: destino?.ultimaUbic?.longitude,
+										latitude: latitude,
+										longitude: longitude,
 									}}
 									image={require('../../assets/marker.png')}
 									style={{ height: 41, width: 68 }}
@@ -119,7 +134,11 @@ export function Ubicacion({ navigation }) {
 							</View>
 						</View>
 						:
-						null
+						<View style={{height:80, justifyContent:"center", alignItems:"center"}}>
+							<Text style={{color: "#564C71"}}>
+								No hay ubicación disponible...
+							</Text>
+						</View>
 				}
 			</ScrollView>
 		</View>

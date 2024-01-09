@@ -28,6 +28,7 @@ export function ComponenteExpandible({ index, data, seteo, setModificandoTotal, 
   };
 
   const hideAlert = () => {
+    toggleExpand()
     setShowAlert(false);
   };
 
@@ -76,11 +77,9 @@ export function ComponenteExpandible({ index, data, seteo, setModificandoTotal, 
 
   useEffect(() => {
     if (isExpanded) {
-      console.log("aca: ", estadoHeight);
       // Mide la altura del contenido cuando se expande
       contentRef.current.measure((x, y, width, height) => {
         setContentHeight(height);
-        console.log("he: ", height)
         Animated.timing(heightAnim, {
           toValue: estadoHeight * 35 + 220, // Ajusta según tus necesidades
           //toValue: height + 480,
@@ -190,7 +189,6 @@ export function ComponenteExpandible({ index, data, seteo, setModificandoTotal, 
     });
   }
 
-  console.log("anim: ", heightAnim);
 
   return (
     <View>

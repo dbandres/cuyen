@@ -102,7 +102,6 @@ export function GestionViaje({ navigation }) {
 
 			return () => {
 				// La función de limpieza se ejecutará cuando el componente se desmonte
-				console.log('El componente se está desmontando');
 				// Realiza acciones de limpieza aquí, por ejemplo, restablece el estado
 				setItems([]);
 				setValue(null);
