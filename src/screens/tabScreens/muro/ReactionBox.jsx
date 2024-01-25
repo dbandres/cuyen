@@ -88,8 +88,8 @@ const styles = StyleSheet.create({
   expandedBox: {
     position: "absolute",
     bottom: 50,
-    right: -4,
-    width: Dimensions.get('window').width - 37, // Ancho de la pantalla
+    right: 0,
+    width: 353,
     height: 50,
     alignItems: "center",
     justifyContent: "center",

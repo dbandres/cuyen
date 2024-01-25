@@ -72,7 +72,8 @@ export const FormContact = React.forwardRef((props, ref) => {
           mail: data.useremail,
           telefono: data.phone,
           comentario: data.mensaje,
-          horario: ""
+          horario: "",
+          leido: false
         },
         {
           headers:{
@@ -110,7 +111,7 @@ export const FormContact = React.forwardRef((props, ref) => {
           name="namecomplete"
           placeholder="Nombre y apellido"
           rules={{
-            required: true,
+            //required: true,
             minLength: {
               value: 2,
               message: "El nombre debe tener un minimo de 2 caracteres"
@@ -128,7 +129,7 @@ export const FormContact = React.forwardRef((props, ref) => {
           numeric="numeric"
           placeholder="Teléfono de contacto"
           rules={{
-            required: true,
+            //required: true,
             minLength: {
               value: 2,
               message: "El nombre debe tener un minimo de 2 caracteres"
@@ -145,7 +146,7 @@ export const FormContact = React.forwardRef((props, ref) => {
           name="useremail"
           placeholder="E-mail"
           rules={{
-            required: true,
+            //required: true,
             pattern: { value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, message: "La Direccion de Email es Incorrecta" }
           }}
         />

@@ -8,6 +8,7 @@ import { API_URL, token } from '../../../api';
 import AwesomeAlert from 'react-native-awesome-alerts';
 
 export function ComponenteExpandible({ index, data, seteo, setModificandoTotal, arrayDeNumeros, pasajerosPorColegio }) {
+  
   const [isExpanded, setIsExpanded] = useState(false);
   const dispatch = useDispatch()
   const [contentHeight, setContentHeight] = useState(0);
@@ -21,16 +22,6 @@ export function ComponenteExpandible({ index, data, seteo, setModificandoTotal, 
   const [showAlert, setShowAlert] = useState(false);
   const [pasajerosFilter, setPasajerosFilter] = useState("")
   const [estadoHeight, setEstadoHeight] = useState("")
-
-
-  const showAlertFunc = () => {
-    setShowAlert(true);
-  };
-
-  const hideAlert = () => {
-    toggleExpand()
-    setShowAlert(false);
-  };
 
   const getAlert = () => {
     return (
@@ -100,6 +91,7 @@ export function ComponenteExpandible({ index, data, seteo, setModificandoTotal, 
 
   useEffect(() => {
     console.log("renderizo");
+    console.log(arrayDeNumeros);
     dispatch(getAllPasajerosXColegio(arrayDeNumeros))
   }, [])
 
@@ -163,29 +155,39 @@ export function ComponenteExpandible({ index, data, seteo, setModificandoTotal, 
   const handleChangesPresent = () => {
     setShowAlert2(true)
     calcularModificandoTotal();
-    pasajerosFilter.forEach((element, index) => {
-      const pasajero = pasajerosFilter[index].presente == element.isEnabled.toString();
-      console.log(pasajero);
-      if (pasajero === false) {
-        axios.put(`${API_URL}/pasajero/${element.id}`, {
-          "presente": element.isEnabled
+    // Crear un array de promesas para todas las peticiones
+  const putPromises = pasajerosFilter.map((element, index) => {
+    const pasajero = pasajerosFilter[index].presente == element.isEnabled.toString();
+    if(pasajero === false){
+      return axios.put(
+        `${API_URL}/pasajero/${element.id}`,
+        {
+          presente: element.isEnabled,
         },
-          {
-            headers: {
-              'x-access-token': `${token}`,
-              "Content-Type": "application/json",
-            }
-          }
-        ).then((res) => {
-          if (res.status === 200) {
-            setShowAlert2(false)
-            showAlertFunc()
-          }
-        })
-      } else {
-        setShowAlert2(false)
-        console.log("Alumnos presente");
-      }
+        {
+          headers: {
+            'x-access-token': `${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+    }else{
+      console.log("Alumnos sin modificacion");
+    }
+  });
+
+  // Usar Promise.all para esperar a que todas las promesas se resuelvan
+  Promise.all(putPromises)
+    .then((responses) => {
+      // Todas las peticiones se han completado con éxito
+      setShowAlert(true);
+    })
+    .catch((error) => {
+      // Manejar errores si alguna de las peticiones falla
+      console.error('Error en alguna de las peticiones:', error);
+    })
+    .finally(() => {
+      setShowAlert2(false);
     });
   }
 
@@ -193,110 +195,85 @@ export function ComponenteExpandible({ index, data, seteo, setModificandoTotal, 
   return (
     <View>
       {/* <ScrollView> */}
-        <Animated.View ref={contentRef} style={{ height: heightAnim , width: 331, backgroundColor: "white", marginTop: "5%", borderRadius: 10, padding: "2%", justifyContent: "flex-start", alignItems: "center" }}>
+      <Animated.View ref={contentRef} style={{ height: heightAnim, width: 331, backgroundColor: "white", marginTop: "5%", borderRadius: 10, padding: "2%", justifyContent: "flex-start", alignItems: "center" }}>
+        {
+          isExpanded ?
+            <View style={{ position: "absolute", bottom: 5, height: 47, width: "100%", borderColor: "#3462BF", borderWidth: 1, borderRadius: 10 }}>
+              <ButtonCustom
+                text="Guardar cambios"
+                register={true}
+                color="#FFFFFF"
+                onPress={handleChangesPresent}
+              />
+            </View>
+            :
+            null
+        }
+        <View style={{ width: "100%", display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-around", height: isExpanded ? 70 : "100%", borderBottomWidth: isExpanded === true ? 1 : 0, borderColor: "#CDD1DF" }}>
+          {/* Contenido del componente */}
+          <View style={{ backgroundColor: color !== false ? "#37E67D" : colors !== false ? "#FF6669" : "#E5EBFF", width: 48, height: 48, alignItems: "center", justifyContent: "center", borderRadius: 10 }}>
+            <Text style={{ fontSize: 20, fontWeight: "600", lineHeight: 24, color: "#564C71" }}>{contador ? contador : 0}</Text>
+          </View>
+          <View style={{ width: "60%" }}>
+            <Text style={{ fontSize: 12, fontWeight: "800", lineHeight: 14, color: "#564C71" }}>{data.num}</Text>
+            <Text style={{ fontSize: 12, fontWeight: "400", lineHeight: 14, color: "#564C71" }}>{data.colegio}</Text>
+          </View>
+          <TouchableOpacity onPress={toggleExpand} style={{ alignItems: 'center' }}>
+            {/* Botón flecha */}
+            <Text>{isExpanded ? <Image source={require("../../../assets/Not_more.png")} style={{ width: 24, height: 24 }} /> : <Image source={require("../../../assets/expand_more.png")} style={{ width: 24, height: 24 }} />}</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={{ alignItems: "center", justifyContent: "center", width: "100%" }}>
           {
             isExpanded ?
-              <View style={{ position: "absolute", bottom: 5, height: 47, width: "100%", borderColor: "#3462BF", borderWidth: 1, borderRadius: 10 }}>
-                <ButtonCustom
-                  text="Guardar cambios"
-                  register={true}
-                  color="#FFFFFF"
-                  onPress={handleChangesPresent}
-                />
+              <View style={{ alignItems: "center", justifyContent: "center", width: "100%", }}>
+                <View style={{ width: "95%", height: 80, borderBottomWidth: 1, borderColor: "#CDD1DF" }}>
+                  <View style={{ width: "100%", height: "50%", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                    <Text style={{ fontWeight: "800", fontSize: 12, lineHeight: 14, color: "#564C71" }}>
+                      Pasajeros
+                    </Text>
+                    <Text style={{ fontWeight: "800", fontSize: 12, lineHeight: 14, color: "#564C71" }}>
+                      Estado presente
+                    </Text>
+                  </View>
+                  <View style={{ width: "100%", height: "50%", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
+                    <Text style={{ fontWeight: "600", fontSize: 12, lineHeight: 14, color: "#564C71" }}>
+                      SELECCIONAR TODOS
+                    </Text>
+                    <Switch
+                      onValueChange={toggleSwitchGlobal}
+                      value={isEnabledGlobal}
+                      trackColor={{ false: '#D9D9D9', true: '#93E396' }}
+                    />
+                  </View>
+                </View>
+                {pasajerosFilter ? (
+                  pasajerosFilter.map((item, index) => (
+                    <View key={index} style={{ height: 35, width: "95%", justifyContent: "center", alignItems: "center", }}>
+                      <View style={{ width: "100%", height: "95%", alignItems: "center", justifyContent: "space-between", display: "flex", flexDirection: "row", }}>
+                        <Text style={{ fontWeight: "400", fontSize: 12, lineHeight: 14, color: "#564C71" }}>{item.nombre}, {item.apellido}</Text>
+                        <Switch
+                          onValueChange={() => toggleSwitch(index)}
+                          value={item.isEnabled || false}
+                          trackColor={{ false: '#D9D9D9', true: '#93E396' }}
+                          style={{ alignSelf: "flex-end" }}
+                        />
+                      </View>
+                    </View>
+                  ))
+                ) : (
+                  <View style={{ justifyContent: "center", alignItems: "center", width: "100%" }}>
+                    <ActivityIndicator size="small" color="#0000ff" />
+                  </View>
+                )}
               </View>
               :
               null
           }
-          <View style={{ width: "100%", display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-around", height: isExpanded ? 70 : "100%", borderBottomWidth: isExpanded === true ? 1 : 0, borderColor: "#CDD1DF" }}>
-            {/* Contenido del componente */}
-            <View style={{ backgroundColor: color !== false ? "#37E67D" : colors !== false ? "#FF6669" : "#E5EBFF", width: 48, height: 48, alignItems: "center", justifyContent: "center", borderRadius: 10 }}>
-              <Text style={{ fontSize: 20, fontWeight: "600", lineHeight: 24, color: "#564C71" }}>{contador ? contador : 0}</Text>
-            </View>
-            <View style={{ width: "60%" }}>
-              <Text style={{ fontSize: 12, fontWeight: "800", lineHeight: 14, color: "#564C71" }}>{data.num}</Text>
-              <Text style={{ fontSize: 12, fontWeight: "400", lineHeight: 14, color: "#564C71" }}>{data.colegio}</Text>
-            </View>
-            <TouchableOpacity onPress={toggleExpand} style={{ alignItems: 'center' }}>
-              {/* Botón flecha */}
-              <Text>{isExpanded ? <Image source={require("../../../assets/Not_more.png")} style={{ width: 24, height: 24 }} /> : <Image source={require("../../../assets/expand_more.png")} style={{ width: 24, height: 24 }} />}</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={{ alignItems: "center", justifyContent: "center", width: "100%" }}>
-            {
-              isExpanded ?
-                <View style={{ alignItems: "center", justifyContent: "center", width: "100%", }}>
-                  <View style={{ width: "95%", height: 80, borderBottomWidth: 1, borderColor: "#CDD1DF" }}>
-                    <View style={{ width: "100%", height: "50%", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                      <Text style={{ fontWeight: "800", fontSize: 12, lineHeight: 14, color: "#564C71" }}>
-                        Pasajeros
-                      </Text>
-                      <Text style={{ fontWeight: "800", fontSize: 12, lineHeight: 14, color: "#564C71" }}>
-                        Estado presente
-                      </Text>
-                    </View>
-                    <View style={{ width: "100%", height: "50%", display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                      <Text style={{ fontWeight: "600", fontSize: 12, lineHeight: 14, color: "#564C71" }}>
-                        SELECCIONAR TODOS
-                      </Text>
-                      <Switch
-                        onValueChange={toggleSwitchGlobal}
-                        value={isEnabledGlobal}
-                        trackColor={{ false: '#D9D9D9', true: '#93E396' }}
-                      />
-                    </View>
-                  </View>
-                  {/* {
-                    pasajerosFilter ?
-                      <FlatList
-                        style={{ maxHeight: 160, maxWidth: "100%" }}
-                        data={pasajerosFilter}
-                        keyExtractor={(item, index) => index.toString()}
-                        renderItem={({ item, index }) => (
-                          <View style={{ height: 40, width: "100%", justifyContent: "center", alignItems: "center" }}>
-                            <View style={{ width: "95%", height: "95%", alignItems: "center", justifyContent: "space-between", display: "flex", flexDirection: "row" }}>
-                              <Text style={{ fontWeight: "400", fontSize: 12, lineHeight: 14, color: "#564C71" }}>{item.nombre}, {item.apellido}</Text>
-                              <Switch
-                                onValueChange={() => toggleSwitch(index)}
-                                value={item.isEnabled || false}
-                                trackColor={{ false: '#D9D9D9', true: '#93E396' }}
-                                style={{ alignSelf: "flex-end" }}
-                              />
-                            </View>
-                          </View>
-                        )}
-                      />
-                      :
-                      <View style={{ justifyContent: "center", alignItems: "center", width: "100%" }}>
-                        <ActivityIndicator size="small" color="#0000ff" />
-                      </View>
-                  } */}
-                  {pasajerosFilter ? (
-                    pasajerosFilter.map((item, index) => (
-                      <View key={index} style={{ height: 35, width: "95%", justifyContent: "center", alignItems: "center",}}>
-                        <View style={{ width: "100%", height: "95%", alignItems: "center", justifyContent: "space-between", display: "flex", flexDirection: "row",}}>
-                          <Text style={{ fontWeight: "400", fontSize: 12, lineHeight: 14, color: "#564C71" }}>{item.nombre}, {item.apellido}</Text>
-                          <Switch
-                            onValueChange={() => toggleSwitch(index)}
-                            value={item.isEnabled || false}
-                            trackColor={{ false: '#D9D9D9', true: '#93E396' }}
-                            style={{ alignSelf: "flex-end" }}
-                          />
-                        </View>
-                      </View>
-                    ))
-                  ) : (
-                    <View style={{ justifyContent: "center", alignItems: "center", width: "100%" }}>
-                      <ActivityIndicator size="small" color="#0000ff" />
-                    </View>
-                  )}
-                </View>
-                :
-                null
-            }
-          </View>
-          {showAlert2 ? getAlert() : null}
-        </Animated.View>
-        <AwesomeAlert
+        </View>
+        {showAlert2 ? getAlert() : null}
+      </Animated.View>
+      <AwesomeAlert
         show={showAlert}
         showProgress={false}
         title="Se confirmaron la asistencia de los alumnos correctamente!"
@@ -307,7 +284,8 @@ export function ComponenteExpandible({ index, data, seteo, setModificandoTotal, 
         confirmText="Aceptar"
         confirmButtonColor="#DD6B55"
         onConfirmPressed={() => {
-          hideAlert();
+          setShowAlert(false);
+          setIsExpanded(false);
         }}
       />
       {/* </ScrollView> */}

@@ -8,7 +8,8 @@ import { ComponenteExpandibleFinal } from "./ComponenteExpandibleFinal";
 import AwesomeAlert from "react-native-awesome-alerts";
 import { token } from "../../../api";
 import axios from "axios";
-import { stopBackgroundService } from "./backgroundService";
+import { stopBackgroundService } from "./pruebaBackService";
+
 
 
 
@@ -20,12 +21,11 @@ export function GestionViajeFinalizar({ navigation, route }) {
   const [showAlert3, setShowAlet3] = useState(false)
   const colegiosPorViaje = useSelector((state) => state.colegiosPorViaje)
   const pasajerosPorColegio = useSelector((state) => state.pasajerosPorColegio)
-  const arrayDeNumeros = colegiosPorViaje.map(colegio => colegio.num);
   const dispatch = useDispatch()
 
   useEffect(() => {
     dispatch(getAllColegiosXViaje(miDato.dato))
-    dispatch(getAllPasajerosXColegio(arrayDeNumeros))
+    dispatch(getAllPasajerosXColegio(colegiosPorViaje))
   }, [])
 
   useEffect(() => {

@@ -144,7 +144,7 @@ export function CardsMuro({ data, controlDispatch }) {
                     {fechaFormateada}
                   </Text>
                 </View>
-                <View style={{ justifyContent: "center", alignItems: "center", display: "flex", flexDirection: "row", position: "absolute", bottom: -13, right: 10, }}>
+                <View style={{ justifyContent: "center", alignItems: "center", display: "flex", flexDirection: "row", position: "absolute", bottom: -28, right: 10}}>
                   {
                     emojisTop3.length !== 0 ?
                       <View >
@@ -156,12 +156,12 @@ export function CardsMuro({ data, controlDispatch }) {
                       </View>
                   }
                 </View>
-                <View style={{ width: "90%", height: "60%" }}>
+                <View style={{ width: "90%", height: "60%", zIndex:-1  }}>
                   <Text style={{ fontSize: 12, fontWeight: "400", color: "#000000" }}>
                     {data.texto}
                   </Text>
                 </View>
-                <View style={{ width: "90%", height: "13%", justifyContent: "center" }}>
+                <View style={{ width: "90%", height: "13%", justifyContent: "center", zIndex:-1 }}>
                   <Text style={{ fontSize: 12, fontWeight: "bold", color: "#000000" }}>
                     {totalReacciones} Reacciones
                   </Text>
@@ -178,12 +178,12 @@ export function CardsMuro({ data, controlDispatch }) {
                   {fechaFormateada}
                   </Text>
                 </View>
-                <View style={{ width: "90%", height: "50%", }}>
+                <View style={{ width: "90%", height: "50%", zIndex:-1 }}>
                   <Text style={{ fontSize: 12, fontWeight: "400", color: "#000000" }}>
                     {data.texto}
                   </Text>
                 </View>
-                <View style={{ width: "90%", height: "20%", justifyContent: "center", }}>
+                <View style={{ width: "90%", height: "20%", justifyContent: "center", zIndex:-1}}>
                   <Text style={{ fontSize: 12, fontWeight: "bold", color: "#000000" }}>
                     {totalReacciones} Reacciones
                   </Text>
@@ -218,14 +218,14 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   cardContainer: {
-    height: Height * 67.1 / 100,
-    width: "97%",
+    height: 550,
+    width: 373,
     backgroundColor: "white",
     borderRadius: 20,
   },
   cardContainerSinImg: {
     height: Height * 20 / 100,
-    width: 370,
+    width: 373,
     backgroundColor: "white",
     borderRadius: 20,
     alignItems: "center",
@@ -244,8 +244,8 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20
   },
   imageContainer: {
-    height: '70%',
-    width: '100%',
+    height: 373,
+    width: 373,
   },
   swiperSlide: {
     justifyContent: 'center',

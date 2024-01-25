@@ -169,9 +169,12 @@ export function getAllColegiosXViaje(num) {
 	}
 }
 
-export function getAllPasajerosXColegio(nums) {
+export function getAllPasajerosXColegio(data) {
 	return async function (dispatch) {
 		try {
+			console.log("desde actions: ",data);
+			let nums;
+			nums = data.map((data) => data.num)
 			// Crear un array de promesas para cada solicitud individual
 			const promesas = nums.map(async (num) => {
 				return axios.get(`${API_URL}/pasajero/${num}`, {

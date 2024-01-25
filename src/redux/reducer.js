@@ -13,7 +13,7 @@ const initialState = {
   pasajerosPorColegio: [],
   pasajeroPorColegioFilter: [],
   itinerario: [],
-  destino: []
+  destino: [],
 }
 
 function rootReducer(state = initialState, action) {

@@ -1,8 +1,8 @@
 import { StyleSheet, Text, View, Animated, TouchableOpacity, Alert, ScrollView } from "react-native";
 import { Header } from "../muro/Header";
 import { useDispatch, useSelector } from "react-redux";
-import React, { useEffect, useRef, useState } from "react";
-import { getAllColegiosXViaje, getAllPasajerosXColegio } from "../../../redux/actions";
+import React, { useEffect, useState } from "react";
+import { getAllColegiosXViaje, getAllPasajerosXColegio, } from "../../../redux/actions";
 import { ComponenteExpandible } from "./ComponenteExpandible";
 import { ButtonCustom } from "../../../components/ButtomCustom";
 import AwesomeAlert from "react-native-awesome-alerts";
@@ -22,7 +22,7 @@ export function GestionViajeTwo({ navigation, route }) {
   const [showAlert, setShowAlert] = useState(false)
   const [showAlert2, setShowAlert2] = useState(false)
   const [showAlert3, setShowAlert3] = useState(false)
-  let arrayDeNumeros;
+  const [arrayDeNumeros, setArrayDeNumeros] = useState("")
   const showAlertFunc = () => {
     setShowAlert(true);
   };
@@ -78,9 +78,18 @@ export function GestionViajeTwo({ navigation, route }) {
     )
   }
 
+  useFocusEffect(
+    React.useCallback(() => {
+      console.log("se monto");
+      setShowAlert2(true)
+      setTimeout(() => {
+        setShowAlert2(false)
+      }, 5000)
+    }, [])
+  );
+
   useEffect(() => {
-    console.log("tengo data");
-    setShowAlert2(true)
+    //setShowAlert2(true)
     try {
       axios.get(`/viaje/${data[0]}`,
         {
@@ -92,14 +101,15 @@ export function GestionViajeTwo({ navigation, route }) {
       ).then((res) => {
         if (res.status === 200) {
           if (res.data.inicioViaje === true && res.data.finViaje === false) {
-            setShowAlert2(false)
+            console.log("tengo data");
+            //setShowAlert2(false)
             show()
           } else if (res.data.inicioViaje === true && res.data.finViaje === true) {
-            setShowAlert2(false)
+            //setShowAlert2(false)
             console.error("El viaje ya finalizo! ")
             navigation.navigate("gestion de pasajeros")
           } else {
-            setShowAlert2(false)
+            //setShowAlert2(false)
             console.log("Controlar Alumnos Presentes!");
           }
         }
@@ -116,23 +126,15 @@ export function GestionViajeTwo({ navigation, route }) {
 
   useFocusEffect(
     React.useCallback(() => {
-      console.log("data: ", data);
-      if (colegiosPorViaje) {
-        arrayDeNumeros = colegiosPorViaje.map(colegio => colegio.num);
-        dispatch(getAllPasajerosXColegio(arrayDeNumeros));
+      if (colegiosPorViaje.length !== 0) {
+        dispatch(getAllPasajerosXColegio(colegiosPorViaje));
       }
-
-      // Limpieza (si es necesaria) al salir del enfoque
-      return () => {
-        // Código de limpieza si es necesario
-        arrayDeNumeros = 0;
-      };
     }, [colegiosPorViaje])
   );
 
   useEffect(() => {
     console.log("modifico");
-    dispatch(getAllPasajerosXColegio(arrayDeNumeros))
+    dispatch(getAllPasajerosXColegio(colegiosPorViaje))
   }, [showAlert])
 
   useEffect(() => {
