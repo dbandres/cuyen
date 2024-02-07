@@ -57,16 +57,17 @@ export default function Login({ navigation }) {
 			.then((response) => {
 				if (response.payload.status === 200) {
 					// accedo a la respuesta de la acción
-					console.log(JSON.stringify(response.payload.data, null, 3))
+					//console.log(JSON.stringify(response.payload.data, null, 3))
+					console.log(response.payload.data.usuario.id);
 					setUserData({
 						jwt: response.payload.data.token,
 						nombre: response.payload.data.usuario.nombre,
 						apellido: response.payload.data.usuario.apellido,
 						email: response.payload.data.usuario.email,
 						usuario: response.payload.data.usuario.usuario,
-						telefono: response.payload.data.usuario.telefono,
 						contrato: response.payload.data.usuario.contrato,
-						rol: response.payload.data.usuario.rol
+						rol: response.payload.data.usuario.rol,
+						id: response.payload.data.usuario.id
 					})
 					AsyncStorage.setItem("userStorage", JSON.stringify(response.payload.data))
 					Auth.signIn(response.payload.data.usuario.email, response.payload.data.usuario.password)

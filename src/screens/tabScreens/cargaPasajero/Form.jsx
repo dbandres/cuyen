@@ -2,7 +2,6 @@ import { Text, TouchableOpacity, View, Animated, Image } from "react-native";
 import { CustomInput } from "../../auth/registerScreen/CustomInput";
 import { useForm } from "react-hook-form";
 import { useContext, useEffect, useRef, useState } from "react";
-import DropDownPicker from "react-native-dropdown-picker";
 import CheckBox from "@react-native-community/checkbox";
 import { ButtonCustom } from "../../../components/ButtomCustom";
 import { UserContext } from "../../../context/UserContext";
@@ -10,14 +9,12 @@ import axios from "axios";
 import AwesomeAlert from "react-native-awesome-alerts";
 import { token } from "../../../api";
 import DatePicker from 'react-native-date-picker'
+import { ModalComponent } from "./ModalComponent";
 
-
-export function Form() {
+export function Form({agregarPasajero, setNewFetch}) {
 
   const { control, handleSubmit, setValue, watch, } = useForm()
   const [itemsArray, setItemsArray] = useState([1])
-  const [isOpen, setIsOpen] = useState(false)
-  const [selectedItems, setSelectedItems] = useState([]);
   const [toggleCheckBox, setToggleCheckBox] = useState(false)
   const [showAlert2, setShowAlert2] = useState(false)
   const { userdata } = useContext(UserContext)
@@ -33,6 +30,20 @@ export function Form() {
   const contentRef = useRef(null);
   const [isExpanded, setIsExpanded] = useState(false);
   const [cuotaSeleccionada, setCuotaSeleccionada] = useState(null);
+  const [dataCuota, setDataCuota] = useState([1, 3, 6, 9, 12])
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [datosTotales, setDatosTotales] = useState({})
+
+
+  const openModal = () => {
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+  };
+
 
   const getAlert = () => {
     return (
@@ -50,7 +61,8 @@ export function Form() {
   };
 
   const handleSubmitcarga = (data) => {
-    console.log(data);
+    setDatosTotales({data, cuotaSeleccionada, newDate})
+    openModal();
   }
 
 
@@ -64,10 +76,15 @@ export function Form() {
           'Content-Type': 'application/json',
         }
       }).then((res) => {
-        setShowAlert2(false)
+        if(res.status === 200){
+          setShowAlert2(false)
         setDataPasajero(res.data)
         setValue('username', res.data.nombre);
         setValue('userlastname', res.data.apellido);
+        }
+      }).catch((error)=>{
+          setShowAlert2(false)
+          console.log("No existe registro: ", error);
       })
     } else {
       console.log("es undefined");
@@ -188,10 +205,10 @@ export function Form() {
           borderColor: '#CDD1DF',
           borderRadius: 10,
           height: 50,
-          marginBottom: 20
+          marginBottom: 20,
         }}>
-          <TouchableOpacity style={{ width: "100%" }} onPress={() => setOpen(true)}>
-          <Image source={require("../../../assets/calendar_month.png")} style={{ width: 16, height: 20 }} />
+          <TouchableOpacity style={{ width: "100%", display:"flex", flexDirection:"row", alignItems:"center" }} onPress={() => setOpen(true)}>
+          <Image source={require("../../../assets/calendar_month.png")} style={{ width: 17, height: 20, marginLeft:5 }} />
             {
               newDate ?
                 <Text style={{
@@ -213,7 +230,8 @@ export function Form() {
                   fontSize: 14,
                   lineHeight: 16,
                   borderRadius: 8,
-                  color: "#CDD1DF"
+                  color: "#CDD1DF",
+                  marginLeft:2
                 }}>
                   Fecha de nacimiento
                 </Text>
@@ -277,9 +295,32 @@ export function Form() {
                   {
                     isExpanded === true && dataPasajero.length !== 0 ?
                       dataPasajero.cuotas.map((cuota, index) => (
+                        cuota === 1 ?
                         <TouchableOpacity onPress={() => handleCuotaPress(cuota)} key={index} style={{ backgroundColor: cuota === cuotaSeleccionada ? "#E5EBFF" : null, borderRadius: 10, height: 24, justifyContent: "center" }}>
                           <Text style={{ fontWeight: "600", fontSize: 14, lineHeight: 16, color: cuota === cuotaSeleccionada ? "#564C71" : "#CDD1DF", marginLeft: 5 }}>
                             {cuota} Cuota
+                          </Text>
+                        </TouchableOpacity>
+                        :
+                        <TouchableOpacity onPress={() => handleCuotaPress(cuota)} key={index} style={{ backgroundColor: cuota === cuotaSeleccionada ? "#E5EBFF" : null, borderRadius: 10, height: 24, justifyContent: "center" }}>
+                          <Text style={{ fontWeight: "600", fontSize: 14, lineHeight: 16, color: cuota === cuotaSeleccionada ? "#564C71" : "#CDD1DF", marginLeft: 5 }}>
+                            {cuota} Cuotas
+                          </Text>
+                        </TouchableOpacity>
+                      ))
+                      :
+                      isExpanded === true && dataPasajero.length === 0 ?
+                      dataCuota.map((cuota, index)=>(
+                        cuota === 1 ?
+                        <TouchableOpacity onPress={() => handleCuotaPress(cuota)} key={index} style={{ backgroundColor: cuota === cuotaSeleccionada ? "#E5EBFF" : null, borderRadius: 10, height: 24, justifyContent: "center" }}>
+                          <Text style={{ fontWeight: "600", fontSize: 14, lineHeight: 16, color: cuota === cuotaSeleccionada ? "#564C71" : "#CDD1DF", marginLeft: 5 }}>
+                            {cuota} Cuota
+                          </Text>
+                        </TouchableOpacity>
+                        :
+                        <TouchableOpacity onPress={() => handleCuotaPress(cuota)} key={index} style={{ backgroundColor: cuota === cuotaSeleccionada ? "#E5EBFF" : null, borderRadius: 10, height: 24, justifyContent: "center" }}>
+                          <Text style={{ fontWeight: "600", fontSize: 14, lineHeight: 16, color: cuota === cuotaSeleccionada ? "#564C71" : "#CDD1DF", marginLeft: 5 }}>
+                            {cuota} Cuotas
                           </Text>
                         </TouchableOpacity>
                       ))
@@ -314,16 +355,21 @@ export function Form() {
         </View>
         <View style={{ height: 47, width: 331, marginTop: "5%" }}>
           <ButtonCustom
+            disabled={toggleCheckBox === true ? false : true}
             text="Agregar"
-            color="#FF3D00"
+            color={toggleCheckBox === true ? "#FF3D00" : "#CDD1DF"}
             onPress={handleSubmit(handleSubmitcarga)}
           />
         </View>
+
+        <ModalComponent visible={modalVisible} onClose={closeModal} data={datosTotales} setNewFetch={setNewFetch} agregarPasajero={agregarPasajero}/>
+
         <View style={{ height: 47, width: 331, marginTop: "2%", borderColor: "#3462BF", borderWidth: 1, borderRadius: 10 }}>
           <ButtonCustom
             text="Cancelar"
             color="#FFFFFF"
             register={true}
+            onPress={agregarPasajero}
           />
         </View>
       </View>

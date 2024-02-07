@@ -65,6 +65,12 @@ export function CustomInput({ control, name, placeholder, rules = {}, secureText
 														source={require("../../../assets/mobile_friendly.png")}
 														style={{ width: 18, height: 22 }}
 													/>
+												:
+												placeholder === "Importe del viaje" ?
+												<Image
+														source={require("../../../assets/attach_money.png")}
+														style={{ width: 10, height: 18 }}
+													/>
 													:
 													null
 						}

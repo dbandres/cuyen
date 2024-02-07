@@ -9,9 +9,9 @@ export function UserProvider({children}){
         apellido: "",
         email: "",
         usuario: "",
-        telefono: "",
         contrato: "",
-        rol: ""
+        rol: "",
+        id: ""
     });
 
     return(

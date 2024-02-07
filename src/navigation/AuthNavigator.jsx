@@ -38,7 +38,8 @@ export default function AuthNavigator() {
 				nombre: parseado.usuario?.nombre,
 				rol: parseado.usuario?.rol,
 				telefono: parseado.usuario?.telefono,
-				usuario: parseado.usuario?.usuario
+				usuario: parseado.usuario?.usuario,
+				id: parseado.usuario?.id
 			})
 		}
 	}

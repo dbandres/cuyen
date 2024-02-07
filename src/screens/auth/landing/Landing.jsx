@@ -15,6 +15,7 @@ export function Landing({navigation}) {
 
   const { userdata } = useContext(UserContext)
 
+  console.log("userData: ", userdata);
 
   const contactoRef = useRef();
   const scrollViewRef = useRef();

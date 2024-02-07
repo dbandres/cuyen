@@ -12,6 +12,7 @@ export const GET_ALL_PASAJEROS_X_COLEGIO = "GET_ALL_PASAJEROS_X_COLEGIO";
 export const GET_ALL_PASAJEROS_X_COLEGIO_FILTER = "GET_ALL_PASAJEROS_X_COLEGIO_FILTER";
 export const GET_ITINERARIO = "GET_ITINERARIO";
 export const GET_DESTINO = "GET_DESTINO"; 
+export const GET_PASAJERO = "GET_PASAJERO";
 
 
 export function loginAuth(usuario, contraseña) {
@@ -258,6 +259,25 @@ export function getDestino(num){
 			})
 		} catch (error) {
 			console.log('Error de Axios getDestino:', error)
+		}
+	}
+}
+
+export function getPasajero(num){
+	return async function(dispatch){
+		try {
+			const response = await axios.get(`/pasajero/relation/${num}`,{
+				headers:{
+					'x-access-token': `${token}`,
+					'Content-Type': 'application/json',
+				}
+			})
+			return dispatch({
+				type: GET_PASAJERO,
+				payload: response.data
+			})
+		} catch (error) {
+			console.log('Error de Axios getPasajero:', error)
 		}
 	}
 }

@@ -145,7 +145,7 @@ function DrawerNavigator() {
 		>
 			<Drawer.Screen name="Inicio" component={RouteLanding} options={{ headerShown: false }} />
 			<Drawer.Screen name="info-viaje" component={RouteInfoViaje} options={{ headerShown: false }} />
-			<Drawer.Screen name="carga-pasajero" component={CargaPasajero} options={{ headerShown: false }} />
+			<Drawer.Screen name="carga-pasajero" component={CargaPasajero} options={{ headerShown: false }} /> 
 			<Drawer.Screen name="muro" component={RouteMuro} options={{ headerShown: false }} />
 			<Drawer.Screen name="ubiViaje" component={Ubicacion} options={{ headerShown: false }} />
 			<Drawer.Screen name="folleto-screen" component={Folleto} options={{ headerShown: false }} />
