@@ -1,83 +1,187 @@
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { handleCameraPermission, openCamera, openImageLibrary, requestGalleryPermission } from "./ImagePicker";
 import AwesomeAlert from "react-native-awesome-alerts";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import uploadImages from "./uploadImages";
+import { EditarAdjunto } from "./EditarAdjunto";
+
+export function AdjuntarArchivos({ children, increaseProgress, data }) {
 
 
-export function AdjuntarArchivos({ children }) {
+  const [showAlert, setShowAlert] = useState(false);
+  const [showAlert2, setShowAlert2] = useState(false);
+  const [cantidadImg, setCantidadImg] = useState(false);
+  const [showModal, setShowModal] = useState(false)
 
-  const [showAlert, setShowAlert] = useState(false)
-  const [cantidadImg, setCantidadImg] = useState(false)
+  const [limite, setLimite] = useState(2)
+
+  const [fichaMedicaImg, setFichaMedicaImg] = useState("")
+  const [dniImg, setDniImg] = useState([])
+  const [declaracionImg, setDeclaracionImg] = useState("")
+  const [carnet, setCarnet] = useState([])
+
+  const [dniUrl, setDniUrl] = useState([])
+  const [carnetUrl, setCarnetUrl] = useState([])
+  const [fichaUrl, setFichaUrl] = useState("")
+  const [declaracionUrl, setDeclaracionUrl] = useState("")
 
   const handleGalleryPermission = async () => {
-    if(fichaMedicaImg || dniImg || declaracionImg || carnet){
+    if (fichaMedicaImg || dniImg.length === 2 || declaracionImg || carnet.length === 2) {
       console.log("Tengo foto");
-    }else{
+      setShowAlert(false)
+      setShowAlert2(false)
+      setShowModal(true)
+    } else {
       const result = await requestGalleryPermission();
-      result === "granted" ? openLocalCamera() : null
-    }
-  };
-
-  const requestCameraPermission = async () => {
-    if(fichaMedicaImg || dniImg || declaracionImg || carnet){
-      console.log("Tengo foto");
-    }else{
-      const result = await handleCameraPermission();
-      result === "granted" ? console.log(result) : null
+      console.log(result);
+      result == "granted" ? setShowAlert(!showAlert) : null
     }
   }
 
-  const [fichaMedicaImg, setFichaMedicaImg] = useState("")
-  const [dniImg, setDniImg] = useState("")
-  const [declaracionImg, setDeclaracionImg] = useState("")
-  const [carnet, setCarnet] = useState("")
+  const requestCameraPermission = async () => {
+    if (fichaMedicaImg || dniImg.length === 2 || declaracionImg || carnet.length === 2) {
+      console.log("Tengo foto");
+    } else {
+      const result = await handleCameraPermission();
+      result === "granted" ? openLocalCamera() : null
+    }
+  }
+
+  const closeModal = () => {
+    setShowModal(false)
+  }
 
   const openGalery = async () => {
     setShowAlert(false)
-    setCantidadImg(false)
+    setShowAlert2(false)
     if (children === "Ficha medica") {
       const imgGalery = await openImageLibrary(1)
       setFichaMedicaImg(imgGalery);
-      if(imgGalery){
-        setCantidadImg(true)
-      }
     } else if (children === "Declaración jurada") {
       const imgGalery = await openImageLibrary(1)
       setDeclaracionImg(imgGalery);
-      if(imgGalery){
-        setCantidadImg(true)
-      }
     } else if (children === "Documento de identidad") {
-      const imgGalery = await openImageLibrary(2)
-      setDniImg(imgGalery);
-      if(imgGalery){
-        setCantidadImg(true)
-      }
+      await openImageLibrary(limite)
+        .then((res) => {
+          res.forEach(element => {
+            setDniImg(prevImagenes => [...prevImagenes, element]);
+          });
+        })
+        .catch((error) => {
+          console.error('Error al subir imágenes:', error.message);
+        })
     } else if (children === "Carnet de obra social") {
-      const imgGalery = await openImageLibrary(2)
-      setCarnet(imgGalery);
-      if(imgGalery){
-        setCantidadImg(true)
-      }
+      await openImageLibrary(limite)
+        .then((res) => {
+          res.forEach(element => {
+            setCarnet(prevImagenes => [...prevImagenes, element]);
+          });
+        })
+        .catch((error) => {
+          console.error('Error al subir imágenes:', error.message);
+        })
     }
   }
 
-  const openLocalCamera = async () =>{
+  const openLocalCamera = async () => {
     setShowAlert(false)
     setCantidadImg(false)
-
-    const imgCamera = await openCamera()
-    console.log("img desde camara: ", imgCamera);
+    if (children === "Ficha medica") {
+      const imgCamera = await openCamera()
+      setFichaMedicaImg(imgCamera);
+    } else if (children === "Declaración jurada") {
+      const imgCamera = await openCamera()
+      setDeclaracionImg(imgCamera);
+    } else if (children === "Documento de identidad") {
+      const imgCamera = await openCamera()
+      setDniImg(prevImagenes => [...prevImagenes, imgCamera]);
+    } else if (children === "Carnet de obra social") {
+      const imgCamera = await openCamera()
+      setCarnet(prevImagenes => [...prevImagenes, imgCamera]);
+    }
   }
 
-  const handleError = error => {
-    // Maneja los errores aquí si es necesario
-    console.error(error);
-  };
+  useEffect(() => {
+    setTimeout(() => {
+      if (children === "Documento de identidad" && dniImg.length === 1) {
+        console.log("Falta una foto");
+        setLimite(1)
+        setShowAlert2(true)
+      } else if (children === "Carnet de obra social" && carnet.length === 1) {
+        console.log("Falta una foto");
+        setLimite(1)
+        setShowAlert2(true)
+      }
+      else {
+        setShowAlert2(false)
+      }
+    }, 3000)
+  }, [dniImg, carnet])
 
-  const handleImageSelection = selectedImages => {
-    // Aquí puedes manejar las imágenes seleccionadas en tu componente padre
-    console.log('Imágenes seleccionadas:', selectedImages);
+  useEffect(() => {
+    console.log("entro aca");
+    if (dniImg.length === 2) {
+      uploadImages(dniImg, "dni", data)
+        .then(res => {
+          console.log('Todas las imágenes de dni se han subido correctamente:', res);
+          setCantidadImg(true)
+          setShowAlert(false)
+          setShowAlert2(false)
+          setDniUrl(res)
+          increaseProgress(20)
+        })
+        .catch(error => {
+          console.error('Error al subir imágenes:', error.message);
+          setDniImg([])
+        });
+    } else if (carnet.length === 2) {
+      uploadImages(carnet, "carnet", data)
+        .then(res => {
+          console.log('Todas las imágenes de carnet se han subido correctamente:', res);
+          setCantidadImg(true)
+          setCarnetUrl(res)
+          increaseProgress(20)
+        })
+        .catch(error => {
+          console.error('Error al subir imágenes:', error.message);
+          setCarnet([])
+        });
+    } else if (declaracionImg.length === 1) {
+      uploadImages(declaracionImg, "declaracion", data)
+        .then(res => {
+          console.log('Todas las imágenes de declaracion jurada se han subido correctamente:', res);
+          setCantidadImg(true)
+          setDeclaracionUrl(res[0])
+          increaseProgress(20)
+        })
+        .catch(error => {
+          console.error('Error al subir imágenes:', error.message);
+          setDeclaracionImg("")
+        });
+    } else if (fichaMedicaImg) {
+      console.log("fchas: ",fichaMedicaImg);
+      uploadImages(fichaMedicaImg, "ficha", data)
+        .then(res => {
+          console.log('Todas las imágenes de ficha medica se han subido correctamente:', res);
+          setCantidadImg(true)
+          setFichaUrl(res[0])
+          increaseProgress(20)
+        })
+        .catch(error => {
+          console.error('Error al subir imágenes:', error.message);
+          setFichaMedicaImg("")
+        });
+    }
+  }, [dniImg, carnet, fichaMedicaImg, declaracionImg])
+
+  const handleDismiss = () => {
+    // Lógica adicional al cerrar el alerta
+    console.log('Alerta cerrado');
+    setShowAlert(false)
+    setShowAlert2(false)
+    setLimite(2)
+    setCarnet([])
+    setDniImg([])
   };
 
   const getAlert = (title, message, confirmBtn, cancelBtn, confirmText, cancelText) => {
@@ -89,6 +193,36 @@ export function AdjuntarArchivos({ children }) {
         message={message}
         closeOnTouchOutside={true}
         closeOnHardwareBackPress={true}
+        onDismiss={handleDismiss}
+        showConfirmButton={confirmBtn}
+        showCancelButton={cancelBtn}
+        confirmText={confirmText}
+        cancelText={cancelText}
+        confirmButtonColor="#008000"
+        cancelButtonColor="red"
+        titleStyle={{ color: "red" }}
+        onConfirmPressed={() => {
+          openGalery()
+          setShowAlert(false)
+        }}
+        onCancelPressed={() => {
+          requestCameraPermission()
+          setShowAlert(false)
+        }}
+      />
+    )
+  }
+
+  const alertCantidad = (show, title, message, confirmBtn, cancelBtn, confirmText, cancelText) => {
+    return (
+      <AwesomeAlert
+        show={show}
+        showProgress={false}
+        title={title}
+        message={message}
+        closeOnTouchOutside={true}
+        closeOnHardwareBackPress={true}
+        onDismiss={handleDismiss}
         showConfirmButton={confirmBtn}
         showCancelButton={cancelBtn}
         confirmText={confirmText}
@@ -100,32 +234,7 @@ export function AdjuntarArchivos({ children }) {
           openGalery()
         }}
         onCancelPressed={() => {
-          // setShowAlert(false)
-          //openLocalCamera()
           requestCameraPermission()
-        }}
-      />
-    )
-  }
-
-  const alertCantidad = () => {
-    return (
-      <AwesomeAlert
-        show={showAlert}
-        showProgress={false}
-        title={title}
-        message={message}
-        closeOnTouchOutside={false}
-        closeOnHardwareBackPress={false}
-        showConfirmButton={confirmBtn}
-        showCancelButton={cancelBtn}
-        confirmText={confirmText}
-        cancelText={cancelText}
-        confirmButtonColor="#008000"
-        cancelButtonColor="red"
-        titleStyle={{ color: "red" }}
-        onConfirmPressed={() => {
-          openGalery()
         }}
       />
     )
@@ -133,7 +242,7 @@ export function AdjuntarArchivos({ children }) {
 
   const renderImage = (archivo, cantidadImg) => {
     const excepciones = ["Ficha medica", "Declaración jurada", "Documento de identidad", "Carnet de obra social"];
-  
+
     if (excepciones.includes(archivo) && cantidadImg === true) {
       return (
         <Image
@@ -153,8 +262,16 @@ export function AdjuntarArchivos({ children }) {
 
   return (
     <TouchableOpacity onPress={handleGalleryPermission} style={{ width: 65, height: 96, alignItems: "center" }}>
+      <EditarAdjunto visible={showModal} onClose={closeModal} children={children}
+        data={
+          children === "Ficha medica" ? fichaUrl : 
+          children === "Documento de identidad" ? dniUrl :
+          children === "Carnet de obra social" ? carnetUrl :
+          children === "Declaración jurada" ? declaracionUrl : null
+        }
+      />
       <View style={{ height: 20, justifyContent: "flex-end" }}>
-        <Text style={{ fontWeight: "400", fontSize: 8, lineHeight: 9, textAlign: "center" }}>
+        <Text style={{ fontWeight: "400", fontSize: 8, lineHeight: 9, textAlign: "center", color:"#564C71" }}>
           {children}
         </Text>
       </View>
@@ -164,13 +281,19 @@ export function AdjuntarArchivos({ children }) {
         }
       </View>
       {
-        showAlert === true && children === "Documento de identidad" ? getAlert(`Vas a adjuntar un imagen para ${children}`, "Recorda que solo podes adjuntar DOS imagenes", true, true, "Galeria", "Camara") : null
+        showAlert === true && children === "Documento de identidad" ? getAlert(`Vas a adjuntar una imagen para ${children}`, "Recorda que solo podes adjuntar DOS imagenes (Frente y Dorso)", true, true, "Galeria", "Camara") : null
       }
       {
-        showAlert === true && children === "Carnet de obra social" ? getAlert(`Vas a adjuntar un imagen para ${children}`, "Recorda que solo podes adjuntar DOS imagenes", true, true, "Galeria", "Camara") : null
+        showAlert2 === true && children === "Documento de identidad" ? alertCantidad(showAlert2, `Recordá que para ${children} son DOS imagenes (Frente y Dorso)`, "Te falta 1 imagen", true, true, "Galeria", "Camara") : null
       }
       {
-        showAlert === true && children === "Ficha medica" ? getAlert(`Vas a adjuntar un imagen para ${children}`, "Recorda que solo podes adjuntar UNA imagen", true, true, "Galeria", "Camara") : null
+        showAlert === true && children === "Carnet de obra social" ? getAlert(`Vas a adjuntar una imagen para ${children}`, "Recorda que solo podes adjuntar DOS imagenes", true, true, "Galeria", "Camara") : null
+      }
+      {
+        showAlert2 === true && children === "Carnet de obra social" ? alertCantidad(showAlert2, `Recordá que para ${children} son DOS imagenes (Frente y Dorso)`, "Te falta 1 imagen", true, true, "Galeria", "Camara") : null
+      }
+      {
+        showAlert === true && children === "Ficha medica" ? getAlert(`Vas a adjuntar una imagen para ${children}`, "Recorda que solo podes adjuntar UNA imagen", true, true, "Galeria", "Camara") : null
       }
       {
         showAlert === true && children === "Declaración jurada" ? getAlert(`Vas a adjuntar un imagen para ${children}`, "Recorda que solo podes adjuntar UNA imagen", true, true, "Galeria", "Camara") : null

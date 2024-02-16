@@ -121,28 +121,31 @@ export function ModalComponent({ visible, onClose, data, inputChanged, setNewFet
     }
   }
 
+  const transparent = "rgba(0,0,0,0.5)"
 
   return (
     <Modal
       animationType="slide"
-      transparent={false}
+      transparent={true}
       visible={visible}
       onRequestClose={onClose}
     >
-      {/* <BlurView
-        style={{ flex: 1 }}
-        blurType="dark"
-        blurAmount={10}
-        reducedTransparencyFallbackColor="white"
-      > */}
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor:transparent }}>
         {/* Contenido del modal con fondo blanco */}
         <View style={{ borderRadius: 10, width: 373, height: 449, backgroundColor: "white", justifyContent: 'center', alignItems: 'center' }}>
           <View style={{ width: 275, height: 57, alignItems: "center", justifyContent: "center" }}>
-            <Text style={{ color: "#564C71", fontWeight: "500", fontSize: 16, lineHeight: 19, textAlign: "center" }}>
-              Se va a dar de alta el pasajero y se crearán las cuotas del viaje.
-              ¿Desea confirmar?
-            </Text>
+            {
+              data?.data ?
+                <Text style={{ color: "#564C71", fontWeight: "500", fontSize: 16, lineHeight: 19, textAlign: "center" }}>
+                  Se va a dar de alta el pasajero y se crearán las cuotas del viaje.
+                  ¿Desea confirmar?
+                </Text>
+                :
+                <Text style={{ color: "#564C71", fontWeight: "500", fontSize: 16, lineHeight: 19, textAlign: "center" }}>
+                  Se cambiarán los datos del pasajero.
+                  ¿Desea confirmar?
+                </Text>
+            }
           </View>
           <View style={{ width: 306, height: 190, justifyContent: "center", alignItems: "center" }}>
             {

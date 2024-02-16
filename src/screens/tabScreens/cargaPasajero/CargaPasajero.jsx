@@ -52,10 +52,10 @@ export function CargaPasajero({ navigation }) {
 				justifyContent: "flex-start"
 			}}>
 				<Header
-					children="Info del viaje "
+					children="Registro de pasajero"
 					navigation={navigation}
 				/>
-				<View style={{ width: 373, height: 91, backgroundColor: "#FFFFFF", marginTop: 20, borderRadius: 10, alignItems: "center", justifyContent: "flex-start", display: "flex", flexDirection: "row", padding: 20 }}>
+				{/* <View style={{ width: 373, height: 91, backgroundColor: "#FFFFFF", marginTop: 20, borderRadius: 10, alignItems: "center", justifyContent: "flex-start", display: "flex", flexDirection: "row", padding: 20 }}>
 					<View style={{ width: 48, height: 48, borderRadius: 10, backgroundColor: "#FF3D00", alignItems: "center", justifyContent: "center" }}>
 						<Image
 							source={require('../../../assets/destino.png')}
@@ -70,7 +70,7 @@ export function CargaPasajero({ navigation }) {
 							destino
 						</Text>
 					</View>
-				</View>
+				</View> */}
 				{
 					pasajero.length !== 0 ?
 						pasajero?.map((pas, index) => (

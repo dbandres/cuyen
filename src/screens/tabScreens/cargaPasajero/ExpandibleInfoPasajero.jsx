@@ -6,16 +6,19 @@ import { MensajeAlerta } from "./MesajeAlerta";
 import { AdjuntarArchivos } from "./AdjuntarArchivos";
 import { FormEditarDatos } from "./FormEditarDatos";
 import { ModalComponent } from "./ModalComponent";
+import { ModalDieta } from "./ModalDieta";
 
 
 export function ExpandibleInfoPasajero({ data, setNewFetch }) {
 
   const [contentHeight, setContentHeight] = useState(0);
+  const [error, setError] = useState(true)
   const [isExpanded, setIsExpanded] = useState(false);
   const [heightAnim] = useState(new Animated.Value(80)); // Inicia con la altura mínima
   const contentRef = useRef(null);
   const [seteoData, setSeteoData] = useState(false)
   const [editing, setEditing] = useState(false)
+  const [progressAttachment, setProgressAttachment] = useState(0)
 
   const [inputChanged, setInputChanged] = useState(false);
 
@@ -27,13 +30,23 @@ export function ExpandibleInfoPasajero({ data, setNewFetch }) {
     fechaNac: data.fechaNac,
   });
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible2, setModalVisible2] = useState(false);
   const [datosTotales, setDatosTotales] = useState({})
 
   const archivos = ["Ficha medica", "Declaración jurada", "Documento de identidad", "Carnet de obra social"];
 
+  // Función para aumentar el progreso
+  const increaseProgress = (value) => {
+    setProgressAttachment(prevProgress => prevProgress + value);
+  };
+
   const openModal = () => {
     setModalVisible(true);
   };
+
+  const openDietaModal = () => {
+    setModalVisible2(true)
+  }
 
   const closeModal = () => {
     setModalVisible(false);
@@ -46,6 +59,10 @@ export function ExpandibleInfoPasajero({ data, setNewFetch }) {
     setInputChanged(false)
     setNewDate("")
   };
+
+  const closerDietaModal = () => {
+    setModalVisible2(false)
+  }
 
   useEffect(() => {
     if (isExpanded) {
@@ -63,15 +80,15 @@ export function ExpandibleInfoPasajero({ data, setNewFetch }) {
       setIsExpanded(false)
       // Cuando se colapsa, simplemente usa la altura mínima
       Animated.timing(heightAnim, {
-        toValue: 91, // Altura mínima
+        toValue: 80, // Altura mínima
         duration: 300,
         useNativeDriver: false,
       }).start();
     }
   }, [isExpanded]);
 
-  useEffect(()=>{
-    if(newDate.length !== 0){
+  useEffect(() => {
+    if (newDate.length !== 0) {
       setFormValues({
         dni: data.dni,
         nombre: data.nombre,
@@ -79,7 +96,7 @@ export function ExpandibleInfoPasajero({ data, setNewFetch }) {
         fechaNac: newDate,
       })
     }
-  },[newDate])
+  }, [newDate])
 
   const toggleExpand = () => {
     // Envía el índice del componente al padre para gestionar la expansión individual
@@ -106,19 +123,21 @@ export function ExpandibleInfoPasajero({ data, setNewFetch }) {
   }
 
   const handleSubmit = () => {
-    setDatosTotales({formValues, id: data.id, cuotas: data.cuotas, importe:data.importe})
+    setDatosTotales({ formValues, id: data.id, cuotas: data.cuotas, importe: data.importe })
     openModal();
     setSeteoData(false)
     setEditing(false)
-    toggleExpand()
   };
 
-
-  // console.log(JSON.stringify(data, null,3 ));
+  const handleDieta = () => {
+    openDietaModal()
+    setModalVisible2(true)
+  }
 
   return (
     <ScrollView>
-      <ModalComponent visible={modalVisible} onClose={closeModal} data={datosTotales} inputChanged={inputChanged} setNewFetch={setNewFetch}/>
+      <ModalComponent visible={modalVisible} onClose={closeModal} data={datosTotales} inputChanged={inputChanged} setNewFetch={setNewFetch} />
+      <ModalDieta visible={modalVisible2} onClose={closerDietaModal} data={data} setError={setError} increaseProgress={increaseProgress}/>
       <Animated.View ref={contentRef} style={{ height: heightAnim, width: 373, backgroundColor: "white", marginTop: "5%", borderRadius: 10, justifyContent: "flex-start", alignItems: "center" }}>
         <View style={{ backgroundColor: "#FFFFFF", borderRadius: 10, alignItems: "center", display: "flex", flexDirection: "row", padding: 20, width: "100%", justifyContent: "space-between", height: isExpanded ? 91 : "100%" }}>
           <View style={{ display: "flex", flexDirection: "row" }}>
@@ -150,7 +169,7 @@ export function ExpandibleInfoPasajero({ data, setNewFetch }) {
             :
             isExpanded === true && seteoData === true && editing === true ?
               <View style={{ alignItems: "center", justifyContent: "center", width: "100%" }}>
-                <FormEditarDatos info={data} setInputChanged={setInputChanged} formValues={formValues} setFormValues={setFormValues} newDate={newDate} setNewDate={setNewDate}/>
+                <FormEditarDatos info={data} setInputChanged={setInputChanged} formValues={formValues} setFormValues={setFormValues} newDate={newDate} setNewDate={setNewDate} />
               </View>
               : null
         }
@@ -179,35 +198,48 @@ export function ExpandibleInfoPasajero({ data, setNewFetch }) {
           <MensajeAlerta />
         </View>
         <View style={{ width: 320, height: 96, marginTop: 20, display: "flex", flexDirection: "row", justifyContent: "space-around", marginBottom: 20 }}>
-        {archivos.map((archivo, index) => (
-        <AdjuntarArchivos key={index} children={archivo} />
-      ))}
+          {archivos.map((archivo, index) => (
+            <AdjuntarArchivos key={index} children={archivo} increaseProgress={increaseProgress} data={data.id}/>
+          ))}
         </View>
         <View>
-          <TouchableOpacity style={{ width: 331, height: 47, borderRadius: 10, borderWidth: 1, borderColor: "#334EA2", justifyContent: "center", alignItems: "center", marginTop: 20 }}>
+          <TouchableOpacity onPress={handleDieta} style={{ width: 331, height: 47, borderRadius: 10, borderWidth: 1, borderColor: "#334EA2", justifyContent: "center", alignItems: "center", marginTop: 20 }}>
             <Text style={{ fontWeight: "600", fontSize: 12, lineHeight: 14, color: "#334EA2" }}>
               Ajustar Dieta especial del pasajero
             </Text>
           </TouchableOpacity>
-          <View style={{ display: "flex", flexDirection: "row", width: 318, height: 30, alignItems: "center", marginBottom: 20 }}>
-            <Image
-              source={require("../../../assets/Error.png")}
-              style={{ width: 30, height: 30, marginLeft: 10 }}
-            />
-            <Text style={{ color: "#FF6363", fontWeight: "400", fontSize: 10, lineHeight: 12 }}>
-              Se requiere completar la dieta especial.
-            </Text>
-          </View>
+          {
+            error === true ?
+              <View style={{ display: "flex", flexDirection: "row", width: 318, height: 30, alignItems: "center", marginBottom: 20 }}>
+                <Image
+                  source={require("../../../assets/Error.png")}
+                  style={{ width: 30, height: 30, marginLeft: 10 }}
+                />
+                <Text style={{ color: "#FF6363", fontWeight: "400", fontSize: 10, lineHeight: 12 }}>
+                  Se requiere completar la dieta especial.
+                </Text>
+              </View>
+              :
+              <View style={{ display: "flex", flexDirection: "row", width: 318, height: 30, alignItems: "center", marginBottom: 20 }}>
+                <Image
+                  source={require("../../../assets/Vector.png")}
+                  style={{ width: 16, height: 16,}}
+                />
+                <Text style={{ color: "#564C71", fontWeight: "400", fontSize: 10, lineHeight: 12, marginLeft:10 }}>
+                Información de dieta especial completo.
+                </Text>
+              </View>
+          }
           <View style={{ width: 331, height: 33, justifyContent: "center", alignItems: "center" }}>
             <View style={{ width: "100%", height: 10, backgroundColor: "#E5EBFF", borderRadius: 10 }}>
-              <View style={{ width: "0%", height: 10, backgroundColor: "#93E396", borderRadius: 10 }}>
+              <View style={{ width:`${progressAttachment}%`, height: 10, backgroundColor: "#93E396", borderRadius: 10 }}>
 
               </View>
             </View>
             <View style={{ display: "flex", flexDirection: "row", marginTop: 10 }}>
               <View style={{ width: 25 }}>
                 <Text style={{ color: "#564C71", fontWeight: "700", fontSize: 10, lineHeight: 12 }}>
-                  0%
+                  {progressAttachment}%
                 </Text>
               </View>
               <Text style={{ color: "#564C71", fontWeight: "400", fontSize: 10, lineHeight: 12 }}>

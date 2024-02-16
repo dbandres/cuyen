@@ -61,7 +61,7 @@ const openCamera = () => {
 const openImageLibrary = (limit) => {
   return new Promise((resolve, reject) => {
     launchImageLibrary(
-      { mediaType: 'photo', quality: 0.5, selectionLimit: limit },
+      { mediaType: 'photo', quality: 0.5, selectionLimit: limit},
       response => {
         if (response.didCancel) {
           console.log('El usuario canceló la selección');
@@ -70,6 +70,9 @@ const openImageLibrary = (limit) => {
           console.log('Ocurrió un error: ', response.error);
           reject('Error en la selección');
         } else {
+          if(response.assets.length > 2){
+            reject(new Error('Error en la cantidad de imagenes seleccionada'))
+          }
           const imgSelect = response.assets.map(assets => ({
             uri: assets.uri,
             type: assets.type,
