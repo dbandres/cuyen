@@ -1,17 +1,18 @@
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import { Image, Text, TouchableOpacity, View, ActivityIndicator } from "react-native";
 import { handleCameraPermission, openCamera, openImageLibrary, requestGalleryPermission } from "./ImagePicker";
 import AwesomeAlert from "react-native-awesome-alerts";
 import { useEffect, useState } from "react";
 import uploadImages from "./uploadImages";
 import { EditarAdjunto } from "./EditarAdjunto";
 
-export function AdjuntarArchivos({ children, increaseProgress, data }) {
+export function AdjuntarArchivos({ children, increaseProgress, data, adjuntos, setNewFetch }) {
 
 
   const [showAlert, setShowAlert] = useState(false);
   const [showAlert2, setShowAlert2] = useState(false);
   const [cantidadImg, setCantidadImg] = useState(false);
   const [showModal, setShowModal] = useState(false)
+  const [activity, setActivity] = useState(false)
 
   const [limite, setLimite] = useState(2)
 
@@ -25,9 +26,27 @@ export function AdjuntarArchivos({ children, increaseProgress, data }) {
   const [fichaUrl, setFichaUrl] = useState("")
   const [declaracionUrl, setDeclaracionUrl] = useState("")
 
+  // useEffect(() => {
+  //   if (adjuntos.ficha_med !== null) {
+  //     setFichaMedicaImg(adjuntos.ficha_med)
+  //     setCantidadImg(true)
+  //   }
+  //   else if (adjuntos.image_dni !== null) {
+  //     setDniImg(adjuntos.image_dni)
+  //     setCantidadImg(true)
+  //   }
+  //   else if (adjuntos.obra_soc !== null) {
+  //     setCarnet(adjuntos.obra_soc)
+  //     setCantidadImg(true)
+  //   }
+  //   else if (adjuntos.dec_jurada !== null) {
+  //     setDeclaracionImg(adjuntos.dec_jurada)
+  //     setCantidadImg(true)
+  //   }
+  // }, [adjuntos])
+
   const handleGalleryPermission = async () => {
     if (fichaMedicaImg || dniImg.length === 2 || declaracionImg || carnet.length === 2) {
-      console.log("Tengo foto");
       setShowAlert(false)
       setShowAlert2(false)
       setShowModal(true)
@@ -119,11 +138,12 @@ export function AdjuntarArchivos({ children, increaseProgress, data }) {
   }, [dniImg, carnet])
 
   useEffect(() => {
-    console.log("entro aca");
-    if (dniImg.length === 2) {
+    if (dniImg.length === 2 ) {
+      setActivity(true)
       uploadImages(dniImg, "dni", data)
         .then(res => {
           console.log('Todas las imágenes de dni se han subido correctamente:', res);
+          setActivity(false)
           setCantidadImg(true)
           setShowAlert(false)
           setShowAlert2(false)
@@ -134,11 +154,15 @@ export function AdjuntarArchivos({ children, increaseProgress, data }) {
           console.error('Error al subir imágenes:', error.message);
           setDniImg([])
         });
-    } else if (carnet.length === 2) {
+    } else if (carnet.length === 2 ) {
+      setActivity(true)
       uploadImages(carnet, "carnet", data)
         .then(res => {
           console.log('Todas las imágenes de carnet se han subido correctamente:', res);
+          setActivity(false)
           setCantidadImg(true)
+          setShowAlert(false)
+          setShowAlert2(false)
           setCarnetUrl(res)
           increaseProgress(20)
         })
@@ -147,10 +171,14 @@ export function AdjuntarArchivos({ children, increaseProgress, data }) {
           setCarnet([])
         });
     } else if (declaracionImg.length === 1) {
+      setActivity(true)
       uploadImages(declaracionImg, "declaracion", data)
         .then(res => {
           console.log('Todas las imágenes de declaracion jurada se han subido correctamente:', res);
+          setActivity(false)
           setCantidadImg(true)
+          setShowAlert(false)
+          setShowAlert2(false)
           setDeclaracionUrl(res[0])
           increaseProgress(20)
         })
@@ -159,11 +187,15 @@ export function AdjuntarArchivos({ children, increaseProgress, data }) {
           setDeclaracionImg("")
         });
     } else if (fichaMedicaImg) {
-      console.log("fchas: ",fichaMedicaImg);
+      setActivity(true)
       uploadImages(fichaMedicaImg, "ficha", data)
         .then(res => {
           console.log('Todas las imágenes de ficha medica se han subido correctamente:', res);
+          setNewFetch(true)
+          setActivity(false)
           setCantidadImg(true)
+          setShowAlert(false)
+          setShowAlert2(false)
           setFichaUrl(res[0])
           increaseProgress(20)
         })
@@ -250,6 +282,16 @@ export function AdjuntarArchivos({ children, increaseProgress, data }) {
           style={{ width: 65, height: 71 }}
         />
       );
+    } else if (excepciones.includes(archivo) && cantidadImg === false && activity === true) {
+      return (
+        <View style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+          <ActivityIndicator size="small" color="#FF3D00" />
+        </View>
+      );
     } else {
       return (
         <Image
@@ -264,14 +306,16 @@ export function AdjuntarArchivos({ children, increaseProgress, data }) {
     <TouchableOpacity onPress={handleGalleryPermission} style={{ width: 65, height: 96, alignItems: "center" }}>
       <EditarAdjunto visible={showModal} onClose={closeModal} children={children}
         data={
-          children === "Ficha medica" ? fichaUrl : 
-          children === "Documento de identidad" ? dniUrl :
-          children === "Carnet de obra social" ? carnetUrl :
-          children === "Declaración jurada" ? declaracionUrl : null
+          children === "Ficha medica" ? fichaUrl :
+            children === "Documento de identidad" ? dniUrl :
+              children === "Carnet de obra social" ? carnetUrl :
+                children === "Declaración jurada" ? declaracionUrl : null
         }
+        id={data}
+        setCantidadImg={setCantidadImg}
       />
       <View style={{ height: 20, justifyContent: "flex-end" }}>
-        <Text style={{ fontWeight: "400", fontSize: 8, lineHeight: 9, textAlign: "center", color:"#564C71" }}>
+        <Text style={{ fontWeight: "400", fontSize: 8, lineHeight: 9, textAlign: "center", color: "#564C71" }}>
           {children}
         </Text>
       </View>

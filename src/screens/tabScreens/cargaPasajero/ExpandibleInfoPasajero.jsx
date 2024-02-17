@@ -11,6 +11,8 @@ import { ModalDieta } from "./ModalDieta";
 
 export function ExpandibleInfoPasajero({ data, setNewFetch }) {
 
+  //console.log(JSON.stringify(data, null ,3));
+
   const [contentHeight, setContentHeight] = useState(0);
   const [error, setError] = useState(true)
   const [isExpanded, setIsExpanded] = useState(false);
@@ -29,6 +31,12 @@ export function ExpandibleInfoPasajero({ data, setNewFetch }) {
     apellido: data.apellido,
     fechaNac: data.fechaNac,
   });
+  const [adjuntos, setAdjuntos] = useState({
+    ficha_med: data.ficha_med,
+    dec_jurada: data.dec_jurada,
+    image_dni: data.image_dni,
+    obra_soc: data.obra_soc
+  })
   const [modalVisible, setModalVisible] = useState(false);
   const [modalVisible2, setModalVisible2] = useState(false);
   const [datosTotales, setDatosTotales] = useState({})
@@ -199,7 +207,7 @@ export function ExpandibleInfoPasajero({ data, setNewFetch }) {
         </View>
         <View style={{ width: 320, height: 96, marginTop: 20, display: "flex", flexDirection: "row", justifyContent: "space-around", marginBottom: 20 }}>
           {archivos.map((archivo, index) => (
-            <AdjuntarArchivos key={index} children={archivo} increaseProgress={increaseProgress} data={data.id}/>
+            <AdjuntarArchivos key={index} children={archivo} increaseProgress={increaseProgress} data={data.id} adjuntos={adjuntos} setNewFetch={setNewFetch}/>
           ))}
         </View>
         <View>

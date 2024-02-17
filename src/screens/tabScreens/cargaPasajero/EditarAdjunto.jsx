@@ -1,15 +1,53 @@
 import { Image, Modal, Text, TouchableOpacity, View } from "react-native";
 import { ButtonCustom } from "../../../components/ButtomCustom";
+import deleteImgSpaces from "./EditarArchivos";
+import { useEffect, useState } from "react";
 
 
 const transparent = "rgba(0,0,0,0.5)"
 
-export function EditarAdjunto({ visible, onClose, data, children }) {
+export function EditarAdjunto({ visible, onClose, data, children, id, setCantidadImg }) {
+
+  const [urlData, setUrlData] = useState("")
 
   // Verificar si data es un array
-  const isDataArray = Array.isArray(data);
+  useEffect(() => {
+    // Verificar si data es un array
+    const isDataArray = Array.isArray(data);
+    if (isDataArray === true) {
+      setUrlData(data)
+    } else {
+      setUrlData([data])
+    }
+  }, [])
 
-  // console.log(data, children, isDataArray);
+  useEffect(()=>{
+    if(urlData.length === 0){
+      onClose()
+      setCantidadImg(false)
+    }
+  },[urlData])
+
+  // console.log(data, children, isDataArray,id);
+
+  const deleteArchivo = async (index) => {
+    // Realiza alguna acción con el índice obtenido
+    if (urlData.length !== 1) {
+      console.log("Se presionó en el índice:", data[index]);
+      const respuesta = await deleteImgSpaces(data[index])
+      if (respuesta === 200) {
+        const deletedItem = data.splice(index, 1);
+        setUrlData([...data]);
+      }
+    }else{
+      console.log("Se presionó en el índice:", data);
+    const respuesta = await deleteImgSpaces(data)
+    if (respuesta === 200) {
+      setUrlData("");
+    }
+    }
+  }
+
 
   return (
     <Modal
@@ -30,36 +68,9 @@ export function EditarAdjunto({ visible, onClose, data, children }) {
               Documento actual:
             </Text>
             {
-              isDataArray === true ?
-                data.map((dato, index) => (
-                  <View key={index} style={{ width: 300, height: 50, alignItems: "center", display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
-                    <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-                      <Image
-                        source={require("../../../assets/doc.png")}
-                        style={{ width: 24, height: 24, marginRight: 10 }}
-                      />
-                      <Text style={{ color: "#564C71", fontWeight: "400", fontSize: 14, lineHeight: 30 }}>
-                        {children}
-                      </Text>
-                    </View>
-                    <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-                      <TouchableOpacity>
-                        <Image
-                          source={require("../../../assets/frame.png")}
-                          style={{ width: 24, height: 24, marginRight: 10 }}
-                        />
-                      </TouchableOpacity>
-                      <TouchableOpacity>
-                        <Image
-                          source={require("../../../assets/fram1.png")}
-                          style={{ width: 24, height: 24, marginRight: 10 }}
-                        />
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                ))
-                :
-                <View style={{ width: 300, height: 90, alignItems: "center", display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+              urlData.length !== 0 &&
+              urlData.map((dato, index) => (
+                <View key={index} style={{ width: 300, height: 90, alignItems: "center", display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
                   <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
                     <Image
                       source={require("../../../assets/doc.png")}
@@ -76,7 +87,7 @@ export function EditarAdjunto({ visible, onClose, data, children }) {
                         style={{ width: 24, height: 24, marginRight: 10 }}
                       />
                     </TouchableOpacity>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => deleteArchivo(index)}>
                       <Image
                         source={require("../../../assets/fram1.png")}
                         style={{ width: 24, height: 24, marginRight: 10 }}
@@ -84,12 +95,15 @@ export function EditarAdjunto({ visible, onClose, data, children }) {
                     </TouchableOpacity>
                   </View>
                 </View>
+              ))
             }
             <View style={{ width: 66 }}>
-              <Image
-                source={require("../../../assets/adjuntar.png")}
-                style={{ width: 65, height: 71 }}
-              />
+              <TouchableOpacity>
+                <Image
+                  source={require("../../../assets/adjuntar.png")}
+                  style={{ width: 65, height: 71 }}
+                />
+              </TouchableOpacity>
               <Text style={{ fontWeight: "400", fontSize: 8, lineHeight: 9, textAlign: "center", color: "#564C71", marginTop: 5 }}>
                 Subír nuevo
               </Text>
