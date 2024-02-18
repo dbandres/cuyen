@@ -5,8 +5,8 @@ import { useEffect, useState } from "react";
 import uploadImages from "./uploadImages";
 import { EditarAdjunto } from "./EditarAdjunto";
 
-export function AdjuntarArchivos({ children, increaseProgress, data, adjuntos, setNewFetch }) {
 
+export function AdjuntarArchivos({ children, increaseProgress, data, setNewFetch }) {
 
   const [showAlert, setShowAlert] = useState(false);
   const [showAlert2, setShowAlert2] = useState(false);
@@ -14,11 +14,9 @@ export function AdjuntarArchivos({ children, increaseProgress, data, adjuntos, s
   const [showModal, setShowModal] = useState(false)
   const [activity, setActivity] = useState(false)
 
-  const [limite, setLimite] = useState(2)
+  const [limite, setLimite] = useState(1)
 
-  const [fichaMedicaImg, setFichaMedicaImg] = useState("")
   const [dniImg, setDniImg] = useState([])
-  const [declaracionImg, setDeclaracionImg] = useState("")
   const [carnet, setCarnet] = useState([])
 
   const [dniUrl, setDniUrl] = useState([])
@@ -26,27 +24,46 @@ export function AdjuntarArchivos({ children, increaseProgress, data, adjuntos, s
   const [fichaUrl, setFichaUrl] = useState("")
   const [declaracionUrl, setDeclaracionUrl] = useState("")
 
-  // useEffect(() => {
-  //   if (adjuntos.ficha_med !== null) {
-  //     setFichaMedicaImg(adjuntos.ficha_med)
-  //     setCantidadImg(true)
-  //   }
-  //   else if (adjuntos.image_dni !== null) {
-  //     setDniImg(adjuntos.image_dni)
-  //     setCantidadImg(true)
-  //   }
-  //   else if (adjuntos.obra_soc !== null) {
-  //     setCarnet(adjuntos.obra_soc)
-  //     setCantidadImg(true)
-  //   }
-  //   else if (adjuntos.dec_jurada !== null) {
-  //     setDeclaracionImg(adjuntos.dec_jurada)
-  //     setCantidadImg(true)
-  //   }
-  // }, [adjuntos])
+  // console.log("esto es data: ",JSON.stringify(data, null, 3));
+
+  // revisamos data de adjuntos, y seteamos en caso de que ya esten completos
+  useEffect(() => {
+    if (data.image_dni.length === 2 && children === "Documento de identidad") {
+      console.log("entre en dni: ");
+      setDniUrl(data.image_dni)
+      setCantidadImg(true)
+      increaseProgress("dni", 20)
+    }
+    else if (data.ficha_med !== null && children === "Ficha medica") {
+      console.log("entre en ficha: ");
+      setFichaUrl(data.ficha_med)
+      setCantidadImg(true)
+      increaseProgress("ficha", 20)
+    }
+    else if (data.obra_soc.length === 2 && children === "Carnet de obra social") {
+      console.log("entre en carnet: ");
+      setCarnetUrl(data.obra_soc)
+      setCantidadImg(true)
+      increaseProgress("carnet", 20)
+    }
+    else if (data.dec_jurada !== null && children === "Declaración jurada") {
+      console.log("entre en declaracion: ");
+      setDeclaracionUrl(data.dec_jurada)
+      setCantidadImg(true)
+      increaseProgress("declaracion", 20)
+    } else {
+      setCantidadImg(false)
+      setDniUrl([])
+      setFichaUrl("")
+      setCarnetUrl([])
+      setDeclaracionUrl("")
+    }
+  }, [data])
+
 
   const handleGalleryPermission = async () => {
-    if (fichaMedicaImg || dniImg.length === 2 || declaracionImg || carnet.length === 2) {
+    //veo si estan la cantidad de img necesarias y abro o no el modal de edicion
+    if (fichaUrl || dniUrl.length === 2 || declaracionUrl || carnetUrl.length === 2) {
       setShowAlert(false)
       setShowAlert2(false)
       setShowModal(true)
@@ -58,12 +75,8 @@ export function AdjuntarArchivos({ children, increaseProgress, data, adjuntos, s
   }
 
   const requestCameraPermission = async () => {
-    if (fichaMedicaImg || dniImg.length === 2 || declaracionImg || carnet.length === 2) {
-      console.log("Tengo foto");
-    } else {
-      const result = await handleCameraPermission();
-      result === "granted" ? openLocalCamera() : null
-    }
+    const result = await handleCameraPermission();
+    result === "granted" ? openLocalCamera() : null
   }
 
   const closeModal = () => {
@@ -75,10 +88,43 @@ export function AdjuntarArchivos({ children, increaseProgress, data, adjuntos, s
     setShowAlert2(false)
     if (children === "Ficha medica") {
       const imgGalery = await openImageLibrary(1)
-      setFichaMedicaImg(imgGalery);
+      if (imgGalery) {
+        setActivity(true)
+        uploadImages(imgGalery, "ficha", data.id)
+          .then(res => {
+            console.log('Todas las imágenes de ficha medica se han subido correctamente:', res);
+            setNewFetch(true)
+            setActivity(false)
+            setCantidadImg(true)
+            setShowAlert(false)
+            setShowAlert2(false)
+            //setFichaUrl(res[0])
+
+          })
+          .catch(error => {
+            console.error('Error al subir imágenes:', error.message);
+          });
+      }
     } else if (children === "Declaración jurada") {
       const imgGalery = await openImageLibrary(1)
-      setDeclaracionImg(imgGalery);
+      if (imgGalery) {
+        setActivity(true)
+        uploadImages(imgGalery, "declaracion", data.id)
+          .then(res => {
+            console.log('Todas las imágenes de declaracion jurada se han subido correctamente:', res);
+            setNewFetch(true)
+            setActivity(false)
+            setCantidadImg(true)
+            setShowAlert(false)
+            setShowAlert2(false)
+            //setFichaUrl(res[0])
+
+          })
+          .catch(error => {
+            console.error('Error al subir imágenes:', error.message);
+
+          });
+      }
     } else if (children === "Documento de identidad") {
       await openImageLibrary(limite)
         .then((res) => {
@@ -89,6 +135,7 @@ export function AdjuntarArchivos({ children, increaseProgress, data, adjuntos, s
         .catch((error) => {
           console.error('Error al subir imágenes:', error.message);
         })
+
     } else if (children === "Carnet de obra social") {
       await openImageLibrary(limite)
         .then((res) => {
@@ -104,13 +151,42 @@ export function AdjuntarArchivos({ children, increaseProgress, data, adjuntos, s
 
   const openLocalCamera = async () => {
     setShowAlert(false)
-    setCantidadImg(false)
     if (children === "Ficha medica") {
-      const imgCamera = await openCamera()
-      setFichaMedicaImg(imgCamera);
+      const imgCamera = await openCamera();
+      if (imgCamera) {
+        setActivity(true)
+        uploadImages(imgCamera, "ficha", data.id)
+          .then(res => {
+            console.log('Todas las imágenes de ficha medica se han subido correctamente:', res);
+            setNewFetch(true)
+            setActivity(false)
+            setCantidadImg(true)
+            setShowAlert(false)
+            setShowAlert2(false)
+            //setFichaUrl(res[0])
+          })
+          .catch(error => {
+            console.error('Error al subir imágenes:', error.message);
+          });
+      }
     } else if (children === "Declaración jurada") {
       const imgCamera = await openCamera()
-      setDeclaracionImg(imgCamera);
+      if (imgCamera) {
+        setActivity(true)
+        uploadImages(imgCamera, "declaracion", data.id)
+          .then(res => {
+            console.log('Todas las imágenes de declaracion jurada se han subido correctamente:', res);
+            setNewFetch(true)
+            setActivity(false)
+            setCantidadImg(true)
+            setShowAlert(false)
+            setShowAlert2(false)
+            //setFichaUrl(res[0])
+          })
+          .catch(error => {
+            console.error('Error al subir imágenes:', error.message);
+          });
+      }
     } else if (children === "Documento de identidad") {
       const imgCamera = await openCamera()
       setDniImg(prevImagenes => [...prevImagenes, imgCamera]);
@@ -120,6 +196,7 @@ export function AdjuntarArchivos({ children, increaseProgress, data, adjuntos, s
     }
   }
 
+  //controlamos si hace falta adjuntar una img mas en caso de ser necesario (dni y carnet)
   useEffect(() => {
     setTimeout(() => {
       if (children === "Documento de identidad" && dniImg.length === 1) {
@@ -134,77 +211,53 @@ export function AdjuntarArchivos({ children, increaseProgress, data, adjuntos, s
       else {
         setShowAlert2(false)
       }
-    }, 3000)
+    }, 2000)
   }, [dniImg, carnet])
 
+  console.log(dniImg);
+
+  // Vamos cargando las img al spaces de DO
   useEffect(() => {
-    if (dniImg.length === 2 ) {
+    if (dniImg.length === 2) {
       setActivity(true)
-      uploadImages(dniImg, "dni", data)
+      setTimeout(()=>{
+        uploadImages(dniImg, "dni", data.id)
         .then(res => {
           console.log('Todas las imágenes de dni se han subido correctamente:', res);
-          setActivity(false)
-          setCantidadImg(true)
-          setShowAlert(false)
-          setShowAlert2(false)
-          setDniUrl(res)
-          increaseProgress(20)
-        })
-        .catch(error => {
-          console.error('Error al subir imágenes:', error.message);
-          setDniImg([])
-        });
-    } else if (carnet.length === 2 ) {
-      setActivity(true)
-      uploadImages(carnet, "carnet", data)
-        .then(res => {
-          console.log('Todas las imágenes de carnet se han subido correctamente:', res);
-          setActivity(false)
-          setCantidadImg(true)
-          setShowAlert(false)
-          setShowAlert2(false)
-          setCarnetUrl(res)
-          increaseProgress(20)
-        })
-        .catch(error => {
-          console.error('Error al subir imágenes:', error.message);
-          setCarnet([])
-        });
-    } else if (declaracionImg.length === 1) {
-      setActivity(true)
-      uploadImages(declaracionImg, "declaracion", data)
-        .then(res => {
-          console.log('Todas las imágenes de declaracion jurada se han subido correctamente:', res);
-          setActivity(false)
-          setCantidadImg(true)
-          setShowAlert(false)
-          setShowAlert2(false)
-          setDeclaracionUrl(res[0])
-          increaseProgress(20)
-        })
-        .catch(error => {
-          console.error('Error al subir imágenes:', error.message);
-          setDeclaracionImg("")
-        });
-    } else if (fichaMedicaImg) {
-      setActivity(true)
-      uploadImages(fichaMedicaImg, "ficha", data)
-        .then(res => {
-          console.log('Todas las imágenes de ficha medica se han subido correctamente:', res);
           setNewFetch(true)
           setActivity(false)
           setCantidadImg(true)
           setShowAlert(false)
           setShowAlert2(false)
-          setFichaUrl(res[0])
-          increaseProgress(20)
+          setDniImg([])
+          setDniUrl(res)
         })
         .catch(error => {
           console.error('Error al subir imágenes:', error.message);
-          setFichaMedicaImg("")
+          setDniImg([])
         });
+      },3000)
+    } else if (carnet.length === 2) {
+      setActivity(true)
+      setTimeout(()=>{
+        uploadImages(carnet, "carnet", data.id)
+        .then(res => {
+          console.log('Todas las imágenes de carnet se han subido correctamente:', res);
+          setNewFetch(true)
+          setActivity(false)
+          setCantidadImg(true)
+          setShowAlert(false)
+          setShowAlert2(false)
+          setCarnet([])
+          setCarnetUrl(res)
+        })
+        .catch(error => {
+          console.error('Error al subir imágenes:', error.message);
+          setCarnet([])
+        });
+      },3000)
     }
-  }, [dniImg, carnet, fichaMedicaImg, declaracionImg])
+  }, [dniImg, carnet])
 
   const handleDismiss = () => {
     // Lógica adicional al cerrar el alerta
@@ -306,13 +359,14 @@ export function AdjuntarArchivos({ children, increaseProgress, data, adjuntos, s
     <TouchableOpacity onPress={handleGalleryPermission} style={{ width: 65, height: 96, alignItems: "center" }}>
       <EditarAdjunto visible={showModal} onClose={closeModal} children={children}
         data={
-          children === "Ficha medica" ? fichaUrl :
-            children === "Documento de identidad" ? dniUrl :
-              children === "Carnet de obra social" ? carnetUrl :
-                children === "Declaración jurada" ? declaracionUrl : null
+          children === "Ficha medica" ? data.ficha_med :
+            children === "Documento de identidad" ? data.image_dni :
+              children === "Carnet de obra social" ? data.obra_soc :
+                children === "Declaración jurada" ? data.dec_jurada : null
         }
-        id={data}
-        setCantidadImg={setCantidadImg}
+        id={data.id}
+        setNewFetch={setNewFetch}
+        increaseProgress={increaseProgress}
       />
       <View style={{ height: 20, justifyContent: "flex-end" }}>
         <Text style={{ fontWeight: "400", fontSize: 8, lineHeight: 9, textAlign: "center", color: "#564C71" }}>

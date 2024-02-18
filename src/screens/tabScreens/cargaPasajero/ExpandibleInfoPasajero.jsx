@@ -11,7 +11,7 @@ import { ModalDieta } from "./ModalDieta";
 
 export function ExpandibleInfoPasajero({ data, setNewFetch }) {
 
-  //console.log(JSON.stringify(data, null ,3));
+  // console.log("data!!: ",JSON.stringify(data, null ,3));
 
   const [contentHeight, setContentHeight] = useState(0);
   const [error, setError] = useState(true)
@@ -20,7 +20,13 @@ export function ExpandibleInfoPasajero({ data, setNewFetch }) {
   const contentRef = useRef(null);
   const [seteoData, setSeteoData] = useState(false)
   const [editing, setEditing] = useState(false)
-  const [progressAttachment, setProgressAttachment] = useState(0)
+  const [progressAttachment, setProgressAttachment] = useState({
+    ficha: 0,
+    dni: 0,
+    carnet: 0,
+    declaracion: 0,
+    dieta: 0
+  })
 
   const [inputChanged, setInputChanged] = useState(false);
 
@@ -31,7 +37,7 @@ export function ExpandibleInfoPasajero({ data, setNewFetch }) {
     apellido: data.apellido,
     fechaNac: data.fechaNac,
   });
-  const [adjuntos, setAdjuntos] = useState({
+  const [adjuntos] = useState({
     ficha_med: data.ficha_med,
     dec_jurada: data.dec_jurada,
     image_dni: data.image_dni,
@@ -43,10 +49,26 @@ export function ExpandibleInfoPasajero({ data, setNewFetch }) {
 
   const archivos = ["Ficha medica", "Declaración jurada", "Documento de identidad", "Carnet de obra social"];
 
-  // Función para aumentar el progreso
-  const increaseProgress = (value) => {
-    setProgressAttachment(prevProgress => prevProgress + value);
+   // Función para modificar un valor específico en el estado
+   const increaseProgress = (key, newValue) => {
+    setProgressAttachment(prevState => ({
+      ...prevState,
+      [key]: newValue
+    }));
   };
+
+  // Función para obtener la suma de todos los valores en el estado
+  const getSum = () => {
+    const valuesArray = Object.values(progressAttachment);
+    const sum = valuesArray.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+    return sum;
+  };
+
+  console.log(progressAttachment);
+
+  useEffect(()=>{
+    getSum()
+  },[progressAttachment])
 
   const openModal = () => {
     setModalVisible(true);
@@ -71,6 +93,30 @@ export function ExpandibleInfoPasajero({ data, setNewFetch }) {
   const closerDietaModal = () => {
     setModalVisible2(false)
   }
+
+  useEffect(()=>{
+    if(data.dieta.vegetariano === true){
+      increaseProgress("dieta", 20)
+      setError(false)
+    }
+    else if(data.dieta.vegano === true){
+      increaseProgress("dieta", 20)
+      setError(false)
+    }
+    else if(data.dieta.celiaco === true){
+      increaseProgress("dieta", 20)
+      setError(false)
+    }
+    else if(data.dieta.intoleranteLactosa === true){
+      increaseProgress("dieta", 20)
+      setError(false)
+    }
+    else if(data.dieta.ningunaDietaEspecial === true){
+      increaseProgress("dieta", 20)
+      setError(false)
+    }
+
+  },[data])
 
   useEffect(() => {
     if (isExpanded) {
@@ -147,6 +193,7 @@ export function ExpandibleInfoPasajero({ data, setNewFetch }) {
       <ModalComponent visible={modalVisible} onClose={closeModal} data={datosTotales} inputChanged={inputChanged} setNewFetch={setNewFetch} />
       <ModalDieta visible={modalVisible2} onClose={closerDietaModal} data={data} setError={setError} increaseProgress={increaseProgress}/>
       <Animated.View ref={contentRef} style={{ height: heightAnim, width: 373, backgroundColor: "white", marginTop: "5%", borderRadius: 10, justifyContent: "flex-start", alignItems: "center" }}>
+        
         <View style={{ backgroundColor: "#FFFFFF", borderRadius: 10, alignItems: "center", display: "flex", flexDirection: "row", padding: 20, width: "100%", justifyContent: "space-between", height: isExpanded ? 91 : "100%" }}>
           <View style={{ display: "flex", flexDirection: "row" }}>
             <View style={{ width: 48, height: 48, borderRadius: 10, backgroundColor: "#FFB800", alignItems: "center", justifyContent: "center" }}>
@@ -165,7 +212,7 @@ export function ExpandibleInfoPasajero({ data, setNewFetch }) {
             </View>
           </View>
           <TouchableOpacity onPress={toggleExpand} style={{ alignItems: 'center' }}>
-            {/* Botón flecha */}
+           
             <Text>{isExpanded ? <Image source={require("../../../assets/Not_more.png")} style={{ width: 24, height: 24 }} /> : <Image source={require("../../../assets/expand_more.png")} style={{ width: 24, height: 24 }} />}</Text>
           </TouchableOpacity>
         </View>
@@ -177,7 +224,7 @@ export function ExpandibleInfoPasajero({ data, setNewFetch }) {
             :
             isExpanded === true && seteoData === true && editing === true ?
               <View style={{ alignItems: "center", justifyContent: "center", width: "100%" }}>
-                <FormEditarDatos info={data} setInputChanged={setInputChanged} formValues={formValues} setFormValues={setFormValues} newDate={newDate} setNewDate={setNewDate} />
+                <FormEditarDatos info={data} setInputChanged={setInputChanged} formValues={formValues} setFormValues={setFormValues} newDate={newDate} setNewDate={setNewDate} /> 
               </View>
               : null
         }
@@ -207,8 +254,8 @@ export function ExpandibleInfoPasajero({ data, setNewFetch }) {
         </View>
         <View style={{ width: 320, height: 96, marginTop: 20, display: "flex", flexDirection: "row", justifyContent: "space-around", marginBottom: 20 }}>
           {archivos.map((archivo, index) => (
-            <AdjuntarArchivos key={index} children={archivo} increaseProgress={increaseProgress} data={data.id} adjuntos={adjuntos} setNewFetch={setNewFetch}/>
-          ))}
+            <AdjuntarArchivos key={index} children={archivo} increaseProgress={increaseProgress} data={data} adjuntos={adjuntos} setNewFetch={setNewFetch}/>
+          ))} 
         </View>
         <View>
           <TouchableOpacity onPress={handleDieta} style={{ width: 331, height: 47, borderRadius: 10, borderWidth: 1, borderColor: "#334EA2", justifyContent: "center", alignItems: "center", marginTop: 20 }}>
@@ -240,14 +287,14 @@ export function ExpandibleInfoPasajero({ data, setNewFetch }) {
           }
           <View style={{ width: 331, height: 33, justifyContent: "center", alignItems: "center" }}>
             <View style={{ width: "100%", height: 10, backgroundColor: "#E5EBFF", borderRadius: 10 }}>
-              <View style={{ width:`${progressAttachment}%`, height: 10, backgroundColor: "#93E396", borderRadius: 10 }}>
+              <View style={{ width:`${getSum()}%`, height: 10, backgroundColor: "#93E396", borderRadius: 10 }}>
 
               </View>
             </View>
             <View style={{ display: "flex", flexDirection: "row", marginTop: 10 }}>
               <View style={{ width: 25 }}>
                 <Text style={{ color: "#564C71", fontWeight: "700", fontSize: 10, lineHeight: 12 }}>
-                  {progressAttachment}%
+                  {getSum()}%
                 </Text>
               </View>
               <Text style={{ color: "#564C71", fontWeight: "400", fontSize: 10, lineHeight: 12 }}>

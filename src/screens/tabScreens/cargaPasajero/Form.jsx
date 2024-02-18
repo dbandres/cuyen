@@ -77,14 +77,15 @@ export function Form({agregarPasajero, setNewFetch}) {
         }
       }).then((res) => {
         if(res.status === 200){
-          setShowAlert2(false)
+        setShowAlert2(false)
         setDataPasajero(res.data)
         setValue('username', res.data.nombre);
         setValue('userlastname', res.data.apellido);
         }
       }).catch((error)=>{
           setShowAlert2(false)
-          console.log("No existe registro: ", error);
+          console.log("No existe registro: ", error.response.data);
+          setDataPasajero(error.response.data)
       })
     } else {
       console.log("es undefined");
@@ -139,7 +140,7 @@ export function Form({agregarPasajero, setNewFetch}) {
   };
 
   return (
-    <View style={{ width: 373, height: 753, backgroundColor: "#FFFFFF", marginTop: 15, borderRadius: 10, justifyContent: "center", alignItems: "center" }}>
+    <View style={{ width: 373, height: 758, backgroundColor: "#FFFFFF", marginTop: 15, borderRadius: 10, justifyContent: "center", alignItems: "center" }}>
       <View style={{ height: 50 }}>
         <Text style={{ color: "#334EA2", fontWeight: "500", fontSize: 16 }}>
           Datos del pasajero

@@ -56,7 +56,7 @@ export function FormEditarDatos({ setInputChanged, formValues, setFormValues, ne
                 value={formValues[inputName]}
                 onChangeText={text => handleInputChange(inputName, text)}
                 keyboardType={'numeric'} // Teclado numérico
-                style={{ width: "90%" }}
+                style={{ width: "90%", color:"#564C71" }}
               />
               :
               inputName === "fechaNac" ?
@@ -111,7 +111,7 @@ export function FormEditarDatos({ setInputChanged, formValues, setFormValues, ne
                 <TextInput
                   value={formValues[inputName]}
                   onChangeText={text => handleInputChange(inputName, text)}
-                  style={{ width: "90%" }}
+                  style={{ width: "90%", color:"#564C71" }}
                 />
           }
         </View>

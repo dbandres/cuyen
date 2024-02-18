@@ -33,6 +33,7 @@ export function CargaPasajero({ navigation }) {
 			};
 		}, []))
 
+
 		useEffect(()=>{
 			if(newFetch === true){
 				console.log("Se actualizo pasajero");
@@ -42,7 +43,7 @@ export function CargaPasajero({ navigation }) {
 			}
 		},[newFetch])
 
-	// console.log("pasajero: ",pasajero[0].apellido);
+	//console.log(JSON.stringify(pasajero, null ,3));
 
 	return (
 		<ScrollView style={styles.container}>
@@ -61,7 +62,9 @@ export function CargaPasajero({ navigation }) {
 							<ExpandibleInfoPasajero key={index} data={pas} setNewFetch={setNewFetch}/>
 						))
 						:
-						null
+						<Text>
+							Hola
+						</Text>
 				}
 				{
 					showForm !== false ?

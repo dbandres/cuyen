@@ -8,31 +8,56 @@ import { token } from "../../../api";
 
 const transparent = "rgba(0,0,0,0.5)"
 
-export function ModalDieta({ visible, onClose, data, setError, increaseProgress}) {
+export function ModalDieta({ visible, onClose, data, setError, increaseProgress }) {
+
+  // console.log(JSON.stringify(data, null ,3));
 
   const [buttonDisabled, setButtonDisabled] = useState(false);
 
   const [options, setOptions] = useState({
-    vegetariano: false,
-    vegano: false,
-    celiaco: false,
-    intoleranteLactosa: false,
-    ningunaDietaEspecial: false
+    vegetariano: data.dieta ? data.dieta.vegetariano : false,
+    vegano: data.dieta ? data.dieta.vegano : false,
+    celiaco: data.dieta ? data.dieta.celiaco : false,
+    intoleranteLactosa: data.dieta ? data.dieta.intoleranteLactosa : false,
+    ningunaDietaEspecial: data.dieta ? data.dieta.ningunaDietaEspecial : false,
   });
 
   const handleCheckBoxChange = (option) => {
-    setOptions({
-      ...options,
-      [option]: !options[option]
-    });
+    console.log("option: ", option);
+    if (option == "ningunaDietaEspecial") {
+      // Si la opción seleccionada es "nigunaDietaEspecial",
+      // establece todas las demás opciones como false
+      setOptions({
+        vegetariano: false,
+        vegano: false,
+        celiaco: false,
+        intoleranteLactosa: false,
+        ningunaDietaEspecial: true,
+      })
+    }
+    else {
+      // Si la opción seleccionada no es "nigunaDietaEspecial",
+      // simplemente cambia el valor de esa opción
+      setOptions({
+        ...options,
+        [option]: !options[option]
+      });
+
+      if(option !== "ningunaDietaEspecial"){
+        setOptions({
+          ...options,
+          [option]: !options[option],
+          ningunaDietaEspecial: false
+        })
+      }
+    }
   };
+
 
   const modalClosed = () => {
     onClose()
     setButtonDisabled(false)
   }
-
-  // console.log(JSON.stringify(data, null, 3));
 
   useEffect(() => {
     // Verificamos si al menos una opción está seleccionada
@@ -47,22 +72,22 @@ export function ModalDieta({ visible, onClose, data, setError, increaseProgress}
     }
   }, [options])
 
-  const putPasajeroDieta = async () =>{
-    const resp = await axios.put(`/pasajero/${data.id}`,{
+  const putPasajeroDieta = async () => {
+    const resp = await axios.put(`/pasajero/${data.id}`, {
       dieta: options
     },
-    {
-      headers:{
-        'x-access-token': `${token}`,
-        'Content-Type': 'application/json',
-      }
-    })
+      {
+        headers: {
+          'x-access-token': `${token}`,
+          'Content-Type': 'application/json',
+        }
+      })
 
     console.log(resp);
 
     setError(false)
     onClose()
-    increaseProgress(20)
+    increaseProgress("dieta",20)
   }
 
   return (
@@ -75,13 +100,13 @@ export function ModalDieta({ visible, onClose, data, setError, increaseProgress}
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: transparent }}>
         <View style={{ borderRadius: 10, width: 373, height: 449, backgroundColor: "white", justifyContent: 'center', alignItems: 'center' }}>
           <View style={{ height: 38, width: 275, marginBottom: 20 }}>
-            <Text style={{ textAlign: "center", fontWeight: "500", fontSize: 16, lineHeight: 19, color:"#564C71" }}>
+            <Text style={{ textAlign: "center", fontWeight: "500", fontSize: 16, lineHeight: 19, color: "#564C71" }}>
               Selecciona la condición especial para la dieta de este pasajero.
             </Text>
           </View>
           <View style={{ height: 240, width: 160, justifyContent: "center", alignItems: "center" }}>
             <View style={{ height: 30, width: "100%", justifyContent: "flex-end", alignItems: "center", marginBottom: 10, display: "flex", flexDirection: "row" }}>
-              <Text style={{ fontWeight: "400", fontSize: 10, lineHeight: 12, textAlign: "right", marginRight: 10, color:"#564C71" }}>
+              <Text style={{ fontWeight: "400", fontSize: 10, lineHeight: 12, textAlign: "right", marginRight: 10, color: "#564C71" }}>
                 Vegetariano
               </Text>
               <CheckBox
@@ -96,7 +121,7 @@ export function ModalDieta({ visible, onClose, data, setError, increaseProgress}
               />
             </View>
             <View style={{ height: 30, width: "100%", justifyContent: "flex-end", alignItems: "center", marginBottom: 10, display: "flex", flexDirection: "row" }}>
-              <Text style={{ fontWeight: "400", fontSize: 10, lineHeight: 12, textAlign: "right", marginRight: 10, color:"#564C71" }}>
+              <Text style={{ fontWeight: "400", fontSize: 10, lineHeight: 12, textAlign: "right", marginRight: 10, color: "#564C71" }}>
                 Vegano
               </Text>
               <CheckBox
@@ -111,7 +136,7 @@ export function ModalDieta({ visible, onClose, data, setError, increaseProgress}
               />
             </View>
             <View style={{ height: 30, width: "100%", justifyContent: "flex-end", alignItems: "center", marginBottom: 10, display: "flex", flexDirection: "row" }}>
-              <Text style={{ fontWeight: "400", fontSize: 10, lineHeight: 12, textAlign: "right", marginRight: 10, color:"#564C71" }}>
+              <Text style={{ fontWeight: "400", fontSize: 10, lineHeight: 12, textAlign: "right", marginRight: 10, color: "#564C71" }}>
                 Celíaco
               </Text>
               <CheckBox
@@ -126,7 +151,7 @@ export function ModalDieta({ visible, onClose, data, setError, increaseProgress}
               />
             </View>
             <View style={{ height: 30, width: "100%", justifyContent: "flex-end", alignItems: "center", marginBottom: 10, display: "flex", flexDirection: "row" }}>
-              <Text style={{ fontWeight: "400", fontSize: 10, lineHeight: 12, textAlign: "right", marginRight: 10, color:"#564C71" }}>
+              <Text style={{ fontWeight: "400", fontSize: 10, lineHeight: 12, textAlign: "right", marginRight: 10, color: "#564C71" }}>
                 Intolerante a la lactosa
               </Text>
               <CheckBox
@@ -141,7 +166,7 @@ export function ModalDieta({ visible, onClose, data, setError, increaseProgress}
               />
             </View>
             <View style={{ height: 30, width: "100%", justifyContent: "flex-end", alignItems: "center", marginBottom: 10, display: "flex", flexDirection: "row" }}>
-              <Text style={{ fontWeight: "400", fontSize: 10, lineHeight: 12, textAlign: "right", marginRight: 10, color:"#564C71" }}>
+              <Text style={{ fontWeight: "400", fontSize: 10, lineHeight: 12, textAlign: "right", marginRight: 10, color: "#564C71" }}>
                 Ninguna dieta especial
               </Text>
               <CheckBox
