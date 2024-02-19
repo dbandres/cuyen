@@ -64,8 +64,6 @@ export function ExpandibleInfoPasajero({ data, setNewFetch }) {
     return sum;
   };
 
-  console.log(progressAttachment);
-
   useEffect(()=>{
     getSum()
   },[progressAttachment])
@@ -95,25 +93,29 @@ export function ExpandibleInfoPasajero({ data, setNewFetch }) {
   }
 
   useEffect(()=>{
-    if(data.dieta.vegetariano === true){
-      increaseProgress("dieta", 20)
-      setError(false)
-    }
-    else if(data.dieta.vegano === true){
-      increaseProgress("dieta", 20)
-      setError(false)
-    }
-    else if(data.dieta.celiaco === true){
-      increaseProgress("dieta", 20)
-      setError(false)
-    }
-    else if(data.dieta.intoleranteLactosa === true){
-      increaseProgress("dieta", 20)
-      setError(false)
-    }
-    else if(data.dieta.ningunaDietaEspecial === true){
-      increaseProgress("dieta", 20)
-      setError(false)
+    if(data.dieta !== null){
+      if(data.dieta.vegetariano === true){
+        increaseProgress("dieta", 20)
+        setError(false)
+      }
+      else if(data.dieta.vegano === true){
+        increaseProgress("dieta", 20)
+        setError(false)
+      }
+      else if(data.dieta.celiaco === true){
+        increaseProgress("dieta", 20)
+        setError(false)
+      }
+      else if(data.dieta.intoleranteLactosa === true){
+        increaseProgress("dieta", 20)
+        setError(false)
+      }
+      else if(data.dieta.ningunaDietaEspecial === true){
+        increaseProgress("dieta", 20)
+        setError(false)
+      }
+    }else{
+      console.log("No tiene dieta");
     }
 
   },[data])

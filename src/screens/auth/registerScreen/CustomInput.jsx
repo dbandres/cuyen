@@ -3,14 +3,20 @@ import { Controller } from "react-hook-form";
 import { useState } from "react";
 
 export function CustomInput({ control, name, placeholder, rules = {}, secureTextEntry, editable,
-	multiline, numberOfLines, maxLength, numeric, formIntro }) {
+	multiline, numberOfLines, maxLength, numeric, formIntro, formContact }) {
 
 	const [visibility, setVisibility] = useState(false)
+	const [foc, setFoc] = useState(false)
 
 	const changeVisibility = () => {
 		setVisibility(!visibility)
 	}
 
+	const focus = () =>{
+		setFoc(true)
+	}
+
+	console.log(foc);
 
 	return (
 		<Controller
@@ -85,6 +91,7 @@ export function CustomInput({ control, name, placeholder, rules = {}, secureText
 							multiline={multiline}
 							numberOfLines={numberOfLines}
 							maxLength={maxLength}
+							onFocus={focus}
 							style={{
 								width: formIntro === true ? "100%" : "85%",
 								paddingLeft: 10,
@@ -118,13 +125,17 @@ export function CustomInput({ control, name, placeholder, rules = {}, secureText
 						}
 					</View>
 					<View style={{ height: 25, justifyContent: "center", marginLeft: 20 }}>
-						{error &&
+						{error && foc &&
 							<View style={{display:"flex", flexDirection:"row", alignItems:"center"}}>
 								<Image
 									source={require("../../../assets/Error.png")}
 									style={{ width: 25, height: 25 }}
 								/>
-								<Text style={{ color: "#FF6363", fontSize: 10 }}>{error.message || `Este campo es Requerido`}</Text>
+								{
+									formContact === true ?
+									<Text style={{ color: "white", fontSize: 10 }}>{error.message || `Este campo es Requerido`}</Text>:
+									<Text style={{ color: "#FF6363", fontSize: 10 }}>{error.message || `Este campo es Requerido`}</Text>
+								}
 							</View>
 						}
 					</View>

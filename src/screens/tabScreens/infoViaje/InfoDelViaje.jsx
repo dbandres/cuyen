@@ -1,25 +1,29 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from "react-native";
 import { Header } from "../muro/Header";
+import { Destino } from "./componentesInfoDelViaje/Destino";
+import { Informacion } from "./componentesInfoDelViaje/Informacion";
+import { Contingente } from "./componentesInfoDelViaje/Contingente";
+import { Hotel } from "./componentesInfoDelViaje/Hotel";
 
 
-export function InfoDelViaje({navigation}) {
+export function InfoDelViaje({ navigation }) {
 
-	const Ir = () =>{
+	const Ir = () => {
 		navigation.navigate("carga-pasajero")
 	}
 
 	return (
-		<View style={styles.container}>
-			<Header children="Contrato" navigation={navigation} />
-			<Text>
-				InfoDelViaje
-			</Text>
-			<TouchableOpacity onPress={Ir}>
-				<Text>
-					ir a carga de pasajero
-				</Text>
-			</TouchableOpacity>
-		</View>
+
+		<ScrollView style={{ flex:1, backgroundColor: "#D2DCEB" }}>
+			<View style={styles.container}>
+				<Header children="Contrato" navigation={navigation} />
+				<Destino />
+				<Informacion />
+				<Contingente navigation={navigation}/>
+				<Hotel />
+			</View>
+		</ScrollView>
+
 	)
 }
 
@@ -28,5 +32,6 @@ const styles = StyleSheet.create({
 		backgroundColor: "#D2DCEB",
 		flex: 1,
 		display: "flex",
+		alignItems: "center"
 	}
 })

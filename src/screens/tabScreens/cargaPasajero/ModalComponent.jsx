@@ -57,7 +57,7 @@ export function ModalComponent({ visible, onClose, data, inputChanged, setNewFet
           nombre: data.formValues.nombre,
           apellido: data.formValues.apellido,
           dni: data.formValues.dni,
-          email: "",
+          email: data.formValues.email,
           contrato: userdata.contrato,
           rol: "Pasajero",
           estado: true,

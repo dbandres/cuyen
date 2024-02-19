@@ -4,11 +4,11 @@ export const data = [
     route: 'info-viaje',
     img: "infoViaje" // Ruta de la imagen como una cadena
   },
-  {
-    text: "Carga/consulta de datos del pasajero ",
-    route: 'carga-pasajero',
-    img: "cargaPasajero" // Ruta de la imagen como una cadena
-  },
+  // {
+  //   text: "Carga/consulta de datos del pasajero ",
+  //   route: 'carga-pasajero',
+  //   img: "cargaPasajero" // Ruta de la imagen como una cadena
+  // },
   {
     text: "Muro de publicaciones",
     route: 'muro',

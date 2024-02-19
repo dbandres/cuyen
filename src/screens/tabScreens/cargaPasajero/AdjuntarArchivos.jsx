@@ -28,35 +28,39 @@ export function AdjuntarArchivos({ children, increaseProgress, data, setNewFetch
 
   // revisamos data de adjuntos, y seteamos en caso de que ya esten completos
   useEffect(() => {
-    if (data.image_dni.length === 2 && children === "Documento de identidad") {
-      console.log("entre en dni: ");
-      setDniUrl(data.image_dni)
-      setCantidadImg(true)
-      increaseProgress("dni", 20)
-    }
-    else if (data.ficha_med !== null && children === "Ficha medica") {
-      console.log("entre en ficha: ");
-      setFichaUrl(data.ficha_med)
-      setCantidadImg(true)
-      increaseProgress("ficha", 20)
-    }
-    else if (data.obra_soc.length === 2 && children === "Carnet de obra social") {
-      console.log("entre en carnet: ");
-      setCarnetUrl(data.obra_soc)
-      setCantidadImg(true)
-      increaseProgress("carnet", 20)
-    }
-    else if (data.dec_jurada !== null && children === "Declaración jurada") {
-      console.log("entre en declaracion: ");
-      setDeclaracionUrl(data.dec_jurada)
-      setCantidadImg(true)
-      increaseProgress("declaracion", 20)
-    } else {
-      setCantidadImg(false)
-      setDniUrl([])
-      setFichaUrl("")
-      setCarnetUrl([])
-      setDeclaracionUrl("")
+    if(data.image_dni !== null || data.ficha_med !== null || data.obra_soc !== null || data.dec_jurada !== null){
+      if (data.image_dni !== null  && children === "Documento de identidad") {
+        console.log("entre en dni: ");
+        setDniUrl(data.image_dni)
+        setCantidadImg(true)
+        increaseProgress("dni", 20)
+      }
+      else if (data.ficha_med !== null && children === "Ficha medica") {
+        console.log("entre en ficha: ");
+        setFichaUrl(data.ficha_med)
+        setCantidadImg(true)
+        increaseProgress("ficha", 20)
+      }
+      else if (data.obra_soc !== null  && children === "Carnet de obra social") {
+        console.log("entre en carnet: ");
+        setCarnetUrl(data.obra_soc)
+        setCantidadImg(true)
+        increaseProgress("carnet", 20)
+      }
+      else if (data.dec_jurada !== null && children === "Declaración jurada") {
+        console.log("entre en declaracion: ");
+        setDeclaracionUrl(data.dec_jurada)
+        setCantidadImg(true)
+        increaseProgress("declaracion", 20)
+      } else {
+        setCantidadImg(false)
+        setDniUrl([])
+        setFichaUrl("")
+        setCarnetUrl([])
+        setDeclaracionUrl("")
+      }
+    }else{
+      console.log("es null!");
     }
   }, [data])
 

@@ -108,10 +108,11 @@ export const FormContact = React.forwardRef((props, ref) => {
         <CustomInput
           control={control}
           formIntro={true}
+          formContact={true}
           name="namecomplete"
           placeholder="Nombre y apellido"
           rules={{
-            //required: true,
+            required: true,
             minLength: {
               value: 2,
               message: "El nombre debe tener un minimo de 2 caracteres"
@@ -125,28 +126,30 @@ export const FormContact = React.forwardRef((props, ref) => {
         <CustomInput
           control={control}
           formIntro={true}
+          formContact={true}
           name="phone"
           numeric="numeric"
           placeholder="Teléfono de contacto"
           rules={{
-            //required: true,
+            required: true,
             minLength: {
               value: 2,
-              message: "El nombre debe tener un minimo de 2 caracteres"
+              message: "El número debe tener un minimo de 2 caracteres"
             },
             maxLength: {
               value: 15,
-              message: "El nombre debe tener como maximo de 15 caracteres"
+              message: "El número debe tener como maximo de 15 caracteres"
             }
           }}
         />
         <CustomInput
           control={control}
           formIntro={true}
+          formContact={true}
           name="useremail"
           placeholder="E-mail"
           rules={{
-            //required: true,
+            required: true,
             pattern: { value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, message: "La Direccion de Email es Incorrecta" }
           }}
         />
