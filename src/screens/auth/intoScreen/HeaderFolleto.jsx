@@ -16,7 +16,7 @@ export const HeaderFolleto = ({children, navigation}) => {
         style={styles.gradient}
       />
       <View style={styles.buttonOverlay}>
-        <TouchableOpacity style={{ justifyContent: "center", display: "flex", flexDirection: "row", alignItems: "center" }}
+        <TouchableOpacity style={{ justifyContent: "center", display: "flex", flexDirection: "row", alignItems: "center", paddingLeft: "3%" }}
           onPress={goBack}
         >
           <Image

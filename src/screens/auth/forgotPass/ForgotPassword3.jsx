@@ -9,9 +9,9 @@ import { ContainerWithBackground } from "../../ContainerWithBackground";
 import { API_URL, token } from "../../../api";
 
 
-export function ForgotPassword3({ navigation, route }) {
+export function ForgotPassword3({ navigation, route, }) {
 
-  const { control, handleSubmit, setValue, watch } = useForm()
+  const { control, handleSubmit, setValue, watch, trigger } = useForm()
   const pwd = watch("newPassUser")
   const { height } = Dimensions.get("screen")
   const [showAlert2, setShowAlert2] = useState(false)
@@ -67,6 +67,7 @@ export function ForgotPassword3({ navigation, route }) {
             name="newPassUser"
             numeric="numeric"
             secureTextEntry={true}
+            trigger={trigger}
           />
           <CustomInput
             control={control}
@@ -74,6 +75,7 @@ export function ForgotPassword3({ navigation, route }) {
             name="repeatPassUser"
             numeric="numeric"
             secureTextEntry={true}
+            trigger={trigger}
             rules={{
               required: true,
               validate: value => value === pwd || "Las Contraseñas no coinciden"

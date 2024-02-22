@@ -1,4 +1,4 @@
-import { Image, Modal, Text, TouchableOpacity, View, ActivityIndicator } from "react-native";
+import { Image, Modal, Text, TouchableOpacity, View, ActivityIndicator, Platform } from "react-native";
 import { ButtonCustom } from "../../../components/ButtomCustom";
 import { deleteImgSpaces, deleteImgUrl } from "./EditarArchivos";
 import { useEffect, useState } from "react";
@@ -8,6 +8,9 @@ import updateImage from "./updateImage";
 import axios from "axios";
 import { token } from "../../../api";
 import { Ok } from "./Ok";
+import { getDownloadPermissionAndroid, downloadFile } from "./downloadFile";
+import RNFetchBlob from "rn-fetch-blob";
+
 
 const transparent = "rgba(0,0,0,0.5)"
 
@@ -68,7 +71,6 @@ export function EditarAdjunto({ visible, onClose, data, children, id, setNewFetc
 
   const handleDismiss = () => {
     // Lógica adicional al cerrar el alerta
-    console.log('Alerta cerrado');
     setShowAlert(false)
 
   };
@@ -77,24 +79,21 @@ export function EditarAdjunto({ visible, onClose, data, children, id, setNewFetc
     setActivity(true)
     // Realiza alguna acción con el índice obtenido
     if (urlData.length !== 1) {
-      console.log("Se presionó en el índice:", data[index]);
       const respuesta = await deleteImgSpaces(data[index])
       if (respuesta === 200) {
         const deletedItem = data.splice(index, 1);
         deleteImgUrl(id, children, data, deletedItem)
-        console.log("delete item ", deletedItem);
         children === "Documento de identidad" ? increaseProgress("dni", 0) :
-          children === "Carnet de obra social" ? increaseProgress("carnet", 0) : null
+        children === "Carnet de obra social" ? increaseProgress("carnet", 0) : null
         setNewFetch(true)
         setUrlData([...data]);
         setActivity(false)
       }
     } else {
-      console.log("Se presionó en el índice:", data);
       const respuesta = await deleteImgSpaces(data)
       if (respuesta === 200) {
         children === "Ficha medica" ? increaseProgress("ficha", 0) :
-          children === "Declaración jurada" ? increaseProgress("declaracion", 0) : null
+        children === "Declaración jurada" ? increaseProgress("declaracion", 0) : null
         deleteImgUrl(id, children)
         setNewFetch(true)
         setUrlData("");
@@ -102,6 +101,7 @@ export function EditarAdjunto({ visible, onClose, data, children, id, setNewFetc
       }
     }
   }
+  
 
   const openGalery = async () => {
     if (children === "Documento de identidad") {
@@ -110,7 +110,6 @@ export function EditarAdjunto({ visible, onClose, data, children, id, setNewFetc
       updateImage(imgGalery, data)
         .then(response => {
           // Hacer algo con la respuesta de la petición
-          console.log(response);
           setNuevasImagenes(response)
           setActivity2(false)
         })
@@ -125,7 +124,6 @@ export function EditarAdjunto({ visible, onClose, data, children, id, setNewFetc
       updateImage(imgGalery, data)
         .then(response => {
           // Hacer algo con la respuesta de la petición
-          console.log(response);
           setNuevasImagenes(response)
           setActivity2(false)
         })
@@ -146,7 +144,6 @@ export function EditarAdjunto({ visible, onClose, data, children, id, setNewFetc
         updateImage(imgCamera, data)
         .then(response => {
           // Hacer algo con la respuesta de la petición
-          console.log("esto es cam",response);
           setNuevasImagenes(response)
           setActivity2(false)
         })
@@ -160,7 +157,6 @@ export function EditarAdjunto({ visible, onClose, data, children, id, setNewFetc
   }
 
   const adjuntarNuevoArchivo = () => {
-    console.log("adjuntar");
     setShowAlert(true)
   }
 
@@ -176,7 +172,6 @@ export function EditarAdjunto({ visible, onClose, data, children, id, setNewFetc
           }
         })
         .then((res) => {
-          console.log(res.status);
           onClose()
           setModalVisible2(true)
           setNewFetch(true)
@@ -195,7 +190,6 @@ export function EditarAdjunto({ visible, onClose, data, children, id, setNewFetc
           }
         })
         .then((res) => {
-          console.log(res.status);
           onClose()
           setModalVisible2(true)
           setNewFetch(true)
@@ -293,7 +287,20 @@ export function EditarAdjunto({ visible, onClose, data, children, id, setNewFetc
                           </Text>
                         </View>
                         <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-                          <TouchableOpacity>
+                          <TouchableOpacity onPress={()=>{
+                            if (Platform.OS === 'android') {
+                              getDownloadPermissionAndroid().then(granted => {
+                                if (granted) {
+                                  downloadFile(dato);
+                                }
+                              });
+                            } else {
+                              downloadFile(dato).then(res => {
+                                  RNFetchBlob.ios.previewDocument(res.path());
+                              });
+                            }
+                          }}
+                          >
                             <Image
                               source={require("../../../assets/frame.png")}
                               style={{ width: 24, height: 24, marginRight: 10 }}

@@ -23,7 +23,6 @@ export function ModalDieta({ visible, onClose, data, setError, increaseProgress 
   });
 
   const handleCheckBoxChange = (option) => {
-    console.log("option: ", option);
     if (option == "ningunaDietaEspecial") {
       // Si la opción seleccionada es "nigunaDietaEspecial",
       // establece todas las demás opciones como false
@@ -82,9 +81,6 @@ export function ModalDieta({ visible, onClose, data, setError, increaseProgress 
           'Content-Type': 'application/json',
         }
       })
-
-    console.log(resp);
-
     setError(false)
     onClose()
     increaseProgress("dieta",20)

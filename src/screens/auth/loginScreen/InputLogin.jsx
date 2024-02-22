@@ -2,8 +2,7 @@ import { Text, View, TextInput, StyleSheet, Image, TouchableOpacity } from "reac
 import { Controller } from "react-hook-form";
 import { useState } from "react";
 
-export function InputLogin({ control, name, placeholder, rules = {}, secureTextEntry, maxLength, numeric }) {
-	console.log(name)
+export function InputLogin({ control, name, placeholder, rules = {}, secureTextEntry, maxLength, numeric, trigger }) {
 
 	const [visibility, setVisibility] = useState(false)
 
@@ -34,7 +33,7 @@ export function InputLogin({ control, name, placeholder, rules = {}, secureTextE
 							placeholder={placeholder}
 							value={value}
 							onChangeText={onChange}
-							onBlur={onBlur}
+							onBlur={() => trigger(name)}
 							secureTextEntry={visibility !== true ? secureTextEntry : false}
 							maxLength={maxLength}
 							keyboardType={numeric}

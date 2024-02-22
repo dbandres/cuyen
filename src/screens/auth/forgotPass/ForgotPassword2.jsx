@@ -8,7 +8,7 @@ import { ContainerWithBackground } from "../../ContainerWithBackground";
 
 export default function ForgotPassword2({ navigation, route }) {
 
-  const { control, handleSubmit, setValue, watch } = useForm()
+  const { control, handleSubmit, setValue, watch, trigger } = useForm()
   const { height } = Dimensions.get("screen")
   const [showAlert, setShowAlert] = useState(false)
   const [showAlert2, setShowAlert2] = useState(false)
@@ -89,6 +89,7 @@ export default function ForgotPassword2({ navigation, route }) {
                 name="codigo1"
                 maxLength={1}
                 numeric="numeric"
+                trigger={trigger}
                 rules={{
                   required: true,
                   pattern: { value: /^[0-9]+$/, message: "El CODIGO es incorrecto" },
@@ -107,6 +108,7 @@ export default function ForgotPassword2({ navigation, route }) {
                 name="codigo2"
                 maxLength={1}
                 numeric="numeric"
+                trigger={trigger}
                 rules={{
                   required: true,
                   pattern: { value: /^[0-9]+$/, message: "El CODIGO es incorrecto" },
@@ -125,6 +127,7 @@ export default function ForgotPassword2({ navigation, route }) {
                 name="codigo3"
                 maxLength={1}
                 numeric="numeric"
+                trigger={trigger}
                 rules={{
                   required: true,
                   pattern: { value: /^[0-9]+$/, message: "El CODIGO es incorrecto" },
@@ -143,6 +146,7 @@ export default function ForgotPassword2({ navigation, route }) {
                 name="codigo4"
                 maxLength={1}
                 numeric="numeric"
+                trigger={trigger}
                 rules={{
                   required: true,
                   pattern: { value: /^[0-9]+$/, message: "El CODIGO es incorrecto" },

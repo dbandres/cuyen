@@ -23,8 +23,6 @@ export function CargaPasajero({ navigation }) {
 
 	useFocusEffect(
 		React.useCallback(() => {
-			console.log('Pantalla enfocada. Puedes ejecutar operaciones aquí.');
-
 			// Puedes realizar otras operaciones aquí, como cargar datos, etc.
 			dispatch(getPasajero(userdata.id))
 			return () => {
@@ -36,7 +34,6 @@ export function CargaPasajero({ navigation }) {
 
 		useEffect(()=>{
 			if(newFetch === true){
-				console.log("Se actualizo pasajero");
 				dispatch(getPasajero(userdata.id))
 				setNewFetch(false)
 				setShowForm(false)

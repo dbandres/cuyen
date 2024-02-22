@@ -11,7 +11,7 @@ import { API_URL, token } from "../../../api";
 
 export default function ForgotPassword({ navigation }) {
 
-	const { control, handleSubmit, setValue, watch } = useForm()
+	const { control, handleSubmit, setValue, watch, trigger } = useForm()
 	const { height } = Dimensions.get("screen")
 	const [showAlert2, setShowAlert2] = useState(false)
 	const [inputValue, setInputValue] = useState(false)
@@ -80,6 +80,7 @@ export default function ForgotPassword({ navigation }) {
 						placeholder="DNI"
 						name="dniUser"
 						numeric="numeric"
+						trigger={trigger}
 						secureTextEntry={true}
 					/>
 					<View style={{ top: 70, width: "100%" }}>

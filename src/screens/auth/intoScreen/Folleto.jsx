@@ -16,10 +16,14 @@ export function Folleto({ navigation, route }) {
   }
 
   useEffect(() => {
-    transformUriImag(post.folleto)
+    if(post.folleto === "[]"){
+      setUri([post.image])
+    }else{
+      transformUriImag(post.folleto)
+    }
   }, [])
 
-  console.log(uriImg)
+  console.log(post)
 
   return (
     <ScrollView>

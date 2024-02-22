@@ -10,6 +10,7 @@ export function AdjuntarArchivos({ children, increaseProgress, data, setNewFetch
 
   const [showAlert, setShowAlert] = useState(false);
   const [showAlert2, setShowAlert2] = useState(false);
+  const [showAlert3, setShowAlert3] = useState(false)
   const [cantidadImg, setCantidadImg] = useState(false);
   const [showModal, setShowModal] = useState(false)
   const [activity, setActivity] = useState(false)
@@ -28,27 +29,23 @@ export function AdjuntarArchivos({ children, increaseProgress, data, setNewFetch
 
   // revisamos data de adjuntos, y seteamos en caso de que ya esten completos
   useEffect(() => {
-    if(data.image_dni !== null || data.ficha_med !== null || data.obra_soc !== null || data.dec_jurada !== null){
-      if (data.image_dni !== null  && children === "Documento de identidad") {
-        console.log("entre en dni: ");
+    if (data.image_dni.length === 2 || data.ficha_med !== null || data.obra_soc.length === 2 || data.dec_jurada !== null) {
+      if (data.image_dni.length === 2 && children === "Documento de identidad") {
         setDniUrl(data.image_dni)
         setCantidadImg(true)
         increaseProgress("dni", 20)
       }
       else if (data.ficha_med !== null && children === "Ficha medica") {
-        console.log("entre en ficha: ");
         setFichaUrl(data.ficha_med)
         setCantidadImg(true)
         increaseProgress("ficha", 20)
       }
-      else if (data.obra_soc !== null  && children === "Carnet de obra social") {
-        console.log("entre en carnet: ");
+      else if (data.obra_soc.length === 2 && children === "Carnet de obra social") {
         setCarnetUrl(data.obra_soc)
         setCantidadImg(true)
         increaseProgress("carnet", 20)
       }
       else if (data.dec_jurada !== null && children === "Declaración jurada") {
-        console.log("entre en declaracion: ");
         setDeclaracionUrl(data.dec_jurada)
         setCantidadImg(true)
         increaseProgress("declaracion", 20)
@@ -59,8 +56,14 @@ export function AdjuntarArchivos({ children, increaseProgress, data, setNewFetch
         setCarnetUrl([])
         setDeclaracionUrl("")
       }
-    }else{
+    } else {
       console.log("es null!");
+      //pruebo esto aca
+      setCantidadImg(false)
+        setDniUrl([])
+        setFichaUrl("")
+        setCarnetUrl([])
+        setDeclaracionUrl("")
     }
   }, [data])
 
@@ -73,7 +76,6 @@ export function AdjuntarArchivos({ children, increaseProgress, data, setNewFetch
       setShowModal(true)
     } else {
       const result = await requestGalleryPermission();
-      console.log(result);
       result == "granted" ? setShowAlert(!showAlert) : null
     }
   }
@@ -96,7 +98,7 @@ export function AdjuntarArchivos({ children, increaseProgress, data, setNewFetch
         setActivity(true)
         uploadImages(imgGalery, "ficha", data.id)
           .then(res => {
-            console.log('Todas las imágenes de ficha medica se han subido correctamente:', res);
+            // console.log('Todas las imágenes de ficha medica se han subido correctamente:', res);
             setNewFetch(true)
             setActivity(false)
             setCantidadImg(true)
@@ -115,7 +117,7 @@ export function AdjuntarArchivos({ children, increaseProgress, data, setNewFetch
         setActivity(true)
         uploadImages(imgGalery, "declaracion", data.id)
           .then(res => {
-            console.log('Todas las imágenes de declaracion jurada se han subido correctamente:', res);
+            //console.log('Todas las imágenes de declaracion jurada se han subido correctamente:', res);
             setNewFetch(true)
             setActivity(false)
             setCantidadImg(true)
@@ -132,9 +134,8 @@ export function AdjuntarArchivos({ children, increaseProgress, data, setNewFetch
     } else if (children === "Documento de identidad") {
       await openImageLibrary(limite)
         .then((res) => {
-          res.forEach(element => {
-            setDniImg(prevImagenes => [...prevImagenes, element]);
-          });
+          setShowAlert3(true)
+          setDniImg(prevImagenes => [...prevImagenes, res]);
         })
         .catch((error) => {
           console.error('Error al subir imágenes:', error.message);
@@ -143,9 +144,8 @@ export function AdjuntarArchivos({ children, increaseProgress, data, setNewFetch
     } else if (children === "Carnet de obra social") {
       await openImageLibrary(limite)
         .then((res) => {
-          res.forEach(element => {
-            setCarnet(prevImagenes => [...prevImagenes, element]);
-          });
+          setShowAlert3(true)
+          setCarnet(prevImagenes => [...prevImagenes, res]);
         })
         .catch((error) => {
           console.error('Error al subir imágenes:', error.message);
@@ -161,7 +161,7 @@ export function AdjuntarArchivos({ children, increaseProgress, data, setNewFetch
         setActivity(true)
         uploadImages(imgCamera, "ficha", data.id)
           .then(res => {
-            console.log('Todas las imágenes de ficha medica se han subido correctamente:', res);
+            //console.log('Todas las imágenes de ficha medica se han subido correctamente:', res);
             setNewFetch(true)
             setActivity(false)
             setCantidadImg(true)
@@ -179,7 +179,7 @@ export function AdjuntarArchivos({ children, increaseProgress, data, setNewFetch
         setActivity(true)
         uploadImages(imgCamera, "declaracion", data.id)
           .then(res => {
-            console.log('Todas las imágenes de declaracion jurada se han subido correctamente:', res);
+            //console.log('Todas las imágenes de declaracion jurada se han subido correctamente:', res);
             setNewFetch(true)
             setActivity(false)
             setCantidadImg(true)
@@ -194,21 +194,22 @@ export function AdjuntarArchivos({ children, increaseProgress, data, setNewFetch
     } else if (children === "Documento de identidad") {
       const imgCamera = await openCamera()
       setDniImg(prevImagenes => [...prevImagenes, imgCamera]);
+      setShowAlert3(true)
     } else if (children === "Carnet de obra social") {
       const imgCamera = await openCamera()
       setCarnet(prevImagenes => [...prevImagenes, imgCamera]);
+      setShowAlert3(true)
     }
   }
 
   //controlamos si hace falta adjuntar una img mas en caso de ser necesario (dni y carnet)
   useEffect(() => {
+    setShowAlert3(false)
     setTimeout(() => {
       if (children === "Documento de identidad" && dniImg.length === 1) {
-        console.log("Falta una foto");
         setLimite(1)
         setShowAlert2(true)
       } else if (children === "Carnet de obra social" && carnet.length === 1) {
-        console.log("Falta una foto");
         setLimite(1)
         setShowAlert2(true)
       }
@@ -218,7 +219,17 @@ export function AdjuntarArchivos({ children, increaseProgress, data, setNewFetch
     }, 2000)
   }, [dniImg, carnet])
 
-  console.log(dniImg);
+  // disparamos un progres para saber si falta o no una foto
+  const getAlerts = () => {
+    return (
+      <AwesomeAlert
+        show={showAlert3}
+        showProgress={true}
+        progressColor="black"
+        progressSize={50}
+      />
+    )
+  }
 
   // Vamos cargando las img al spaces de DO
   useEffect(() => {
@@ -227,7 +238,7 @@ export function AdjuntarArchivos({ children, increaseProgress, data, setNewFetch
       setTimeout(()=>{
         uploadImages(dniImg, "dni", data.id)
         .then(res => {
-          console.log('Todas las imágenes de dni se han subido correctamente:', res);
+          //console.log('Todas las imágenes de dni se han subido correctamente:', res);
           setNewFetch(true)
           setActivity(false)
           setCantidadImg(true)
@@ -246,7 +257,7 @@ export function AdjuntarArchivos({ children, increaseProgress, data, setNewFetch
       setTimeout(()=>{
         uploadImages(carnet, "carnet", data.id)
         .then(res => {
-          console.log('Todas las imágenes de carnet se han subido correctamente:', res);
+          //console.log('Todas las imágenes de carnet se han subido correctamente:', res);
           setNewFetch(true)
           setActivity(false)
           setCantidadImg(true)
@@ -265,7 +276,6 @@ export function AdjuntarArchivos({ children, increaseProgress, data, setNewFetch
 
   const handleDismiss = () => {
     // Lógica adicional al cerrar el alerta
-    console.log('Alerta cerrado');
     setShowAlert(false)
     setShowAlert2(false)
     setLimite(2)
@@ -400,6 +410,7 @@ export function AdjuntarArchivos({ children, increaseProgress, data, setNewFetch
       {
         showAlert === true && children === "Declaración jurada" ? getAlert(`Vas a adjuntar un imagen para ${children}`, "Recorda que solo podes adjuntar UNA imagen", true, true, "Galeria", "Camara") : null
       }
+      {showAlert3 ? getAlerts() : null}
     </TouchableOpacity>
   )
 }

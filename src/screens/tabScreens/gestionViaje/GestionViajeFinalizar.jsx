@@ -73,6 +73,7 @@ export function GestionViajeFinalizar({ navigation, route }) {
       axios.put(`/viaje/${miDato.dato}`,
         {
           "finViaje": true,
+          "ultimaUbic": ""
         },
         {
           headers: {

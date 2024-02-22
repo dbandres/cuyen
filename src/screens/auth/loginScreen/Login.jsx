@@ -20,7 +20,7 @@ export default function Login({ navigation }) {
 	const [inputValue, setInputValue] = useState(false)
 	const [showAlert, setShowAlert] = useState(false)
 	const [showAlert2, setShowAlert2] = useState(false)
-	const { control, handleSubmit, watch } = useForm()
+	const { control, handleSubmit, watch, trigger } = useForm()
 
 	const showAlerts = (show, setShow, titulo, msg, text) => {
 		return (
@@ -108,6 +108,7 @@ export default function Login({ navigation }) {
 						placeholder="DNI"
 						name="dniUser"
 						numeric="numeric"
+						trigger={trigger}
 						secureTextEntry={true}
 					/>
 					<InputLogin
@@ -115,6 +116,7 @@ export default function Login({ navigation }) {
 						placeholder="Contraseña"
 						name="passUser"
 						numeric="numeric"
+						trigger={trigger}
 						secureTextEntry={true}
 					/>
 					<View style={{ top: 50 }}>

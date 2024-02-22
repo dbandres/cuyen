@@ -20,7 +20,7 @@ import Auth from "../../../api/auth";
 export default function Register({ navigation }) {
 
 	const { height } = Dimensions.get("screen")
-	const { control, handleSubmit, setValue, watch} = useForm()
+	const { control, handleSubmit, setValue, watch, trigger} = useForm()
 
 	const dispatch = useDispatch()
 	const [showAlert1, setShowAlert1] = useState(false)
@@ -188,7 +188,7 @@ export default function Register({ navigation }) {
 								control={control}
 								placeholder="Ingresa tu DNI"
 								name="userdni"
-								secureTextEntry
+								trigger={trigger}
 								numeric="numeric"
 								rules={{
 									required: true,
@@ -207,8 +207,10 @@ export default function Register({ navigation }) {
 								control={control}
 								name="username"
 								placeholder="Nombre"
+								trigger={trigger}
 								rules={{
 									required: true,
+									pattern:{value: /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]+$/, message: "El Nombre es incorrecto"},
 									minLength: {
 										value: 2,
 										message: "El Nombre no es válido."
@@ -223,8 +225,10 @@ export default function Register({ navigation }) {
 								control={control}
 								name="userlastname"
 								placeholder="Apellido"
+								trigger={trigger}
 								rules={{
 									required: true,
+									pattern:{value: /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]+$/, message: "El Nombre es incorrecto"},
 									minLength: {
 										value: 2,
 										message: "El Apellido no es válido."
@@ -239,6 +243,7 @@ export default function Register({ navigation }) {
 								control={control}
 								name="useremail"
 								placeholder="Email"
+								trigger={trigger}
 								rules={{
 									required: true,
 									pattern: { value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, message: "El Email ingresado no es válido." }
@@ -248,6 +253,7 @@ export default function Register({ navigation }) {
 								control={control}
 								name="userphone"
 								numeric="numeric"
+								trigger={trigger}
 								placeholder="Número de Celular"
 								rules={{
 									required: true,
@@ -261,11 +267,12 @@ export default function Register({ navigation }) {
 								name="userpass"
 								secureTextEntry
 								numeric="numeric"
+								trigger={trigger}
 								rules={{
 									required: true,
 									minLength: {
-										value: 4,
-										message: "La Contraseña debe tener un minimo de 4 caracteres"
+										value: 6,
+										message: "La Contraseña debe tener un minimo de 6 caracteres"
 									}
 								}}
 							/>
@@ -276,12 +283,13 @@ export default function Register({ navigation }) {
 								name="userpassrepeat"
 								secureTextEntry
 								numeric="numeric"
+								trigger={trigger}
 								rules={{
 									required: true,
 									validate: value => value === pwd || "Las Contraseñas no coinciden",
 									minLength: {
-										value: 8,
-										message: "La Contraseña debe tener un minimo de 8 caracteres"
+										value: 6,
+										message: "La Contraseña debe tener un minimo de 6 caracteres"
 									}
 								}}
 							/>
@@ -308,7 +316,8 @@ export default function Register({ navigation }) {
 							<View style={{ height: "7%", marginTop: "5%" }}>
 								<ButtonCustom
 									text="Registrarme"
-									color="#FF3D00"
+									color={selectedItems.length == 0 || toggleCheckBox === false ? "#CDD1DF" : "#FF3D00"}
+									disabled={selectedItems.length == 0 || toggleCheckBox === false ? true : false}
 									onPress={handleSubmit(handleSubmitRegister)}
 								/>
 							</View>

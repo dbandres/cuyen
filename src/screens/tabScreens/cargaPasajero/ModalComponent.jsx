@@ -5,6 +5,7 @@ import { UserContext } from "../../../context/UserContext";
 import axios from "axios";
 import { token } from "../../../api";
 import AwesomeAlert from "react-native-awesome-alerts";
+import Auth from "../../../api/auth";
 
 export function ModalComponent({ visible, onClose, data, inputChanged, setNewFetch, agregarPasajero }) {
 
@@ -85,12 +86,13 @@ export function ModalComponent({ visible, onClose, data, inputChanged, setNewFet
           setShowAlert2(false)
         })
     } else {
+      Auth.signUp(data.data.useremail, data.data.userdni)
       await axios.post("/pasajero",
         {
           nombre: data.data.username,
           apellido: data.data.userlastname,
           dni: data.data.userdni,
-          email: "",
+          email: data.data.useremail,
           contrato: userdata.contrato,
           rol: "Pasajero",
           estado: true,
@@ -161,10 +163,10 @@ export function ModalComponent({ visible, onClose, data, inputChanged, setNewFet
                     Fecha de Nacimiento {data?.newDate}
                   </Text>
                   <Text style={{ fontWeight: "700", fontSize: 12, color: "#949AAF", lineHeight: 30 }}>
-                    Importe ${data?.data?.importedelviaje}
+                    Importe ${importe.toLocaleString('es-ES', { style: 'decimal'})}
                   </Text>
                   <Text style={{ fontWeight: "700", fontSize: 12, color: "#949AAF", lineHeight: 30 }}>
-                    Cuotas {data?.cuotaSeleccionada} de {totalCuotas}
+                    Cuotas {data?.cuotaSeleccionada} de ${totalCuotas}
                   </Text>
                 </>
                 :

@@ -8,7 +8,7 @@ import AwesomeAlert from "react-native-awesome-alerts"
 
 export const FormContact = React.forwardRef((props, ref) => {
 
-  const { control, handleSubmit, setValue, reset } = useForm()
+  const { control, handleSubmit, setValue, reset, trigger } = useForm()
   const [showAlert2, setShowAlert2] = useState(false)
   const [showAlert, setShowAlert] = useState(false)
   const [showAlert1, setShowAlert1] = useState(false)
@@ -109,10 +109,12 @@ export const FormContact = React.forwardRef((props, ref) => {
           control={control}
           formIntro={true}
           formContact={true}
+          trigger={trigger}
           name="namecomplete"
           placeholder="Nombre y apellido"
           rules={{
             required: true,
+            pattern: { value: /^[a-zA-Z]+$/, message: "El nombre es incorrecto"},
             minLength: {
               value: 2,
               message: "El nombre debe tener un minimo de 2 caracteres"
@@ -127,18 +129,19 @@ export const FormContact = React.forwardRef((props, ref) => {
           control={control}
           formIntro={true}
           formContact={true}
+          trigger={trigger}
           name="phone"
           numeric="numeric"
           placeholder="Teléfono de contacto"
           rules={{
             required: true,
             minLength: {
-              value: 2,
-              message: "El número debe tener un minimo de 2 caracteres"
+              value: 10,
+              message: "El número debe tener un minimo de 10 dígitos"
             },
             maxLength: {
               value: 15,
-              message: "El número debe tener como maximo de 15 caracteres"
+              message: "El número debe tener como maximo de 15 dígitos"
             }
           }}
         />
@@ -146,6 +149,7 @@ export const FormContact = React.forwardRef((props, ref) => {
           control={control}
           formIntro={true}
           formContact={true}
+          trigger={trigger}
           name="useremail"
           placeholder="E-mail"
           rules={{
@@ -161,6 +165,7 @@ export const FormContact = React.forwardRef((props, ref) => {
         <CustomInput
         formIntro={true}
           control={control}
+          trigger={trigger}
           name="mensaje"
           multiline={true}
           numberOfLines={20}

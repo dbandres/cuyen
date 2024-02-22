@@ -26,6 +26,8 @@ export function Ubicacion({ navigation }) {
 		}, [])
 	)
 
+	console.log(destino);
+
 	useEffect(() => {
 		if (destino.length !== 0) {
 			const fecha = new Date(destino.updatedAt)

@@ -11,9 +11,10 @@ import { token } from "../../../api";
 import DatePicker from 'react-native-date-picker'
 import { ModalComponent } from "./ModalComponent";
 
+
 export function Form({ agregarPasajero, setNewFetch, }) {
 
-  const { control, handleSubmit, setValue, watch, } = useForm()
+  const { control, handleSubmit, setValue, watch, trigger} = useForm()
   const [itemsArray, setItemsArray] = useState([1])
   const [toggleCheckBox, setToggleCheckBox] = useState(false)
   const [showAlert2, setShowAlert2] = useState(false)
@@ -58,6 +59,7 @@ export function Form({ agregarPasajero, setNewFetch, }) {
 
   const handleCuotaPress = (cuota) => {
     setCuotaSeleccionada(cuota);
+    setIsExpanded(!isExpanded)
   };
 
   const handleSubmitcarga = (data) => {
@@ -149,13 +151,13 @@ export function Form({ agregarPasajero, setNewFetch, }) {
       <View style={{ width: 330, justifyContent: "center", alignItems: "center" }}>
         <CustomInput
           control={control}
+          trigger={trigger}
           placeholder="Ingresa tu DNI"
           name="userdni"
-          secureTextEntry
           numeric="numeric"
           rules={{
             required: true,
-            // pattern: { value: /^[0-9]+$/, message: "El DNI es incorrecto" },
+            pattern: { value: /^[0-9]+$/, message: "El DNI es incorrecto" },
             minLength: {
               value: 7,
               message: "El DNI ingresado no es válido."
@@ -170,8 +172,10 @@ export function Form({ agregarPasajero, setNewFetch, }) {
           control={control}
           name="username"
           placeholder="Nombre"
+          trigger={trigger}
           rules={{
             required: true,
+            pattern:{value: /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]+$/, message: "El Nombre es incorrecto"},
             minLength: {
               value: 2,
               message: "El Nombre no es válido."
@@ -186,8 +190,10 @@ export function Form({ agregarPasajero, setNewFetch, }) {
           control={control}
           name="userlastname"
           placeholder="Apellido"
+          trigger={trigger}
           rules={{
             required: true,
+            pattern:{value: /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]+$/, message: "El Apellido es incorrecto"},
             minLength: {
               value: 2,
               message: "El Apellido no es válido."
@@ -209,7 +215,7 @@ export function Form({ agregarPasajero, setNewFetch, }) {
           marginBottom: 20,
         }}>
           <TouchableOpacity style={{ width: "100%", display: "flex", flexDirection: "row", alignItems: "center" }} onPress={() => setOpen(true)}>
-            <Image source={require("../../../assets/calendar_month.png")} style={{ width: 17, height: 20, marginLeft: 5 }} />
+            <Image source={require("../../../assets/calendar_month.png")} style={{ width: 20, height: 19, marginLeft: 5 }} />
             {
               newDate ?
                 <Text style={{
@@ -260,6 +266,7 @@ export function Form({ agregarPasajero, setNewFetch, }) {
           control={control}
           name="useremail"
           placeholder="Email"
+          trigger={trigger}
           rules={{
             required: true,
             pattern: { value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, message: "El Email ingresado no es válido." }
@@ -269,6 +276,7 @@ export function Form({ agregarPasajero, setNewFetch, }) {
           control={control}
           name="importedelviaje"
           placeholder="Importe del viaje"
+          trigger={trigger}
           numeric="numeric"
           rules={{
             required: true
@@ -288,7 +296,7 @@ export function Form({ agregarPasajero, setNewFetch, }) {
                     {
                       cuotaSeleccionada ?
                         <Text style={{ color: "#564C71", fontWeight: "600", fontSize: 14, lineHeight: 16, marginLeft: 7 }}>
-                          {cuotaSeleccionada}
+                          {cuotaSeleccionada === 1 ? cuotaSeleccionada + " Cuota" : cuotaSeleccionada + " Cuotas"} 
                         </Text>
                         :
                         <Text style={{ color: "#CDD1DF", fontWeight: "600", fontSize: 14, lineHeight: 16, marginLeft: 7 }}>

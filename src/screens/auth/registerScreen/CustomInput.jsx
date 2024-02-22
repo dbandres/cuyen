@@ -3,7 +3,7 @@ import { Controller } from "react-hook-form";
 import { useState } from "react";
 
 export function CustomInput({ control, name, placeholder, rules = {}, secureTextEntry, editable,
-	multiline, numberOfLines, maxLength, numeric, formIntro, formContact }) {
+	multiline, numberOfLines, maxLength, numeric, formIntro, formContact, trigger }) {
 
 	const [visibility, setVisibility] = useState(false)
 	const [foc, setFoc] = useState(false)
@@ -84,7 +84,7 @@ export function CustomInput({ control, name, placeholder, rules = {}, secureText
 							placeholder={placeholder}
 							value={value}
 							onChangeText={onChange}
-							onBlur={onBlur}
+							onBlur={() => trigger(name)}
 							formIntro={formIntro}
 							secureTextEntry={visibility !== true ? secureTextEntry : false}
 							editable={editable}
