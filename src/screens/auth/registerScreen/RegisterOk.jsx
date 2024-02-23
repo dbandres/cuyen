@@ -6,15 +6,15 @@ import { useEffect } from "react";
 
 export const RegisterOk = ({ navigation }) => {
 
-  const goToHome = () => {
-    navigation.navigate("login")
-  }
+  // const goToHome = () => {
+  //   navigation.navigate("login")
+  // }
 
-  useEffect(() => {
-    setTimeout(() => {
-      goToHome()
-    }, 3000)
-  }, [])
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     goToHome()
+  //   }, 3000)
+  // }, [])
 
   return (
     <View style={styles.container}>

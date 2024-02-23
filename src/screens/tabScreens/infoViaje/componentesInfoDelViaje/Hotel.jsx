@@ -38,8 +38,8 @@ export function Hotel(){
   }, [isExpanded]);
 
   return(
-    <Animated.View ref={contentRef} style={{ height: heightAnim, width: 373, backgroundColor: "white", marginTop: "5%", borderRadius: 10, padding: "2%", justifyContent: "flex-start", alignItems: "center" }}>
-      <View style={{ width: "100%", display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", height: isExpanded ? 91 : "100%" }}>
+    <Animated.View ref={contentRef} style={{ height: heightAnim, width: 373, backgroundColor: "white", marginTop: "5%", borderRadius: 10, padding: "2%", justifyContent: "flex-start", alignItems: "center", marginBottom:10 }}>
+      <View style={{width:333, display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", height: isExpanded ? 80 : "100%" }}>
         <View style={{ display: "flex", flexDirection: "row" }}>
           <View style={{ width: 48, height: 48, borderRadius: 10, backgroundColor: "#FF3D00", alignItems: "center", justifyContent: "center" }}>
             <Image
@@ -58,7 +58,7 @@ export function Hotel(){
         </View>
         <View>
           <View>
-            <TouchableOpacity style={{ alignItems: 'center', marginRight: 20 }} onPress={toggleExpand}>
+            <TouchableOpacity style={{ alignItems: 'center'}} onPress={toggleExpand}>
               {/* Botón flecha */}
               <Text>{isExpanded ? <Image source={require("../../../../assets/Not_more.png")} style={{ width: 24, height: 24 }} /> : <Image source={require("../../../../assets/expand_more.png")} style={{ width: 24, height: 24 }} />}</Text>
             </TouchableOpacity>

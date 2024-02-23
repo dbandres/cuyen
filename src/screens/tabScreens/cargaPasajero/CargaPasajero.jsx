@@ -28,6 +28,7 @@ export function CargaPasajero({ navigation }) {
 			return () => {
 				// Este código se ejecuta cuando el componente se desenfoca o se desmonta
 				console.log('Pantalla desenfocada. Limpieza o desmontaje aquí.');
+				agregarPasajero()
 			};
 		}, []))
 
@@ -71,8 +72,8 @@ export function CargaPasajero({ navigation }) {
 						:
 						null
 				}
-				<View style={{ height: 70 }}>
-					<TouchableOpacity onPress={agregarPasajero} style={{ width: 331, height: 47, backgroundColor: "#FFFFFF", borderRadius: 10, top: 20, justifyContent: "center", alignItems: "center" }}>
+				<View style={{ height: 90 }}>
+					<TouchableOpacity onPress={agregarPasajero} style={{ width: 331, height: 47, backgroundColor: "#FFFFFF", borderRadius: 10, top: 20, justifyContent: "center", alignItems: "center", }}>
 						<Text style={{ color: "#334EA2", fontWeight: "600", fontSize: 12, lineHeight: 14, textAlign: "center" }}>
 							Agregar Pasajero
 						</Text>

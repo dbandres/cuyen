@@ -25,8 +25,8 @@ export const RouteInfoViaje = () => {
               color: '#FFFFFF',
               fontSize: 12,
               textAlign: 'center',
-              height: 30,
-              fontWeight: focused ? "700" : "400"
+              height: 35,
+              fontWeight: focused ? "700" : "400",
               // Agrega cualquier otro estilo necesario aquí
             }}>
               {formattedName}
@@ -38,13 +38,13 @@ export const RouteInfoViaje = () => {
           switch (route.name) {
             case 'Contrato':
               iconName = focused 
-              ? <Image source={require(`../../../assets/contract_color.png`)} style={{ width: 24, height: 24 }} />
+              ? <Image source={require(`../../../assets/contract_color.png`)} style={{ width: 24, height: 24}} />
               : <Image source={require(`../../../assets/contract.png`)} style={{ width: 24, height: 24 }} />
               break;
             case 'Información del viaje':
               iconName = focused 
               ? <Image source={require(`../../../assets/concierge_color.png`)} style={{ width: 24, height: 24 }} />
-              : <Image source={require(`../../../assets/concierge.png`)} style={{ width: 24, height: 24 }} />
+              : <Image source={require(`../../../assets/concierge.png`)} style={{ width: 24, height: 24}} />
               break;
             case 'Itinerario del viaje':
               iconName = focused
@@ -59,7 +59,7 @@ export const RouteInfoViaje = () => {
           }
 
           return (
-            <View style={{ alignItems: 'center' }}>
+            <View style={{ alignItems: 'center', marginTop:10 }}>
               {iconName}
             </View>
           );

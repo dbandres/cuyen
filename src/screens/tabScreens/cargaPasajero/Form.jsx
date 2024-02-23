@@ -14,7 +14,7 @@ import { ModalComponent } from "./ModalComponent";
 
 export function Form({ agregarPasajero, setNewFetch, }) {
 
-  const { control, handleSubmit, setValue, watch, trigger} = useForm()
+  const { control, handleSubmit, setValue, watch, trigger } = useForm()
   const [itemsArray, setItemsArray] = useState([1])
   const [toggleCheckBox, setToggleCheckBox] = useState(false)
   const [showAlert2, setShowAlert2] = useState(false)
@@ -32,6 +32,8 @@ export function Form({ agregarPasajero, setNewFetch, }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [cuotaSeleccionada, setCuotaSeleccionada] = useState(null);
   const [dataCuota, setDataCuota] = useState([1, 3, 6, 9, 12])
+  const fechaMax = new Date(2019, 0, 1);
+  const fechaMin = new Date(2000, 0, 1)
 
   const [modalVisible, setModalVisible] = useState(false);
   const [datosTotales, setDatosTotales] = useState({})
@@ -63,7 +65,7 @@ export function Form({ agregarPasajero, setNewFetch, }) {
   };
 
   const handleSubmitcarga = (data) => {
-    setDatosTotales({ data, cuotaSeleccionada, newDate })
+    setDatosTotales({ data, cuotaSeleccionada, newDate})
     openModal();
   }
 
@@ -79,15 +81,18 @@ export function Form({ agregarPasajero, setNewFetch, }) {
         }
       }).then((res) => {
         if (res.status === 200) {
+          console.log(res.data);
           setShowAlert2(false)
           setDataPasajero(res.data)
           setValue('username', res.data.nombre);
           setValue('userlastname', res.data.apellido);
+          setValue("importedelviaje", res.data.monto)
         }
       }).catch((error) => {
         setShowAlert2(false)
         console.log("No existe registro: ", error.response.data);
         setDataPasajero(error.response.data)
+        setValue("importedelviaje", error.response.data.monto)
       })
     } else {
       console.log("es undefined");
@@ -175,7 +180,7 @@ export function Form({ agregarPasajero, setNewFetch, }) {
           trigger={trigger}
           rules={{
             required: true,
-            pattern:{value: /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]+$/, message: "El Nombre es incorrecto"},
+            pattern: { value: /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]+$/, message: "El Nombre es incorrecto" },
             minLength: {
               value: 2,
               message: "El Nombre no es válido."
@@ -193,7 +198,7 @@ export function Form({ agregarPasajero, setNewFetch, }) {
           trigger={trigger}
           rules={{
             required: true,
-            pattern:{value: /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]+$/, message: "El Apellido es incorrecto"},
+            pattern: { value: /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]+$/, message: "El Apellido es incorrecto" },
             minLength: {
               value: 2,
               message: "El Apellido no es válido."
@@ -260,6 +265,8 @@ export function Form({ agregarPasajero, setNewFetch, }) {
             confirmText="Confirmar"
             cancelText="Cancelar"
             locale="es"
+            maximumDate={fechaMax}
+            minimumDate={fechaMin}
           />
         </View>
         <CustomInput
@@ -272,16 +279,25 @@ export function Form({ agregarPasajero, setNewFetch, }) {
             pattern: { value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, message: "El Email ingresado no es válido." }
           }}
         />
-        <CustomInput
-          control={control}
-          name="importedelviaje"
-          placeholder="Importe del viaje"
-          trigger={trigger}
-          numeric="numeric"
-          rules={{
-            required: true
-          }}
-        />
+        <View style={{
+          width: "100%",
+          flexDirection: 'row',
+          alignItems: 'center',
+          borderWidth: 1,
+          borderColor: '#CDD1DF',
+          borderRadius: 10,
+          height: 50,
+          padding:5,
+          marginBottom:20
+        }}>
+          <Image
+            source={require("../../../assets/attach_money.png")}
+            style={{ width: 10, height: 18 }}
+          />
+        <Text>
+          {dataPasajero.monto}
+        </Text>
+        </View>
         {
           itemsArray.length != 0 ?
             <View>
@@ -296,7 +312,7 @@ export function Form({ agregarPasajero, setNewFetch, }) {
                     {
                       cuotaSeleccionada ?
                         <Text style={{ color: "#564C71", fontWeight: "600", fontSize: 14, lineHeight: 16, marginLeft: 7 }}>
-                          {cuotaSeleccionada === 1 ? cuotaSeleccionada + " Cuota" : cuotaSeleccionada + " Cuotas"} 
+                          {cuotaSeleccionada === 1 ? cuotaSeleccionada + " Cuota" : cuotaSeleccionada + " Cuotas"}
                         </Text>
                         :
                         <Text style={{ color: "#CDD1DF", fontWeight: "600", fontSize: 14, lineHeight: 16, marginLeft: 7 }}>

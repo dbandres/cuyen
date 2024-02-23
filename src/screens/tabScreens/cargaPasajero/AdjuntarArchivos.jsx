@@ -383,7 +383,7 @@ export function AdjuntarArchivos({ children, increaseProgress, data, setNewFetch
         increaseProgress={increaseProgress}
       />
       <View style={{ height: 20, justifyContent: "flex-end" }}>
-        <Text style={{ fontWeight: "400", fontSize: 8, lineHeight: 9, textAlign: "center", color: "#564C71" }}>
+        <Text style={{ fontWeight: "400", fontSize: 9, lineHeight: 9, textAlign: "center", color: "#564C71" }}>
           {children}
         </Text>
       </View>

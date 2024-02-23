@@ -86,7 +86,6 @@ export default function Register({ navigation }) {
 		}
 		else if (selectedItems && toggleCheckBox) {
 			setShowAlert4(true)
-			Auth.signUp(data.useremail, data.userpass)
 			try {
 				await axios.post(`${API_URL}/usuarios`,
 					{
@@ -109,16 +108,18 @@ export default function Register({ navigation }) {
 				)
 					.then((res) => {
 						if (res.status === 200) {
+							Auth.signUp(data.useremail, data.userpass)
 							console.log("ESto es la respuesta: ",JSON.stringify(res, null ,3))
 							setUserData({
 								jwt: res.data,
-								nombre: data.username,
-								apellido: data.userlastname,
-								email: data.useremail,
-								usuario: data.userdni,
-								telefono: data.userphone,
-								contrato: selectedItems[0],
-								rol: "Padre"
+								nombre: res.data.usuario.nombre,
+								apellido: res.data.usuario.apellido,
+								email: res.data.usuario.email,
+								usuario: res.data.usuario.usuario,
+								telefono: res.data.usuario.telefono,
+								contrato: res.data.usuario.contrato,
+								rol: res.data.usuario.rol,
+								id: res.data.usuario.id
 							})
 							navigation.navigate("registerOk")
 						}
@@ -258,6 +259,11 @@ export default function Register({ navigation }) {
 								rules={{
 									required: true,
 									pattern: { value: /^[0-9]+$/, message: "El Número ingresado no es válido." },
+									minLength: {
+										value: 9,
+										message: "El Numero de celular ingresado no es válido."
+									},
+									
 								}}
 							/>
 

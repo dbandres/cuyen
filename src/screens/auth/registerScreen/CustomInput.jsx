@@ -16,8 +16,6 @@ export function CustomInput({ control, name, placeholder, rules = {}, secureText
 		setFoc(true)
 	}
 
-	console.log(foc);
-
 	return (
 		<Controller
 			control={control}
@@ -105,6 +103,7 @@ export function CustomInput({ control, name, placeholder, rules = {}, secureText
 							}}
 							placeholderTextColor="#CDD1DF"
 							keyboardType={numeric}
+							
 						/>
 						{
 							secureTextEntry === true ?

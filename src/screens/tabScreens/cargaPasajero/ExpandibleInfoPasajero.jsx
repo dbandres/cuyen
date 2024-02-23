@@ -49,8 +49,8 @@ export function ExpandibleInfoPasajero({ data, setNewFetch }) {
 
   const archivos = ["Ficha medica", "Declaración jurada", "Documento de identidad", "Carnet de obra social"];
 
-   // Función para modificar un valor específico en el estado
-   const increaseProgress = (key, newValue) => {
+  // Función para modificar un valor específico en el estado
+  const increaseProgress = (key, newValue) => {
     setProgressAttachment(prevState => ({
       ...prevState,
       [key]: newValue
@@ -64,9 +64,9 @@ export function ExpandibleInfoPasajero({ data, setNewFetch }) {
     return sum;
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     getSum()
-  },[progressAttachment])
+  }, [progressAttachment])
 
   const openModal = () => {
     setModalVisible(true);
@@ -92,33 +92,33 @@ export function ExpandibleInfoPasajero({ data, setNewFetch }) {
     setModalVisible2(false)
   }
 
-  useEffect(()=>{
-    if(data.dieta !== null){
-      if(data.dieta.vegetariano === true){
+  useEffect(() => {
+    if (data.dieta !== null) {
+      if (data.dieta.vegetariano === true) {
         increaseProgress("dieta", 20)
         setError(false)
       }
-      else if(data.dieta.vegano === true){
+      else if (data.dieta.vegano === true) {
         increaseProgress("dieta", 20)
         setError(false)
       }
-      else if(data.dieta.celiaco === true){
+      else if (data.dieta.celiaco === true) {
         increaseProgress("dieta", 20)
         setError(false)
       }
-      else if(data.dieta.intoleranteLactosa === true){
+      else if (data.dieta.intoleranteLactosa === true) {
         increaseProgress("dieta", 20)
         setError(false)
       }
-      else if(data.dieta.ningunaDietaEspecial === true){
+      else if (data.dieta.ningunaDietaEspecial === true) {
         increaseProgress("dieta", 20)
         setError(false)
       }
-    }else{
+    } else {
       console.log("No tiene dieta");
     }
 
-  },[data])
+  }, [data])
 
   useEffect(() => {
     if (isExpanded) {
@@ -193,9 +193,9 @@ export function ExpandibleInfoPasajero({ data, setNewFetch }) {
   return (
     <ScrollView>
       <ModalComponent visible={modalVisible} onClose={closeModal} data={datosTotales} inputChanged={inputChanged} setNewFetch={setNewFetch} />
-      <ModalDieta visible={modalVisible2} onClose={closerDietaModal} data={data} setError={setError} increaseProgress={increaseProgress}/>
+      <ModalDieta visible={modalVisible2} onClose={closerDietaModal} data={data} setError={setError} increaseProgress={increaseProgress} />
       <Animated.View ref={contentRef} style={{ height: heightAnim, width: 373, backgroundColor: "white", marginTop: "5%", borderRadius: 10, justifyContent: "flex-start", alignItems: "center" }}>
-        
+
         <View style={{ backgroundColor: "#FFFFFF", borderRadius: 10, alignItems: "center", display: "flex", flexDirection: "row", padding: 20, width: "100%", justifyContent: "space-between", height: isExpanded ? 91 : "100%" }}>
           <View style={{ display: "flex", flexDirection: "row" }}>
             <View style={{ width: 48, height: 48, borderRadius: 10, backgroundColor: "#FFB800", alignItems: "center", justifyContent: "center" }}>
@@ -214,7 +214,7 @@ export function ExpandibleInfoPasajero({ data, setNewFetch }) {
             </View>
           </View>
           <TouchableOpacity onPress={toggleExpand} style={{ alignItems: 'center' }}>
-           
+
             <Text>{isExpanded ? <Image source={require("../../../assets/Not_more.png")} style={{ width: 24, height: 24 }} /> : <Image source={require("../../../assets/expand_more.png")} style={{ width: 24, height: 24 }} />}</Text>
           </TouchableOpacity>
         </View>
@@ -226,7 +226,7 @@ export function ExpandibleInfoPasajero({ data, setNewFetch }) {
             :
             isExpanded === true && seteoData === true && editing === true ?
               <View style={{ alignItems: "center", justifyContent: "center", width: "100%" }}>
-                <FormEditarDatos info={data} setInputChanged={setInputChanged} formValues={formValues} setFormValues={setFormValues} newDate={newDate} setNewDate={setNewDate} /> 
+                <FormEditarDatos info={data} setInputChanged={setInputChanged} formValues={formValues} setFormValues={setFormValues} newDate={newDate} setNewDate={setNewDate} />
               </View>
               : null
         }
@@ -256,8 +256,8 @@ export function ExpandibleInfoPasajero({ data, setNewFetch }) {
         </View>
         <View style={{ width: 320, height: 96, marginTop: 20, display: "flex", flexDirection: "row", justifyContent: "space-around", marginBottom: 20 }}>
           {archivos.map((archivo, index) => (
-            <AdjuntarArchivos key={index} children={archivo} increaseProgress={increaseProgress} data={data} adjuntos={adjuntos} setNewFetch={setNewFetch}/>
-          ))} 
+            <AdjuntarArchivos key={index} children={archivo} increaseProgress={increaseProgress} data={data} adjuntos={adjuntos} setNewFetch={setNewFetch} />
+          ))}
         </View>
         <View>
           <TouchableOpacity onPress={handleDieta} style={{ width: 331, height: 47, borderRadius: 10, borderWidth: 1, borderColor: "#334EA2", justifyContent: "center", alignItems: "center", marginTop: 20 }}>
@@ -280,16 +280,16 @@ export function ExpandibleInfoPasajero({ data, setNewFetch }) {
               <View style={{ display: "flex", flexDirection: "row", width: 318, height: 30, alignItems: "center", marginBottom: 20 }}>
                 <Image
                   source={require("../../../assets/Vector.png")}
-                  style={{ width: 16, height: 16,}}
+                  style={{ width: 16, height: 16, }}
                 />
-                <Text style={{ color: "#564C71", fontWeight: "400", fontSize: 10, lineHeight: 12, marginLeft:10 }}>
-                Información de dieta especial completo.
+                <Text style={{ color: "#564C71", fontWeight: "400", fontSize: 10, lineHeight: 12, marginLeft: 10 }}>
+                  Información de dieta especial completo.
                 </Text>
               </View>
           }
           <View style={{ width: 331, height: 33, justifyContent: "center", alignItems: "center" }}>
             <View style={{ width: "100%", height: 10, backgroundColor: "#E5EBFF", borderRadius: 10 }}>
-              <View style={{ width:`${getSum()}%`, height: 10, backgroundColor: "#93E396", borderRadius: 10 }}>
+              <View style={{ width: `${getSum()}%`, height: 10, backgroundColor: "#93E396", borderRadius: 10 }}>
 
               </View>
             </View>
