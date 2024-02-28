@@ -1,6 +1,5 @@
 import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigation/drawer';
 import { StyleSheet, View, Text, Image, Linking } from "react-native"
-import { CargaPasajero } from '../screens/tabScreens/cargaPasajero/CargaPasajero';
 import { Ubicacion } from '../screens/tabScreens/Ubicacion';
 import { MenuBottonItem } from './MenuBottonItem';
 import { data } from './dataDrawer';
@@ -13,7 +12,7 @@ import { RouteLanding } from '../screens/auth/landing/RouteLanding';
 import { RouteGestion } from '../screens/tabScreens/gestionViaje/RouteGestion';
 import Auth from '../api/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { RouteInfoViaje } from '../screens/tabScreens/infoViaje/RouteInfoViaje';
+import { RouteInicial } from '../screens/tabScreens/infoViaje/RouteInicial';
 
 
 
@@ -144,8 +143,8 @@ function DrawerNavigator() {
 			}}
 		>
 			<Drawer.Screen name="Inicio" component={RouteLanding} options={{ headerShown: false }} />
-			<Drawer.Screen name="info-viaje" component={RouteInfoViaje} options={{ headerShown: false }} />
-			<Drawer.Screen name="carga-pasajero" component={CargaPasajero} options={{ headerShown: false }} /> 
+			<Drawer.Screen name="info-viaje" component={RouteInicial} options={{ headerShown: false }} />
+			{/* <Drawer.Screen name="carga-pasajero" component={CargaPasajero} options={{ headerShown: false }} />  */}
 			<Drawer.Screen name="muro" component={RouteMuro} options={{ headerShown: false }} />
 			<Drawer.Screen name="ubiViaje" component={Ubicacion} options={{ headerShown: false }} />
 			<Drawer.Screen name="folleto-screen" component={Folleto} options={{ headerShown: false }} />

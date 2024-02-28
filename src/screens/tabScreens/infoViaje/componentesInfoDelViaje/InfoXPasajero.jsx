@@ -73,7 +73,7 @@ export function InfoXpasajero({ info }) {
       </View>
 
       {dietasEspeciales.map((dieta, index) => {
-        if (info.dieta[dieta.key] !== false) {
+        if (info.dieta !== null && info.dieta[dieta.key] !== false) {
           return (
             <View key={index} style={{ flexDirection: "row", alignItems: "center" }}>
               <Image

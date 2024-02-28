@@ -289,12 +289,13 @@ export function Form({ agregarPasajero, setNewFetch, }) {
           height: 50,
           padding:5,
           marginBottom:20
+          
         }}>
           <Image
             source={require("../../../assets/attach_money.png")}
             style={{ width: 10, height: 18 }}
           />
-        <Text>
+        <Text style={{color:"#564C71", marginLeft:5}}>
           {dataPasajero.monto}
         </Text>
         </View>

@@ -37,7 +37,7 @@ export const RegisterOk = ({ navigation }) => {
         </View>
         <View style={{ bottom: 130, position: "absolute", width: "58%", height: "7%", }}>
           <Text style={{ fontWeight: "600", fontSize: 12, color: "#949AAF", lineHeight: 14, textAlign: "center" }}>
-            Será redireccionado automáticamente al Login ahora mismo...
+            Será redireccionado automáticamente al Home ahora mismo...
           </Text>
         </View>
       </View>

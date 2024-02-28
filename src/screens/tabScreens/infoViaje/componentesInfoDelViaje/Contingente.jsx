@@ -37,13 +37,15 @@ export function Contingente({ navigation }) {
     setIsExpanded(!isExpanded);
   };
 
+  console.log(pasajero.length);
+
   useEffect(() => {
     if (isExpanded) {
       // Mide la altura del contenido cuando se expande
       contentRef.current.measure((x, y, width, height) => {
         console.log("he: ", height)
         Animated.timing(heightAnim, {
-          toValue: newValue === "" ? pasajero.length * 80 + 200 : newValue, // Ajusta según tus necesidades
+          toValue: newValue === "" ? pasajero.length * 91 + 200 : newValue, // Ajusta según tus necesidades
           //toValue: height + 480,
           duration: 100,
           useNativeDriver: false,

@@ -50,10 +50,12 @@ export function ModalComponent({ visible, onClose, data, inputChanged, setNewFet
     }
   }, [data])
 
+  console.log(data);
+
   const postPasajero = async () => {
     setShowAlert2(true)
     if (inputChanged === true) {
-      await axios.put(`/pasajero/${data.id}`,
+      await axios.put(`/pasajero/${userdata.id}`,
         {
           nombre: data.formValues.nombre,
           apellido: data.formValues.apellido,
@@ -64,7 +66,7 @@ export function ModalComponent({ visible, onClose, data, inputChanged, setNewFet
           estado: true,
           login: "",
           fechaNac: data.formValues.fechaNac,
-          importe: data.importe,
+          importe: importe,
           cuotas: data.cuotas,
           loginId: userdata.id
         },
@@ -86,7 +88,6 @@ export function ModalComponent({ visible, onClose, data, inputChanged, setNewFet
           setShowAlert2(false)
         })
     } else {
-      Auth.signUp(data.data.useremail, data.data.userdni)
       await axios.post("/pasajero",
         {
           nombre: data.data.username,
@@ -109,6 +110,7 @@ export function ModalComponent({ visible, onClose, data, inputChanged, setNewFet
           }
         })
         .then((res) => {
+          Auth.signUp(data.data.useremail, data.data.userdni)
           setShowAlert2(false)
           setNewFetch(true)
           if (showAlert2 === false) {

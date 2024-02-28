@@ -60,9 +60,7 @@ export function CargaPasajero({ navigation }) {
 							<ExpandibleInfoPasajero key={index} data={pas} setNewFetch={setNewFetch}/>
 						))
 						:
-						<Text>
-							Hola
-						</Text>
+						null
 				}
 				{
 					showForm !== false ?

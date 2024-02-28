@@ -18,7 +18,7 @@ export const RouteInfoViaje = () => {
               ? 'Itinerario\n del viaje'
               : route.name === 'Estado de pagos'
                 ? 'Estado\n de pagos'
-                : route.name;
+                : null;
 
           return (
             <Text style={{
@@ -33,33 +33,30 @@ export const RouteInfoViaje = () => {
             </Text>
           );
         },
-        tabBarIcon: ({focused}) => {
+        tabBarIcon: ({ focused }) => {
           let iconName;
           switch (route.name) {
-            case 'Contrato':
-              iconName = focused 
-              ? <Image source={require(`../../../assets/contract_color.png`)} style={{ width: 24, height: 24}} />
-              : <Image source={require(`../../../assets/contract.png`)} style={{ width: 24, height: 24 }} />
-              break;
             case 'Información del viaje':
-              iconName = focused 
-              ? <Image source={require(`../../../assets/concierge_color.png`)} style={{ width: 24, height: 24 }} />
-              : <Image source={require(`../../../assets/concierge.png`)} style={{ width: 24, height: 24}} />
+              iconName = focused
+                ? <Image source={require(`../../../assets/concierge_color.png`)} style={{ width: 24, height: 24 }} />
+                : <Image source={require(`../../../assets/concierge.png`)} style={{ width: 24, height: 24 }} />
               break;
             case 'Itinerario del viaje':
               iconName = focused
-              ? <Image source={require(`../../../assets/airport_shuttle_color.png`)} style={{ width: 24, height: 24 }} />
-              : <Image source={require(`../../../assets/airport_shuttle.png`)} style={{ width: 24, height: 24 }} />
+                ? <Image source={require(`../../../assets/airport_shuttle_color.png`)} style={{ width: 24, height: 24 }} />
+                : <Image source={require(`../../../assets/airport_shuttle.png`)} style={{ width: 24, height: 24 }} />
+              break;
+            case 'Estado de pagos':
+              iconName = focused
+                ? <Image source={require(`../../../assets/account_balance_wallet_color.png`)} style={{ width: 24, height: 24 }} />
+                : <Image source={require(`../../../assets/account_balance_wallet.png`)} style={{ width: 24, height: 24 }} />
               break;
             default:
-              iconName = focused
-              ? <Image source={require(`../../../assets/account_balance_wallet_color.png`)} style={{ width: 24, height: 24 }} />
-              : <Image source={require(`../../../assets/account_balance_wallet.png`)} style={{ width: 24, height: 24 }} />
-              break;
+              null
           }
 
           return (
-            <View style={{ alignItems: 'center', marginTop:10 }}>
+            <View style={{ alignItems: 'center', marginTop: 10 }}>
               {iconName}
             </View>
           );
@@ -71,7 +68,6 @@ export const RouteInfoViaje = () => {
         },
       })}
     >
-      <Tab.Screen name="Contrato" component={Contrato} options={{ headerShown: false }} />
       <Tab.Screen name="Información del viaje" component={InfoDelViaje} options={{ headerShown: false }} />
       <Tab.Screen name="Itinerario del viaje" component={ItineratioDelViaje} options={{ headerShown: false }} />
       <Tab.Screen name="Estado de pagos" component={EstadoDePagos} options={{ headerShown: false }} />

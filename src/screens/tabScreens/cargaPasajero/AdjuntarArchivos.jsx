@@ -303,10 +303,12 @@ export function AdjuntarArchivos({ children, increaseProgress, data, setNewFetch
         onConfirmPressed={() => {
           openGalery()
           setShowAlert(false)
+          setShowAlert2(false)
         }}
         onCancelPressed={() => {
           requestCameraPermission()
           setShowAlert(false)
+          setShowAlert2(false)
         }}
       />
     )

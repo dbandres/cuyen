@@ -14,9 +14,6 @@ import LinearGradient from "react-native-linear-gradient";
 import { API_URL, token } from "../../../api";
 import Auth from "../../../api/auth";
 
-
-
-
 export default function Register({ navigation }) {
 
 	const { height } = Dimensions.get("screen")
@@ -34,7 +31,8 @@ export default function Register({ navigation }) {
 	const pwd = watch("userpass")
 	const allContratos = useSelector((state) => state.allContratos)
 
-	
+	let dni = watch('userdni')
+
 	const [isOpen, setIsOpen] = useState(false)
 	const [error, setError] = useState(null);
 
@@ -75,6 +73,10 @@ export default function Register({ navigation }) {
       />
     )
   }
+
+	useEffect(()=>{
+		
+	},[dni])
 
 	async function handleSubmitRegister(data) {
 		// navigation.navigate("registerOk")

@@ -14,7 +14,7 @@ export function InfoContingente({ pasaje, expandedHijo, onItemPress, index, disa
       contentRef.current.measure((x, y, width, height) => {
         console.log("he: ", height)
         Animated.timing(heightAnim, {
-          toValue: 715, // Ajusta según tus necesidades
+          toValue: 615, // Ajusta según tus necesidades
           //toValue: height + 480,
           duration: 100,
           useNativeDriver: false,

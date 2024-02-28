@@ -3,7 +3,7 @@ import { Image, Text, View } from "react-native";
 export function InfoPasajero({info}){
 
   return(
-    <View style={{width:"90%", height:200}}>
+    <View style={{width:"90%", height:150}}>
       <View style={{display:"flex", flexDirection:"row", width:122, height:30, alignItems:"center", marginBottom:15}}>
         <Image
           source={require("../../../assets/badge.png")}
@@ -26,18 +26,6 @@ export function InfoPasajero({info}){
         </Text>
         <Text style={{fontWeight:"700", fontSize:12, lineHeight:30, color:"#564C71"}}>
           {info.fechaNac}
-        </Text>
-      </View>
-      <View style={{display:"flex", flexDirection:"row", width:238, height:30, alignItems:"center", marginBottom:15}}>
-        <Image
-          source={require("../../../assets/attach_money.png")}
-          style={{ width: 10, height: 20, marginLeft:7 }}
-        />
-        <Text style={{marginRight:5, marginLeft:10, fontWeight:"400", fontSize:12, lineHeight:30, color:"#564C71"}}>
-          Importe 
-        </Text>
-        <Text style={{fontWeight:"700", fontSize:12, lineHeight:30, color:"#564C71"}}>
-          {info.importe}
         </Text>
       </View>
       <View style={{display:"flex", flexDirection:"row", width:238, height:30, alignItems:"center", marginBottom:15}}>

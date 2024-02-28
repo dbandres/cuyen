@@ -13,10 +13,13 @@ export const GET_ALL_PASAJEROS_X_COLEGIO_FILTER = "GET_ALL_PASAJEROS_X_COLEGIO_F
 export const GET_ITINERARIO = "GET_ITINERARIO";
 export const GET_DESTINO = "GET_DESTINO"; 
 export const GET_PASAJERO = "GET_PASAJERO";
+export const GET_CONTRATO_BY_NUM = "GET_CONTRATO_BY_NUM";
+export const GET_HOTEL_BY_NUM = "GET_HOTEL_BY_NUM";
+export const VERIFU_USER_DNI = "VERIFU_USER_DNI";
 
 
 export function loginAuth(usuario, contraseña) {
-	console.log(usuario, contraseña)
+
 	try {
 		return async function (dispatch) {
 			let response = await axios.get(`${API_URL}/usuarios/${usuario}/${contraseña}`, {
@@ -278,6 +281,63 @@ export function getPasajero(num){
 			})
 		} catch (error) {
 			console.log('Error de Axios getPasajero:', error)
+		}
+	}
+}
+
+export function getContratoByNum(num){
+	return async function(dispatch){
+		try {
+			const response = await axios.get(`/contrato/${num}`,{
+				headers:{
+					'x-access-token': `${token}`,
+					'Content-Type': 'application/json',
+				}
+			})
+			return dispatch({
+				type: GET_CONTRATO_BY_NUM,
+				payload: response.data
+			})
+		} catch (error) {
+			console.log('Error de Axios getContratoByNum:', error)
+		}
+	}
+}
+
+export function getHotelByNum(num){
+	return async function(dispatch){
+		try {
+			const response = await axios.get(`/nuevoviaje/${num}`,{
+				headers:{
+					'x-access-token': `${token}`,
+					'Content-Type': 'application/json',
+				}
+			})
+			return dispatch({
+				type: GET_HOTEL_BY_NUM,
+				payload: response.data
+			})
+		} catch (error) {
+			console.log('Error de Axios getHotelByNum:', error)
+		}
+	}
+}
+
+export function verifyUserByDni(num){
+	return async function(dispatch){
+		try {
+			const response = await axios.get(`/usuarios/verify/${num}`,{
+				headers:{
+					'x-access-token': `${token}`,
+					'Content-Type': 'application/json',
+				}
+			})
+			return dispatch({
+				type: VERIFU_USER_DNI,
+				payload: response.data
+			})
+		} catch (error) {
+			console.log('Error de Axios getHotelByNum:', error)
 		}
 	}
 }
