@@ -5,7 +5,6 @@ import { UserContext } from "../../../context/UserContext";
 import axios from "axios";
 import { token } from "../../../api";
 import AwesomeAlert from "react-native-awesome-alerts";
-import Auth from "../../../api/auth";
 
 export function ModalComponent({ visible, onClose, data, inputChanged, setNewFetch, agregarPasajero }) {
 
@@ -110,7 +109,6 @@ export function ModalComponent({ visible, onClose, data, inputChanged, setNewFet
           }
         })
         .then((res) => {
-          Auth.signUp(data.data.useremail, data.data.userdni)
           setShowAlert2(false)
           setNewFetch(true)
           if (showAlert2 === false) {

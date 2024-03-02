@@ -11,19 +11,23 @@ import { Provider } from 'react-redux';
 import store from './src/redux/store';
 import { UserProvider } from './src/context/UserContext';
 import DeviceInfo from "react-native-device-info"
+import { AuthProvider } from './src/context/AuthContext';
 
 export default function App() {
 
   let current = DeviceInfo.getVersion()
-  console.log("Version! ",current);
+  console.log("Version! ", current);
+
 
   return (
     <Provider store={store}>
-      <UserProvider>
-        <NavigationContainer>
-          <AuthNavigator />
-        </NavigationContainer>
-      </UserProvider>
+      <AuthProvider>
+        <UserProvider>
+          <NavigationContainer>
+            <AuthNavigator />
+          </NavigationContainer>
+        </UserProvider>
+      </AuthProvider>
     </Provider>
   );
 }

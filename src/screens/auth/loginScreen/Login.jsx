@@ -8,7 +8,6 @@ import { loginAuth } from "../../../redux/actions";
 import { InputLogin } from "./InputLogin";
 import { ContainerWithBackground } from "../../ContainerWithBackground";
 import AwesomeAlert from "react-native-awesome-alerts";
-import Auth from "../../../api/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const height = Dimensions.get("screen").height
@@ -56,9 +55,6 @@ export default function Login({ navigation }) {
 		dispatch(loginAuth(data.dniUser, data.passUser))
 			.then((response) => {
 				if (response.payload.status === 200) {
-					// accedo a la respuesta de la acción
-					//console.log(JSON.stringify(response.payload.data, null, 3))
-					console.log(response.payload.data.usuario.id);
 					setUserData({
 						jwt: response.payload.data.token,
 						nombre: response.payload.data.usuario.nombre,
@@ -70,9 +66,8 @@ export default function Login({ navigation }) {
 						id: response.payload.data.usuario.id
 					})
 					AsyncStorage.setItem("userStorage", JSON.stringify(response.payload.data))
-					Auth.signIn(response.payload.data.usuario.email, response.payload.data.usuario.password)
 					setShowAlert2(false)
-					// navigation.navigate("landing")
+					navigation.navigate("landing")
 				}
 			})
 			.catch((error) => {

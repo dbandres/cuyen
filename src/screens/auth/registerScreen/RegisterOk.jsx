@@ -2,19 +2,17 @@ import { View, Text, StyleSheet, Image } from "react-native"
 import LinearGradient from "react-native-linear-gradient"
 import { useEffect } from "react";
 
-
-
 export const RegisterOk = ({ navigation }) => {
 
-  // const goToHome = () => {
-  //   navigation.navigate("login")
-  // }
+  const goToHome = () => {
+    navigation.navigate("login")
+  }
 
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     goToHome()
-  //   }, 3000)
-  // }, [])
+  useEffect(() => {
+    setTimeout(() => {
+      goToHome()
+    }, 3000)
+  }, [])
 
   return (
     <View style={styles.container}>
@@ -37,7 +35,7 @@ export const RegisterOk = ({ navigation }) => {
         </View>
         <View style={{ bottom: 130, position: "absolute", width: "58%", height: "7%", }}>
           <Text style={{ fontWeight: "600", fontSize: 12, color: "#949AAF", lineHeight: 14, textAlign: "center" }}>
-            Será redireccionado automáticamente al Home ahora mismo...
+            Será redireccionado automáticamente al Login ahora mismo...
           </Text>
         </View>
       </View>

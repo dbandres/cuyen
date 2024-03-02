@@ -1,4 +1,4 @@
-import { LOGIN_AUTH, SET_CURRENT_USER, GET_ALL_CONTRATO, GET_ALL_POST, GET_ALL_EMOJIS, GET_ALL_INICIO_ORDER, GET_ALL_TEXTO_ORDER, GET_ALL_COLEGIOS_X_VIAJE, GET_ALL_PASAJEROS_X_COLEGIO, GET_ALL_PASAJEROS_X_COLEGIO_FILTER, GET_ITINERARIO, GET_DESTINO, GET_PASAJERO, GET_CONTRATO_BY_NUM, GET_HOTEL_BY_NUM } from "./actions";
+import { LOGIN_AUTH, SET_CURRENT_USER, GET_ALL_CONTRATO, GET_ALL_POST, GET_ALL_EMOJIS, GET_ALL_INICIO_ORDER, GET_ALL_TEXTO_ORDER, GET_ALL_COLEGIOS_X_VIAJE, GET_ALL_PASAJEROS_X_COLEGIO, GET_ALL_PASAJEROS_X_COLEGIO_FILTER, GET_ITINERARIO, GET_DESTINO, GET_PASAJERO, GET_CONTRATO_BY_NUM, GET_HOTEL_BY_NUM, GET_ALL_COLEGIOS } from "./actions";
 
 
 const initialState = {
@@ -16,7 +16,8 @@ const initialState = {
   destino: [],
   pasajero: [],
   contratoInfo: [],
-  hotelInfo: []
+  hotelInfo: [],
+  allColegios: []
 }
 
 function rootReducer(state = initialState, action) {
@@ -105,6 +106,11 @@ function rootReducer(state = initialState, action) {
       return {
         ...state,
         hotelInfo: action.payload
+      }
+    case GET_ALL_COLEGIOS:
+      return {
+        ...state,
+        allColegios: action.payload
       }
     default:
       return state

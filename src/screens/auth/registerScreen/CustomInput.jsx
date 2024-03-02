@@ -3,18 +3,14 @@ import { Controller } from "react-hook-form";
 import { useState } from "react";
 
 export function CustomInput({ control, name, placeholder, rules = {}, secureTextEntry, editable,
-	multiline, numberOfLines, maxLength, numeric, formIntro, formContact, trigger }) {
+	multiline, numberOfLines, maxLength, numeric, formIntro, formContact, trigger, focus }) {
 
 	const [visibility, setVisibility] = useState(false)
-	const [foc, setFoc] = useState(false)
 
 	const changeVisibility = () => {
 		setVisibility(!visibility)
 	}
 
-	const focus = () =>{
-		setFoc(true)
-	}
 
 	return (
 		<Controller
@@ -76,7 +72,10 @@ export function CustomInput({ control, name, placeholder, rules = {}, secureText
 														style={{ width: 10, height: 18 }}
 													/>
 													:
-													null
+													<Image
+														source={require("../../../assets/contract_gray.png")}
+														style={{ width: 15, height: 18 }}
+													/>
 						}
 						<TextInput
 							placeholder={placeholder}
@@ -124,7 +123,7 @@ export function CustomInput({ control, name, placeholder, rules = {}, secureText
 						}
 					</View>
 					<View style={{ height: 25, justifyContent: "center", marginLeft: 20 }}>
-						{error && foc &&
+						{error && 
 							<View style={{display:"flex", flexDirection:"row", alignItems:"center"}}>
 								<Image
 									source={require("../../../assets/Error.png")}

@@ -10,9 +10,9 @@ import { ForgotPassword1 } from "../screens/auth/forgotPass/ForgotPassword1";
 import { FinishForgotPass } from "../screens/auth/forgotPass/FinishForgotPass";
 import { RouteInto } from "../screens/auth/intoScreen/RouteInto";
 import { useContext, useEffect, useState } from "react";
-import auth from "@react-native-firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { UserContext } from "../context/UserContext";
+import { AuthContext } from "../context/AuthContext";
 
 const { createStackNavigator } = require("@react-navigation/stack");
 
@@ -21,15 +21,17 @@ axios.defaults.baseURL = 'https://www.turismocuyen.com.ar'
 
 export default function AuthNavigator() {
 
-	const { setUserData } = useContext(UserContext)
+	const { userdata,setUserData } = useContext(UserContext)
+	const {authenticate, setAuthenticate} = useContext(AuthContext)
 	//verificamos si el usser esta autenticado.
-	const [initializing, setInitializing] = useState(true)
-	const [user, setUser] = useState(null)
+	// const [initializing, setInitializing] = useState(true)
+	const [user, setUser] = useState(false)
 
 	const showData = async () => {
 		const data = await AsyncStorage.getItem("userStorage")
 		const parseado = JSON.parse(data)
 		if (parseado !== null) {
+			setAuthenticate(true)
 			setUserData({
 				apellido: parseado.usuario?.apellido,
 				contrato: parseado.usuario?.contrato,
@@ -41,25 +43,21 @@ export default function AuthNavigator() {
 				usuario: parseado.usuario?.usuario,
 				id: parseado.usuario?.id
 			})
+		}else{
+			setAuthenticate(false)
 		}
 	}
 
-	function onAuthStateChange(user) {
+	useEffect(()=>{
 		showData()
-		setUser(user)
-		if (initializing) setInitializing(false)
-	}
-	useEffect(() => {
-		const subscribe = auth().onAuthStateChanged(onAuthStateChange)
-		return subscribe
-	}, [])
-	if (initializing) return null;
+	},[authenticate])
+
 
 	return (
 		<Stack.Navigator
 		>
 			{
-				user ?
+				authenticate ?
 					<Stack.Screen name="landing" component={DrawerNavigator} options={{ headerShown: false }} />
 					:
 					<>
@@ -72,7 +70,7 @@ export default function AuthNavigator() {
 						<Stack.Screen name="forgotPasstwo" component={ForgotPassword2} options={{ headerShown: false }} />
 						<Stack.Screen name="forgotPassthree" component={ForgotPassword3} options={{ headerShown: false }} />
 						<Stack.Screen name="finishForgotPass" component={FinishForgotPass} options={{ headerShown: false }} />
-						{/* <Stack.Screen name="landing" component={DrawerNavigator} options={{ headerShown: false }} /> */}
+						<Stack.Screen name="landing" component={DrawerNavigator} options={{ headerShown: false }} />
 					</>
 			}
 		</Stack.Navigator>

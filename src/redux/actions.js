@@ -16,6 +16,7 @@ export const GET_PASAJERO = "GET_PASAJERO";
 export const GET_CONTRATO_BY_NUM = "GET_CONTRATO_BY_NUM";
 export const GET_HOTEL_BY_NUM = "GET_HOTEL_BY_NUM";
 export const VERIFU_USER_DNI = "VERIFU_USER_DNI";
+export const GET_ALL_COLEGIOS = "GET_ALL_COLEGIOS";
 
 
 export function loginAuth(usuario, contraseña) {
@@ -110,6 +111,26 @@ export function getAllEmojis() {
 		}
 	} catch (error) {
 		console.log('Error de Axios:', error);
+	}
+}
+
+export function getAllColegios() {
+	try {
+		return async function (dispatch) {
+			let response = await axios.get(`${API_URL}/colegios`,
+				{
+					headers: {
+						'x-access-token': `${token}`,
+						"Content-Type": "application/json",
+					}
+				})
+			return dispatch({
+				type: GET_ALL_COLEGIOS,
+				payload: response.data
+			})
+		}
+	} catch (error) {
+		console.log('Error de Axios en getAllColegios:', error);
 	}
 }
 

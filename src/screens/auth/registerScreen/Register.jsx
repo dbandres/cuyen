@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, ScrollView, Dimensions, Modal, TouchableOpacity } from "react-native"
+import { Text, View, StyleSheet, ScrollView, Dimensions, Modal, TouchableOpacity, TouchableWithoutFeedback, TextInput, Image } from "react-native"
 import { CustomInput } from "./CustomInput"
 import { useForm } from "react-hook-form"
 import { ButtonCustom } from "../../../components/ButtomCustom"
@@ -8,42 +8,40 @@ import axios from "axios";
 import { UserContext } from "../../../context/UserContext";
 import CheckBox from '@react-native-community/checkbox';
 import { useDispatch, useSelector } from "react-redux";
-import { getAllContratos } from "../../../redux/actions";
-import DropDownPicker from "react-native-dropdown-picker";
 import LinearGradient from "react-native-linear-gradient";
 import { API_URL, token } from "../../../api";
-import Auth from "../../../api/auth";
+import { ModalAlert } from "./ModalAlert";
+import { getAllColegios } from "../../../redux/actions";
 
 export default function Register({ navigation }) {
 
 	const { height } = Dimensions.get("screen")
-	const { control, handleSubmit, setValue, watch, trigger} = useForm()
-
+	const { control, handleSubmit, setValue, watch, trigger } = useForm()
 	const dispatch = useDispatch()
+
 	const [showAlert1, setShowAlert1] = useState(false)
 	const [showAlert2, setShowAlert2] = useState(false)
 	const [showAlert3, setShowAlert3] = useState(false)
 	const [showAlert4, setShowAlert4] = useState(false)
+	const [showAlert5, setShowAlert5] = useState(false)
+	const [inputValue, setInputValue] = useState('');
+	const [colegiosFiltrados, setColegiosFiltrados] = useState("")
+
+
+	const [texto, setTexto] = useState("")
+	const [error, setError] = useState(false)
+	const [errorInput, setErrorInput] = useState('');
+	const [colegioSeleccionado, setColegioSeleccionado] = useState("");
+	const [match, setMatch] = useState(false)
+
 	const { setUserData } = useContext(UserContext)
 	const [toggleCheckBox, setToggleCheckBox] = useState(false)
-	const [itemsArray, setItemsArray] = useState([])
-	const [selectedItems, setSelectedItems] = useState([]);
 	const pwd = watch("userpass")
-	const allContratos = useSelector((state) => state.allContratos)
+
+	const allColegios = useSelector((state) => state.allColegios)
 
 	let dni = watch('userdni')
-
-	const [isOpen, setIsOpen] = useState(false)
-	const [error, setError] = useState(null);
-
-	useEffect(() => {
-		dispatch(getAllContratos())
-		const nuevoArray = allContratos.map((contrato) => ({
-			label: contrato.num + " - " + contrato.colegio,
-			value: contrato.num
-		}))
-		setItemsArray(nuevoArray)
-	}, [allContratos.length != 0])
+	let contrato = watch("contrato")
 
 	const showAlerts = (show, setShow, titulo, msg, text) => {
 		return (
@@ -52,7 +50,7 @@ export default function Register({ navigation }) {
 				showProgress={false}
 				title={titulo}
 				message={msg}
-				closeOnTouchOutside={true}
+				closeOnTouchOutside={false}
 				closeOnHardwareBackPress={false}
 				showConfirmButton={true}
 				confirmText={text}
@@ -62,31 +60,171 @@ export default function Register({ navigation }) {
 		);
 	}
 
-	const getAlert = () => {
-    return (
-      <AwesomeAlert
-        show={showAlert4}
-        showProgress={true}
-        progressColor="black"
-        progressSize={50}
-				closeOnTouchOutside={false}
-      />
-    )
-  }
+	const myFunction = () => {
+		if (error === true) {
+			setShowAlert1(false)
+		}
+		else {
+			goToLogin()
+		}
+	}
 
-	useEffect(()=>{
-		
-	},[dni])
+	const goToLogin = () => {
+		setShowAlert1(false)
+		navigation.navigate("login")
+	}
+
+	const getAlert = () => {
+		return (
+			<AwesomeAlert
+				show={showAlert4}
+				showProgress={true}
+				progressColor="black"
+				progressSize={50}
+				closeOnTouchOutside={false}
+			/>
+		)
+	}
+
+
+	const configAlertOk = () => {
+		setError(false)
+		setTimeout(() => {
+			setShowAlert1(true)
+			setTexto("Usted ya cuenta con un usuario existente, si olvidó la contraseña presione el botón “Olvidé mi contraseña” o comuníquese con el  4293-8080")
+		}, 150)
+	}
+
+	const configAlertError = () => {
+		setError(true)
+		setTimeout(() => {
+			setShowAlert1(true)
+		}, 150)
+	}
+
+	// Función para manejar el cambio en el valor del TextInput
+	const handleInputChange = (text) => {
+		setInputValue(text);
+		setColegioSeleccionado("")
+		if (text.trim() !== '') {
+			setErrorInput(''); // Limpiar el mensaje de error cuando se ingrese texto
+		}
+	};
+
+	const handleInputFocus = () => {
+		if (colegiosFiltrados.length !== 0 && colegioSeleccionado.length === 0) {
+			setInputValue(''); // Limpiar el valor cuando el TextInput obtiene el foco
+			setErrorInput(`Este campo es Requerido`);
+		}
+	};
+
+	// Filtrar el array de objetos basado en el término de búsqueda
+	function filterColegios() {
+		let filteredData = [];
+
+		if (inputValue.trim() !== '') {
+			filteredData = allColegios.filter((item) =>
+				item.nombre.toLowerCase().includes(inputValue.toLowerCase())
+			).slice(0, 5);
+		}
+
+		setColegiosFiltrados(filteredData);
+	}
+
+	// Funcion que captura el colegio seleccionado
+	const handleColegioPress = (cole) => {
+		setColegioSeleccionado(cole);
+	};
+
+	useEffect(() => {
+		dispatch(getAllColegios())
+	}, [])
+
+	useEffect(() => {
+		if (inputValue !== "") {
+			filterColegios()
+		} else {
+			filterColegios()
+			setColegioSeleccionado("")
+		}
+	}, [inputValue])
+
+	useEffect(() => {
+		if (dni !== undefined && dni.length === 8) {
+			try {
+				setShowAlert4(true)
+				const response = axios.get(`/usuarios/verify/${dni}`,
+					{
+						headers: {
+							'x-access-token': `${token}`,
+							"Content-Type": "application/json",
+						}
+					})
+					.then((res) => {
+						if (res.status === 200) {
+							setShowAlert4(false)
+							configAlertOk()
+						}
+
+					})
+					.catch((error) => {
+						setShowAlert4(false)
+						setTexto(error.response.data.message);
+						configAlertError()
+					})
+			} catch (error) {
+				console.log(error);
+				setShowAlert4(false)
+			}
+		} else {
+			console.log("es undefined");
+			setShowAlert4(false)
+		}
+	}, [dni])
+
+	useEffect(() => {
+		setMatch(false)
+		if (contrato !== undefined && colegioSeleccionado && contrato.length === 4) {
+			try {
+				setShowAlert4(true)
+				axios.post(`/colegios/verify/`,
+					{
+						contrato: contrato,
+						colegio: colegioSeleccionado.nombre
+					},
+					{
+						headers: {
+							'x-access-token': `${token}`,
+							"Content-Type": "application/json",
+						}
+					})
+					.then((res) => {
+						if (res.status === 202) {
+							setShowAlert4(false)
+							setMatch(true)
+							// configAlertOk()
+						}
+
+					})
+					.catch((error) => {
+						setShowAlert4(false)
+						setTexto(error.response.data.mensaje)
+						configAlertError()
+						setMatch(false)
+					})
+			} catch (error) {
+
+			}
+		}
+
+	}, [contrato, colegioSeleccionado])
 
 	async function handleSubmitRegister(data) {
 		// navigation.navigate("registerOk")
-		if (selectedItems.length == 0 && toggleCheckBox) {
-			setShowAlert1(true)
-		}
-		else if (!toggleCheckBox && selectedItems) {
+		if (!toggleCheckBox) {
 			setShowAlert2(true)
 		}
-		else if (selectedItems && toggleCheckBox) {
+		else if (toggleCheckBox) {
 			setShowAlert4(true)
 			try {
 				await axios.post(`${API_URL}/usuarios`,
@@ -95,7 +233,7 @@ export default function Register({ navigation }) {
 						nombre: data.username,
 						apellido: data.userlastname,
 						email: data.useremail,
-						contrato: selectedItems,
+						contrato: "",
 						password: data.userpass,
 						rol: "Padre",
 						telefono: data.userphone,
@@ -110,39 +248,22 @@ export default function Register({ navigation }) {
 				)
 					.then((res) => {
 						if (res.status === 200) {
-							Auth.signUp(data.useremail, data.userpass)
-							console.log("ESto es la respuesta: ",JSON.stringify(res, null ,3))
-							setUserData({
-								jwt: res.data,
-								nombre: res.data.usuario.nombre,
-								apellido: res.data.usuario.apellido,
-								email: res.data.usuario.email,
-								usuario: res.data.usuario.usuario,
-								telefono: res.data.usuario.telefono,
-								contrato: res.data.usuario.contrato,
-								rol: res.data.usuario.rol,
-								id: res.data.usuario.id
-							})
 							navigation.navigate("registerOk")
 						}
 					})
 			} catch (error) {
 				console.log('Error de Axios:', error);
 				setShowAlert4(false)
-				setTimeout(()=>{
+				setTimeout(() => {
 					setShowAlert3(true)
-				},2000)
+				}, 2000)
 			}
 		}
 	}
 
-	//cada vez que se seleccione un elemento, el picker se cerrará automáticamente.
-	const onSelectedItemsChange = (selectedItems) => {
-		// Set Selected Items
-		setSelectedItems(selectedItems);
-		setIsOpen(!isOpen)
-	};
-
+	// console.log(JSON.stringify(allColegios, null, 3));
+	// console.log(colegiosFiltrados);
+	// console.log(match);
 
 
 	return (
@@ -152,47 +273,88 @@ export default function Register({ navigation }) {
 				style={styles.gradient}
 			/>
 			<View style={{ alignItems: "center", position: "absolute", width: "95%", backgroundColor: "white", height: "98%", marginTop: "2%", borderRadius: 10, }}>
-				<View style={{height:"15%",alignItems:"center", justifyContent:"center"}}>
-					<Text style={{color:"#334EA2", fontWeight:"700", fontSize:16}}>Registro del Padre/Responsable</Text>
-				</View>
-				<View style={{ justifyContent: "flex-start", marginTop: "2%", width: "90%", marginBottom: "3%" }}>
-					{
-						itemsArray.length != 0 ?
-							<DropDownPicker
-								items={itemsArray}
-								open={isOpen}
-								value={selectedItems}
-								setOpen={setIsOpen}
-								setValue={(val) => { onSelectedItemsChange(val) }}
-								autoScroll
-								placeholder="Contrato"
-								placeholderStyle={{ color: "#CDD1DF" }}
-								multiple={true}
-								min={1}
-								max={4}
-								mode="BADGE"
-								badgeColors={["#FF3D00"]}
-								badgeDotColors={["white"]}
-								badgeTextStyle={{ color: "white" }}
-								style={{borderColor:"#CDD1DF"}}
-							/>
-							:
-							<Text style={{color:"black"}}>
-								Cargando numeros de contrato...
-							</Text>
-					}
-				</View>
-				<ScrollView style={{ width: "90%" }}
+				<ScrollView style={{ width: "90%", paddingBottom: 10, height: "auto" }}
 					showsVerticalScrollIndicator={false}
 				>
-					<View style={{ height: height * 95 / 100 }}>
+					<View style={{ height: "10%", alignItems: "center", justifyContent: "center" }}>
+						<Text style={{ color: "#334EA2", fontWeight: "700", fontSize: 16 }}>Registro del Padre/Responsable</Text>
+					</View>
+					<View style={{ height: 950, marginBottom: 50 }}>
 						<View>
+							<CustomInput
+								control={control}
+								placeholder="Numero de contrato"
+								name="contrato"
+								trigger={trigger}
+								numeric="numeric"
+								rules={{
+									required: true,
+								}}
+								focus={handleInputFocus}
+							/>
+							<View>
+								<View style={{
+									width: "100%",
+									flexDirection: 'row',
+									alignItems: 'center',
+									borderWidth: 1,
+									borderColor: match === true ? "#008000" : '#CDD1DF',
+									borderRadius: 10,
+									padding: 5,
+									height: 50
+								}}>
+									<TextInput
+										placeholder="Nombre de la Institución"
+										value={colegioSeleccionado ? colegioSeleccionado.nombre : inputValue} // Valor del TextInput
+										onChangeText={handleInputChange} // Se activa cuando el texto cambia
+										style={{
+											width: "100%",
+											paddingLeft: 10,
+											alignItems: "center",
+											fontWeight: "600",
+											fontSize: 14,
+											lineHeight: 16,
+											backgroundColor: "white",
+											borderRadius: 8,
+											color: "#564C71",
+										}}
+										placeholderTextColor="#CDD1DF"
+									/>
+								</View>
+								<View style={{ height: 25, justifyContent: "center", marginLeft: 20 }}>
+									{errorInput !== '' && inputValue === "" ?
+										<View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+											<Image
+												source={require("../../../assets/Error.png")}
+												style={{ width: 25, height: 25 }}
+											/>
+											<Text style={{ color: "#FF6363", fontSize: 10, }}>{errorInput}</Text>
+										</View>
+										: null
+									}
+								</View>
+								{
+									colegiosFiltrados.length !== 0 && colegioSeleccionado === "" ?
+										<View style={{ position: 'absolute', top: 50, backgroundColor: 'white', width: '100%', height: colegiosFiltrados.length * 30, zIndex: 1, borderRadius: 10, borderColor: "#CDD1DF", borderWidth: 1 }}>
+											{
+												colegiosFiltrados.map((cole, index) => (
+													<TouchableOpacity key={index} onPress={() => handleColegioPress(cole)}>
+														<Text style={{ paddingVertical: 5, paddingHorizontal: 15, fontSize: 12 }}>{cole.nombre}</Text>
+													</TouchableOpacity>
+												))
+											}
+										</View>
+										:
+										null
+								}
+							</View>
 							<CustomInput
 								control={control}
 								placeholder="Ingresa tu DNI"
 								name="userdni"
 								trigger={trigger}
 								numeric="numeric"
+								focus={handleInputFocus}
 								rules={{
 									required: true,
 									// pattern: { value: /^[0-9]+$/, message: "El DNI es incorrecto" },
@@ -211,9 +373,10 @@ export default function Register({ navigation }) {
 								name="username"
 								placeholder="Nombre"
 								trigger={trigger}
+								focus={handleInputFocus}
 								rules={{
 									required: true,
-									pattern:{value: /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]+$/, message: "El Nombre es incorrecto"},
+									pattern: { value: /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]+$/, message: "El Nombre es incorrecto" },
 									minLength: {
 										value: 2,
 										message: "El Nombre no es válido."
@@ -229,9 +392,10 @@ export default function Register({ navigation }) {
 								name="userlastname"
 								placeholder="Apellido"
 								trigger={trigger}
+								focus={handleInputFocus}
 								rules={{
 									required: true,
-									pattern:{value: /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]+$/, message: "El Nombre es incorrecto"},
+									pattern: { value: /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s]+$/, message: "El Nombre es incorrecto" },
 									minLength: {
 										value: 2,
 										message: "El Apellido no es válido."
@@ -247,6 +411,7 @@ export default function Register({ navigation }) {
 								name="useremail"
 								placeholder="Email"
 								trigger={trigger}
+								focus={handleInputFocus}
 								rules={{
 									required: true,
 									pattern: { value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, message: "El Email ingresado no es válido." }
@@ -257,6 +422,7 @@ export default function Register({ navigation }) {
 								name="userphone"
 								numeric="numeric"
 								trigger={trigger}
+								focus={handleInputFocus}
 								placeholder="Número de Celular"
 								rules={{
 									required: true,
@@ -265,7 +431,7 @@ export default function Register({ navigation }) {
 										value: 9,
 										message: "El Numero de celular ingresado no es válido."
 									},
-									
+
 								}}
 							/>
 
@@ -276,6 +442,7 @@ export default function Register({ navigation }) {
 								secureTextEntry
 								numeric="numeric"
 								trigger={trigger}
+								focus={handleInputFocus}
 								rules={{
 									required: true,
 									minLength: {
@@ -292,6 +459,7 @@ export default function Register({ navigation }) {
 								secureTextEntry
 								numeric="numeric"
 								trigger={trigger}
+								focus={handleInputFocus}
 								rules={{
 									required: true,
 									validate: value => value === pwd || "Las Contraseñas no coinciden",
@@ -309,14 +477,14 @@ export default function Register({ navigation }) {
 										disabled={false}
 										value={toggleCheckBox}
 										onValueChange={(newValue) => setToggleCheckBox(newValue)}
-										tintColors={true ? "black" : "black" }
+										tintColors={true ? "black" : "black"}
 									/>
 								</View>
 								<View style={{ marginLeft: "3%" }}>
-									<Text style={{ fontSize: 12, color:"#949AAF" }}>
+									<Text style={{ fontSize: 12, color: "#949AAF" }}>
 										Estoy de acuerdo con los
 									</Text>
-									<Text style={{ fontWeight: "bold", fontSize: 11.5, color:"#949AAF" }}>
+									<Text style={{ fontWeight: "bold", fontSize: 11.5, color: "#949AAF" }}>
 										Términos de Servicios y Política de privacidad.
 									</Text>
 								</View>
@@ -324,12 +492,12 @@ export default function Register({ navigation }) {
 							<View style={{ height: "7%", marginTop: "5%" }}>
 								<ButtonCustom
 									text="Registrarme"
-									color={selectedItems.length == 0 || toggleCheckBox === false ? "#CDD1DF" : "#FF3D00"}
-									disabled={selectedItems.length == 0 || toggleCheckBox === false ? true : false}
+									color={toggleCheckBox === false ? "#CDD1DF" : "#FF3D00"}
+									disabled={toggleCheckBox === false ? true : false}
 									onPress={handleSubmit(handleSubmitRegister)}
 								/>
 							</View>
-							<View style={{ height: "7%", marginTop: "2%", borderColor: "#3462BF", borderWidth: 1, borderRadius: 10 }}>
+							<View style={{ height: "7%", marginTop: "2%", borderColor: "#3462BF", borderWidth: 1, borderRadius: 10, marginBottom: 10 }}>
 								<ButtonCustom
 									text="Cancelar"
 									color="#FFFFFF"
@@ -341,9 +509,9 @@ export default function Register({ navigation }) {
 					</View>
 				</ScrollView>
 			</View>
-			{showAlerts(showAlert1, setShowAlert1, "Error", "Debes seleccionar un contrato", "Ok")}
-			{showAlerts(showAlert2, setShowAlert2, "Error!", "Debes aceptar Terminos y Politica de privacidad", "Ok")}
-			{showAlerts(showAlert3, setShowAlert3, "Error!", "Es posible que ya te hayas registrado", "Ok")}
+			<ModalAlert visible={showAlert1} onClose={myFunction} texto={texto} error={error} />
+			{/* {showAlerts(showAlert2, setShowAlert2, "Error!", "Debes aceptar Terminos y Politica de privacidad", "Ok")}
+			{showAlerts(showAlert3, setShowAlert3, "Error!", "Es posible que ya te hayas registrado", "Ok")} */}
 			{getAlert()}
 		</View>
 	)
