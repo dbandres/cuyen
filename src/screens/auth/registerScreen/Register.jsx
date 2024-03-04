@@ -74,10 +74,10 @@ export default function Register({ navigation }) {
 		navigation.navigate("login")
 	}
 
-	const getAlert = () => {
+	const getAlert = (show) => {
 		return (
 			<AwesomeAlert
-				show={showAlert4}
+				show={show}
 				showProgress={true}
 				progressColor="black"
 				progressSize={50}
@@ -89,17 +89,10 @@ export default function Register({ navigation }) {
 
 	const configAlertOk = () => {
 		setError(false)
-		setTimeout(() => {
-			setShowAlert1(true)
-			setTexto("Usted ya cuenta con un usuario existente, si olvidó la contraseña presione el botón “Olvidé mi contraseña” o comuníquese con el  4293-8080")
-		}, 150)
 	}
 
 	const configAlertError = () => {
 		setError(true)
-		setTimeout(() => {
-			setShowAlert1(true)
-		}, 150)
 	}
 
 	// Función para manejar el cambio en el valor del TextInput
@@ -150,7 +143,9 @@ export default function Register({ navigation }) {
 	}, [inputValue])
 
 	useEffect(() => {
+		setTexto("")
 		if (dni !== undefined && dni.length === 8) {
+			setShowAlert1(true)
 			try {
 				setShowAlert4(true)
 				const response = axios.get(`/usuarios/verify/${dni}`,
@@ -163,6 +158,7 @@ export default function Register({ navigation }) {
 					.then((res) => {
 						if (res.status === 200) {
 							setShowAlert4(false)
+							setTexto("Usted ya cuenta con un usuario existente, si olvidó la contraseña presione el botón “Olvidé mi contraseña” o comuníquese con el  4293-8080")
 							configAlertOk()
 						}
 
@@ -185,6 +181,8 @@ export default function Register({ navigation }) {
 	useEffect(() => {
 		setMatch(false)
 		if (contrato !== undefined && colegioSeleccionado && contrato.length === 4) {
+			setTexto("")
+			setShowAlert1(true)
 			try {
 				setShowAlert4(true)
 				axios.post(`/colegios/verify/`,
@@ -199,10 +197,10 @@ export default function Register({ navigation }) {
 						}
 					})
 					.then((res) => {
+						setShowAlert4(false)
 						if (res.status === 202) {
-							setShowAlert4(false)
 							setMatch(true)
-							// configAlertOk()
+							setShowAlert1(false)
 						}
 
 					})
@@ -220,12 +218,11 @@ export default function Register({ navigation }) {
 	}, [contrato, colegioSeleccionado])
 
 	async function handleSubmitRegister(data) {
+		//console.log(JSON.stringify(data, null, 3));
 		// navigation.navigate("registerOk")
-		if (!toggleCheckBox) {
-			setShowAlert2(true)
-		}
-		else if (toggleCheckBox) {
-			setShowAlert4(true)
+		setShowAlert1(true)
+		setTexto("")
+		setShowAlert4(true)
 			try {
 				await axios.post(`${API_URL}/usuarios`,
 					{
@@ -233,7 +230,7 @@ export default function Register({ navigation }) {
 						nombre: data.username,
 						apellido: data.userlastname,
 						email: data.useremail,
-						contrato: "",
+						contrato: [data.contrato],
 						password: data.userpass,
 						rol: "Padre",
 						telefono: data.userphone,
@@ -248,6 +245,8 @@ export default function Register({ navigation }) {
 				)
 					.then((res) => {
 						if (res.status === 200) {
+							setShowAlert1(false)
+							setShowAlert4(false)
 							navigation.navigate("registerOk")
 						}
 					})
@@ -258,7 +257,6 @@ export default function Register({ navigation }) {
 					setShowAlert3(true)
 				}, 2000)
 			}
-		}
 	}
 
 	// console.log(JSON.stringify(allColegios, null, 3));
@@ -446,8 +444,12 @@ export default function Register({ navigation }) {
 								rules={{
 									required: true,
 									minLength: {
-										value: 6,
-										message: "La Contraseña debe tener un minimo de 6 caracteres"
+										value: 4,
+										message: "La Contraseña debe tener 4 caracteres"
+									},
+									maxLength:{
+										value: 4,
+										message: "La Contraseña debe tener 4 caracteres"
 									}
 								}}
 							/>
@@ -464,8 +466,12 @@ export default function Register({ navigation }) {
 									required: true,
 									validate: value => value === pwd || "Las Contraseñas no coinciden",
 									minLength: {
-										value: 6,
-										message: "La Contraseña debe tener un minimo de 6 caracteres"
+										value: 4,
+										message: "La Contraseña debe tener 4 caracteres"
+									},
+									maxLength:{
+										value: 4,
+										message: "La Contraseña debe tener 4 caracteres"
 									}
 								}}
 							/>
@@ -509,10 +515,7 @@ export default function Register({ navigation }) {
 					</View>
 				</ScrollView>
 			</View>
-			<ModalAlert visible={showAlert1} onClose={myFunction} texto={texto} error={error} />
-			{/* {showAlerts(showAlert2, setShowAlert2, "Error!", "Debes aceptar Terminos y Politica de privacidad", "Ok")}
-			{showAlerts(showAlert3, setShowAlert3, "Error!", "Es posible que ya te hayas registrado", "Ok")} */}
-			{getAlert()}
+			<ModalAlert visible={showAlert1} onClose={myFunction} texto={texto} error={error} loading={showAlert4}/>
 		</View>
 	)
 }

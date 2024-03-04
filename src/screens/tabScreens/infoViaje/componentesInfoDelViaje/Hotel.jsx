@@ -50,7 +50,7 @@ export function Hotel(){
 
   return(
     <Animated.View ref={contentRef} style={{ height: heightAnim, width: 373, backgroundColor: "white", marginTop: "5%", borderRadius: 10, padding: "2%", justifyContent: "flex-start", alignItems: "center", marginBottom:10 }}>
-      <View style={{width:333, display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", height: isExpanded ? 80 : "100%" }}>
+      <TouchableOpacity style={{width:333, display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", height: isExpanded ? 80 : "100%" }}>
         <View style={{ display: "flex", flexDirection: "row" }}>
           <View style={{ width: 48, height: 48, borderRadius: 10, backgroundColor:"#D2DCEB", alignItems: "center", justifyContent: "center" }}>
             <Image
@@ -74,7 +74,7 @@ export function Hotel(){
             </TouchableOpacity> */}
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     </Animated.View>
   )
 }

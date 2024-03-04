@@ -71,11 +71,13 @@ export function CustomInput({ control, name, placeholder, rules = {}, secureText
 														source={require("../../../assets/attach_money.png")}
 														style={{ width: 10, height: 18 }}
 													/>
-													:
+													: placeholder === "Numero de contrato"?
 													<Image
 														source={require("../../../assets/contract_gray.png")}
 														style={{ width: 15, height: 18 }}
 													/>
+													:
+													null
 						}
 						<TextInput
 							placeholder={placeholder}

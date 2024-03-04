@@ -50,7 +50,7 @@ export function Informacion() {
 
   return (
     <Animated.View ref={contentRef} style={{ height: heightAnim, width: 373, backgroundColor: "white", marginTop: "5%", borderRadius: 10, padding: "2%", justifyContent: "flex-start", alignItems: "center" }}>
-      <View style={{ width: 333, display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", height: isExpanded ? 91 : "100%" }}>
+      <TouchableOpacity onPress={toggleExpand} style={{ width: 333, display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", height: isExpanded ? 91 : "100%" }}>
         <View style={{ display: "flex", flexDirection: "row" }}>
           <View style={{ width: 48, height: 48, borderRadius: 10, backgroundColor: contratoInfo.length !== 0 ? "#FF3D00" : "#D2DCEB", alignItems: "center", justifyContent: "center" }}>
             <Image
@@ -79,7 +79,7 @@ export function Informacion() {
             }
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
       {
         isExpanded &&
           <DetalleInfoContrato InfoContrato={contratoInfo}/>

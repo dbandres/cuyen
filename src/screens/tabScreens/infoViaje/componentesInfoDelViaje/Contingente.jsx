@@ -87,7 +87,7 @@ export function Contingente({ navigation }) {
 
   return (
     <Animated.View ref={contentRef} style={{ height: heightAnim, width: 373, backgroundColor: "white", marginTop: "5%", borderRadius: 10, padding: "2%", justifyContent: "flex-start", alignItems: "center" }}>
-      <View style={{ width: 333, display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", height: isExpanded ? 91 : "100%" }}>
+      <TouchableOpacity onPress={toggleExpand} style={{ width: 333, display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", height: isExpanded ? 91 : "100%" }}>
         <View style={{ display: "flex", flexDirection: "row" }}>
           <View style={{ width: 48, height: 48, borderRadius: 10, backgroundColor: "#FF3D00", alignItems: "center", justifyContent: "center" }}>
             <Image
@@ -112,7 +112,7 @@ export function Contingente({ navigation }) {
             </TouchableOpacity>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
       {
         isExpanded &&
         <>

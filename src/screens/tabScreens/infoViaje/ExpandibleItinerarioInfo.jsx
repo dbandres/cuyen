@@ -41,7 +41,7 @@ export function ExpandibleItinerarioInfo({ data }) {
   return (
     <Animated.View ref={contentRef} style={{ height: heightAnim, width: 331, backgroundColor: "white", marginTop: "5%", borderRadius: 10, padding: "2%", justifyContent: "flex-start", alignItems: "center" }}>
 
-      <View style={{ width: "100%", display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", height: isExpanded ? 70 : "100%" }}>
+      <TouchableOpacity onPress={toggleExpand} style={{ width: "100%", display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", height: isExpanded ? 70 : "100%" }}>
         <View style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
           <View style={{ width: 48, height: 48, borderRadius: 10, backgroundColor: "#FF3D00", marginLeft: 20, justifyContent: "center", alignItems: "center" }}>
             <Image
@@ -59,7 +59,7 @@ export function ExpandibleItinerarioInfo({ data }) {
             <Text>{isExpanded ? <Image source={require("../../../assets/Not_more.png")} style={{ width: 24, height: 24 }} /> : <Image source={require("../../../assets/expand_more.png")} style={{ width: 24, height: 24 }} />}</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </TouchableOpacity>
       <View style={{width:"100%", alignItems:"center", justifyContent:"center", display:"flex", flexDirection:"row", marginTop:5}}>
         {
           isExpanded ?
