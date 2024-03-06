@@ -31,7 +31,7 @@ export function Informacion() {
       contentRef.current.measure((x, y, width, height) => {
         console.log("he: ", height)
         Animated.timing(heightAnim, {
-          toValue: contratoInfo.length !== 0 ? 400 : 91, // Ajusta según tus necesidades
+          toValue: contratoInfo.length !== 0 ? 300 : 91, // Ajusta según tus necesidades
           //toValue: height + 480,
           duration: 100,
           useNativeDriver: false,

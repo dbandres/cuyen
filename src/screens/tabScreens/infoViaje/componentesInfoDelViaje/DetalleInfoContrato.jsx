@@ -54,13 +54,13 @@ export function DetalleInfoContrato({InfoContrato}) {
           {InfoContrato. duracion}
         </Text>
       </View>
-      <View style={{ height: 70 }}>
+      {/* <View style={{ height: 70 }}>
         <TouchableOpacity style={{ width: 331, height: 47, backgroundColor: "#FFFFFF", borderRadius: 10, top: 25, justifyContent: "center", alignItems: "center", borderWidth: 1, borderColor: "#334EA2" }}>
           <Text style={{ color: "#334EA2", fontWeight: "600", fontSize: 12, lineHeight: 14, textAlign: "center" }}>
             Descargar Contrato
           </Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
     </View>
   )
 }

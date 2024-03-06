@@ -126,7 +126,7 @@ export function ExpandibleInfoPasajero({ data, setNewFetch }) {
       contentRef.current.measure((x, y, width, height) => {
         setContentHeight(height);
         Animated.timing(heightAnim, {
-          toValue: 809, // Ajusta según tus necesidades
+          toValue: 710, // Ajusta según tus necesidades
           //toValue: height + 480,
           duration: 100,
           useNativeDriver: false,
@@ -197,7 +197,7 @@ export function ExpandibleInfoPasajero({ data, setNewFetch }) {
       <Animated.View ref={contentRef} style={{ height: heightAnim, width: 373, backgroundColor: "white", marginTop: "5%", borderRadius: 10, justifyContent: "flex-start", alignItems: "center" }}>
 
         <View style={{ backgroundColor: "#FFFFFF", borderRadius: 10, alignItems: "center", display: "flex", flexDirection: "row", padding: 20, width: "100%", justifyContent: "space-between", height: isExpanded ? 91 : "100%" }}>
-          <View style={{ display: "flex", flexDirection: "row" }}>
+          <TouchableOpacity onPress={toggleExpand} style={{ display: "flex", flexDirection: "row", width:300 }}>
             <View style={{ width: 48, height: 48, borderRadius: 10, backgroundColor: "#FFB800", alignItems: "center", justifyContent: "center" }}>
               <Image
                 source={require('../../../assets/attribution.png')}
@@ -212,7 +212,7 @@ export function ExpandibleInfoPasajero({ data, setNewFetch }) {
                 {data.nombre}, {data.apellido}
               </Text>
             </View>
-          </View>
+          </TouchableOpacity>
           <TouchableOpacity onPress={toggleExpand} style={{ alignItems: 'center' }}>
 
             <Text>{isExpanded ? <Image source={require("../../../assets/Not_more.png")} style={{ width: 24, height: 24 }} /> : <Image source={require("../../../assets/expand_more.png")} style={{ width: 24, height: 24 }} />}</Text>

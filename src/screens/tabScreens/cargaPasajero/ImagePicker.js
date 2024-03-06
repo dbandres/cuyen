@@ -1,6 +1,6 @@
 import { PermissionsAndroid, Platform } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
+import { check, request, PERMISSIONS, RESULTS, openSettings } from 'react-native-permissions';
 
 const requestGalleryPermission = async () => {
   try {
@@ -10,30 +10,32 @@ const requestGalleryPermission = async () => {
         title: 'Permiso de acceso a la galería',
         message: 'Necesitamos acceder a tu galería de fotos para que puedas seleccionar imágenes y utilizarlas en la aplicación. ' +
           'Por favor, otorga el permiso para continuar.',
-        buttonPositive: 'Aceptar',
+        buttonPositive: 'Continuar',
       },
     );
     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
       return granted
     } else {
+      console.log("log granted: ",granted);
       console.log('Permiso a galería denegado');
+      openSettings()
     }
   } catch (err) {
     console.warn(err);
   }
 };
 
-const handleCameraPermission = async (openCameraCallback) => {
+const handleCameraPermission = async () => {
   const permission = Platform.OS === 'ios' ? PERMISSIONS.IOS.CAMERA : PERMISSIONS.ANDROID.CAMERA;
-  console.log(permission);
+  console.log("permisos camara: ",permission);
   const res = await check(permission);
-  console.log(res);
+  console.log("res log: ",res);
   if (res === RESULTS.GRANTED) {
     return res
   } else if (res === RESULTS.DENIED) {
     const res2 = await request(permission);
-    console.log(res2);
-    res2 === RESULTS.GRANTED ? res2 : console.log('Permiso a cámara denegado');
+    console.log("res 2 log: ",res2);
+    res2 === RESULTS.GRANTED ? res2 : openSettings();
   }
 };
 

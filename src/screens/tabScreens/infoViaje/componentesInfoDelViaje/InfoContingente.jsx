@@ -49,7 +49,7 @@ export function InfoContingente({ pasaje, expandedHijo, onItemPress, index, disa
   return (
     <Animated.View ref={contentRef} style={{ height: heightAnim, width: 373, backgroundColor: "white", marginTop: 10, borderRadius: 10, padding: "2%", justifyContent: "flex-start", alignItems: "center" }}>
       <View style={{ borderRadius: 10, borderWidth: 1, borderColor: "#CDD1DF", height: isExpanded ? "100%" : 80, width: 333, marginBottom: 10, justifyContent: "flex-start", alignItems: "center" }}>
-        <View style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center", height: 80, width: "90%" }}>
+        <TouchableOpacity onPress={toggleExpand} style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center", height: 80, width: "90%" }}>
           <View style={{ display: "flex", flexDirection: "row" }}>
             <View style={{ width: 48, height: 48, borderRadius: 10, backgroundColor: "#FFB800", alignItems: "center", justifyContent: "center" }}>
               <Image
@@ -72,7 +72,7 @@ export function InfoContingente({ pasaje, expandedHijo, onItemPress, index, disa
               <Text>{isExpanded ? <Image source={require("../../../../assets/Not_more.png")} style={{ width: 24, height: 24 }} /> : <Image source={require("../../../../assets/expand_more.png")} style={{ width: 24, height: 24 }} />}</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </TouchableOpacity>
         {
           isExpanded ?
             <InfoXpasajero info={pasaje}/>
