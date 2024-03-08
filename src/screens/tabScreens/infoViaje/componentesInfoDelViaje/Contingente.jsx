@@ -6,6 +6,7 @@ import { getPasajero } from "../../../../redux/actions";
 import { UserContext } from "../../../../context/UserContext";
 import { useDispatch, useSelector } from "react-redux";
 import { InfoContingente } from "./InfoContingente";
+import { InfoContext } from "../InfoContext";
 
 
 export function Contingente({ navigation }) {
@@ -14,6 +15,7 @@ export function Contingente({ navigation }) {
   const [heightAnim] = useState(new Animated.Value(88));
   const contentRef = useRef(null);
   const { userdata } = useContext(UserContext)
+  const { miInfo, setMiInfo } = useContext(InfoContext)
   const pasajero = useSelector((state) => state.pasajero)
   const dispatch = useDispatch()
   const [newValue, setNewValue] = useState("")
@@ -32,12 +34,22 @@ export function Contingente({ navigation }) {
       };
     }, []))
 
+  useEffect(() => {
+    if (pasajero.length !== 0) {
+      // Función para cambiar el valor de numPasajero
+        setMiInfo(prevState => ({
+          ...prevState,
+          numPasajero: pasajero[0].numPas
+        }))
+    }
+
+  }, [pasajero])
+
+
   const toggleExpand = () => {
     // Envía el índice del componente al padre para gestionar la expansión individual
     setIsExpanded(!isExpanded);
   };
-
-  console.log(pasajero.length);
 
   useEffect(() => {
     if (isExpanded) {
@@ -117,12 +129,12 @@ export function Contingente({ navigation }) {
         isExpanded &&
         <>
           {
-            pasajero?
-            pasajero.map((pas, index) => (
-              <InfoContingente key={index} index={index} pasaje={pas} expandedHijo={expandedHijo} onItemPress={handleItemPress} expanded={expandedStates[index]} disableExpand={isAnyExpanded && !expandedStates[index]}/>
-            ))
-            :
-            null
+            pasajero ?
+              pasajero.map((pas, index) => (
+                <InfoContingente key={index} index={index} pasaje={pas} expandedHijo={expandedHijo} onItemPress={handleItemPress} expanded={expandedStates[index]} disableExpand={isAnyExpanded && !expandedStates[index]} />
+              ))
+              :
+              null
           }
           <View style={{ height: 70 }}>
             <TouchableOpacity onPress={agregarPasajero} style={{ width: 331, height: 47, backgroundColor: "#FFFFFF", borderRadius: 10, top: 25, justifyContent: "center", alignItems: "center", borderWidth: 1, borderColor: "#334EA2" }}>

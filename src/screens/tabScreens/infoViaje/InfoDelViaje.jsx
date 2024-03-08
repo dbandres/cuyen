@@ -8,15 +8,11 @@ import { Hotel } from "./componentesInfoDelViaje/Hotel";
 
 export function InfoDelViaje({ navigation }) {
 
-	const Ir = () => {
-		navigation.navigate("carga-pasajero")
-	}
-
 	return (
 
 		<ScrollView style={{ flex:1, backgroundColor: "#D2DCEB" }}>
 			<View style={styles.container}>
-				<Header children="Contrato" navigation={navigation} />
+				<Header children="Informacion del viaje" navigation={navigation} />
 				<Destino />
 				<Informacion />
 				<Contingente navigation={navigation}/>

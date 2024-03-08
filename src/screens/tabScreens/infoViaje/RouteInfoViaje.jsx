@@ -1,7 +1,6 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import { ItineratioDelViaje } from "./ItinerarioDelViaje";
 import { InfoDelViaje } from "./InfoDelViaje";
-import { Contrato } from "./Contrato";
 import { EstadoDePagos } from "./EstadoDePagos";
 import { Image, Text, View } from "react-native";
 

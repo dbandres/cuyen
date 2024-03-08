@@ -17,6 +17,8 @@ export const GET_CONTRATO_BY_NUM = "GET_CONTRATO_BY_NUM";
 export const GET_HOTEL_BY_NUM = "GET_HOTEL_BY_NUM";
 export const VERIFU_USER_DNI = "VERIFU_USER_DNI";
 export const GET_ALL_COLEGIOS = "GET_ALL_COLEGIOS";
+export const GET_CUOTAS_PASAJERO = "GET_CUOTAS_PASAJERO"
+export const GET_CODIGO_BARRA_PASAJERO = "GET_CODIGO_BARRA_PASAJERO"
 
 
 export function loginAuth(usuario, contraseña) {
@@ -328,7 +330,7 @@ export function getContratoByNum(num){
 export function getHotelByNum(num){
 	return async function(dispatch){
 		try {
-			const response = await axios.get(`/nuevoviaje/${num}`,{
+			const response = await axios.get(`/hoteles/${num}`,{
 				headers:{
 					'x-access-token': `${token}`,
 					'Content-Type': 'application/json',
@@ -359,6 +361,54 @@ export function verifyUserByDni(num){
 			})
 		} catch (error) {
 			console.log('Error de Axios getHotelByNum:', error)
+		}
+	}
+}
+
+export function getCuotasPasajero(num, id){
+	return async function(dispatch){
+		try {
+			const response = await axios.get(`/cuotas/statusfee/${num}/${id}`,{
+				headers:{
+					'x-access-token': `${token}`,
+					'Content-Type': 'application/json',
+				}
+			})
+			return dispatch({
+				type: GET_CUOTAS_PASAJERO,
+				payload: response.data
+			})
+		} catch (error) {
+			console.log('Error de Axios getCuotasPasajero:', error)
+			// Establecer el estado como null en caso de error
+      dispatch({
+        type: GET_CUOTAS_PASAJERO,
+        payload: null,
+      });
+		}
+	}
+}
+
+export function getCodigoBarraPasajero(num, id){
+	return async function(dispatch){
+		try {
+			const response = await axios.get(`/cuotas/allfee/${num}/${id}`,{
+				headers:{
+					'x-access-token': `${token}`,
+					'Content-Type': 'application/json',
+				}
+			})
+			return dispatch({
+				type: GET_CODIGO_BARRA_PASAJERO,
+				payload: response.data
+			})
+		} catch (error) {
+			console.log('Error de Axios getCodigoBarraPasajero:', error)
+			// Establecer el estado como null en caso de error
+      dispatch({
+        type: GET_CODIGO_BARRA_PASAJERO,
+        payload: null,
+      });
 		}
 	}
 }

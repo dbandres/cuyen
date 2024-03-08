@@ -3,14 +3,16 @@ import { Image, Text, TouchableOpacity, View, Animated } from "react-native"
 import { getHotelByNum } from "../../../../redux/actions";
 import { useDispatch, useSelector } from "react-redux";
 import { UserContext } from "../../../../context/UserContext";
+import { InfoContext } from "../InfoContext";
 
-export function Hotel(){
+export function Hotel() {
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [heightAnim] = useState(new Animated.Value(88));
   const { userdata } = useContext(UserContext)
+  const { miInfo } = useContext(InfoContext)
   const dispatch = useDispatch()
-  const hotelInfo = useSelector((state)=>state.hotelInfo)
+  const hotelInfo = useSelector((state) => state.hotelInfo)
   const contentRef = useRef(null);
 
 
@@ -42,36 +44,48 @@ export function Hotel(){
     }
   }, [isExpanded]);
 
-  useEffect(()=>{
-    dispatch(getHotelByNum(userdata.contrato[0]))
-  },[])
+  useEffect(() => {
+    dispatch(getHotelByNum(miInfo.hotelId))
+  }, [])
 
-  console.log(hotelInfo);
+  // console.log(JSON.stringify(hotelInfo, null, 3));
 
-  return(
-    <Animated.View ref={contentRef} style={{ height: heightAnim, width: 373, backgroundColor: "white", marginTop: "5%", borderRadius: 10, padding: "2%", justifyContent: "flex-start", alignItems: "center", marginBottom:10 }}>
-      <TouchableOpacity style={{width:333, display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", height: isExpanded ? 80 : "100%" }}>
+  return (
+    <Animated.View ref={contentRef} style={{ height: heightAnim, width: 373, backgroundColor: "white", marginTop: "5%", borderRadius: 10, padding: "2%", justifyContent: "flex-start", alignItems: "center", marginBottom: 10 }}>
+      <TouchableOpacity onPress={toggleExpand} style={{ width: 333, display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", height: isExpanded ? 80 : "100%" }}>
         <View style={{ display: "flex", flexDirection: "row" }}>
-          <View style={{ width: 48, height: 48, borderRadius: 10, backgroundColor:"#D2DCEB", alignItems: "center", justifyContent: "center" }}>
+          <View style={{ width: 48, height: 48, borderRadius: 10, backgroundColor: hotelInfo.length !== 0 ? "#FF3D00" : "#D2DCEB", alignItems: "center", justifyContent: "center" }}>
             <Image
               source={require('../../../../assets/hotel_blanco.png')}
               style={{ width: 24, height: 24 }}
             />
           </View>
-          <View style={{ marginLeft: 15, height: 48, alignItems: "flex-start", justifyContent: "center",}}>
+          <View style={{ marginLeft: 15, height: 48, alignItems: "flex-start", justifyContent: "center", }}>
             <Text style={{ color: "#564C71", fontWeight: "800", fontSize: 12, lineHeight: 14, marginBottom: 6 }}>
               Hotel
             </Text>
-            <Text style={{ color: "#564C71", fontWeight: "400", fontSize: 16, lineHeight: 19 }}>
-              Informacion no disponible
-            </Text>
+            {
+              hotelInfo.length !== 0 ?
+                <Text style={{ color: "#564C71", fontWeight: "400", fontSize: 16, lineHeight: 19 }}>
+                  {hotelInfo.nombre}
+                </Text>
+                :
+                <Text style={{ color: "#564C71", fontWeight: "400", fontSize: 16, lineHeight: 19 }}>
+                  Informacion no disponible
+                </Text>
+            }
           </View>
         </View>
         <View>
           <View>
-            {/* <TouchableOpacity style={{ alignItems: 'center'}} onPress={toggleExpand}>
-              <Text>{isExpanded ? <Image source={require("../../../../assets/Not_more.png")} style={{ width: 24, height: 24 }} /> : <Image source={require("../../../../assets/expand_more.png")} style={{ width: 24, height: 24 }} />}</Text>
-            </TouchableOpacity> */}
+            {
+              hotelInfo.length !== 0 ?
+                <TouchableOpacity style={{ alignItems: 'center' }} onPress={toggleExpand}>
+                  {/* Botón flecha */}
+                  <Text>{isExpanded ? <Image source={require("../../../../assets/Not_more.png")} style={{ width: 24, height: 24 }} /> : <Image source={require("../../../../assets/expand_more.png")} style={{ width: 24, height: 24 }} />}</Text>
+                </TouchableOpacity>
+                : null
+            }
           </View>
         </View>
       </TouchableOpacity>

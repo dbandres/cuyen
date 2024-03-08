@@ -3,6 +3,7 @@ import { Image, Text, TouchableOpacity, View, Animated } from "react-native";
 import { getDestino } from "../../../../redux/actions";
 import { UserContext } from "../../../../context/UserContext";
 import { useDispatch, useSelector } from "react-redux";
+import { InfoContext } from "../InfoContext";
 
 
 
@@ -13,6 +14,7 @@ export function Destino() {
   const destino = useSelector((state) => state.destino)
   const dispatch = useDispatch()
   const { userdata } = useContext(UserContext)
+  const { miInfo, setMiInfo } = useContext(InfoContext)
   const contentRef = useRef(null);
 
   const toggleExpand = () => {
@@ -23,6 +25,17 @@ export function Destino() {
   useEffect(() => {
     dispatch(getDestino(userdata.contrato[0]))
   }, [])
+
+  useEffect(() => {
+    if (destino.length !== 0) {
+      // Función para cambiar el valor de hotel id
+        setMiInfo(prevState => ({
+          ...prevState,
+          hotelId: destino.hotelId
+        }))
+    }
+
+  }, [destino])
 
   useEffect(() => {
     if (isExpanded) {
@@ -45,6 +58,8 @@ export function Destino() {
       }).start();
     }
   }, [isExpanded]);
+
+  // console.log(JSON.stringify(miInfo, null, 3));
 
   return (
     <Animated.View ref={contentRef} style={{ height: heightAnim, width: 373, backgroundColor: "white", marginTop: "5%", borderRadius: 10, padding: "2%", justifyContent: "flex-start", alignItems: "center" }}>

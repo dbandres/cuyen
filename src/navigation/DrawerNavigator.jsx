@@ -34,7 +34,7 @@ const CustomDrawerContent = ({ navigation }) => {
 			usuario: ""
 		})
 		setAuthenticate(false)
-		navigation.navigate("introScreen")
+		navigation.navigate("login")
 	}
 
 	const abrirLink = (linkUrl) => {
