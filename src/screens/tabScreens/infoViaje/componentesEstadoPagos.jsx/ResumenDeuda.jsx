@@ -68,8 +68,8 @@ export function ResumenDeuda({ data }) {
                 source={require("../../../../assets/request_quote.png")}
                 style={{ width: 20, height: 24, marginRight:15 }}
               />
-              <Text style={{fontWeight:"400", fontSize:12, lineHeight:30}}>
-                Total a pagar por contrato: <Text style={{fontWeight:"700", fontSize:12, lineHeight:30}}>${data["Total contrato"]}</Text>
+              <Text style={{fontWeight:"400", fontSize:12, lineHeight:30, color:"#949AAF"}}>
+                Total a pagar por contrato: <Text style={{fontWeight:"700", fontSize:12, lineHeight:30, color:"#949AAF"}}>${data["Total contrato"]}</Text>
               </Text>
             </View>
             <View style={{display:"flex", flexDirection:"row", justifyContent:"flex-start", alignItems:"center", height:40}}>
@@ -77,8 +77,8 @@ export function ResumenDeuda({ data }) {
                 source={require("../../../../assets/cantCuotas.png")}
                 style={{ width: 21, height: 24, marginRight:15 }}
               />
-              <Text style={{fontWeight:"400", fontSize:12, lineHeight:30}}>
-                Cantidad de cuotas: <Text style={{fontWeight:"700", fontSize:12, lineHeight:30}}>${data["Cantidad cuotas"]}</Text>
+              <Text style={{fontWeight:"400", fontSize:12, lineHeight:30, color:"#949AAF"}}>
+                Cantidad de cuotas: <Text style={{fontWeight:"700", fontSize:12, lineHeight:30, color:"#949AAF"}}>${data["Cantidad cuotas"]}</Text>
               </Text>
             </View>
             <View style={{display:"flex", flexDirection:"row", justifyContent:"flex-start", alignItems:"center", height:40}}>
@@ -86,8 +86,8 @@ export function ResumenDeuda({ data }) {
                 source={require("../../../../assets/paid.png")}
                 style={{ width: 24, height: 24, marginRight:12 }}
               />
-              <Text style={{fontWeight:"400", fontSize:12, lineHeight:30}}>
-                Monto por cuota: <Text style={{fontWeight:"700", fontSize:12, lineHeight:30}}>${data["Monto cuota"]}</Text>
+              <Text style={{fontWeight:"400", fontSize:12, lineHeight:30, color:"#949AAF"}}>
+                Monto por cuota: <Text style={{fontWeight:"700", fontSize:12, lineHeight:30, color:"#949AAF"}}>${data["Monto cuota"]}</Text>
               </Text>
             </View>
             <View style={{display:"flex", flexDirection:"row", justifyContent:"flex-start", alignItems:"center", height:40}}>
@@ -95,8 +95,8 @@ export function ResumenDeuda({ data }) {
                 source={require("../../../../assets/monto.png")}
                 style={{ width: 24, height: 24, marginRight:13 }}
               />
-              <Text style={{fontWeight:"400", fontSize:12, lineHeight:30}}>
-                Monto pendiente de pago: <Text style={{fontWeight:"700", fontSize:12, lineHeight:30}}>${data["Monto pendiente"]}</Text>
+              <Text style={{fontWeight:"400", fontSize:12, lineHeight:30, color:"#949AAF"}}>
+                Monto pendiente de pago: <Text style={{fontWeight:"700", fontSize:12, lineHeight:30, color:"#949AAF"}}>${data["Monto pendiente"]}</Text>
               </Text>
             </View>
           </View>

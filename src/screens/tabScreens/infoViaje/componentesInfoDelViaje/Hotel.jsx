@@ -4,6 +4,7 @@ import { getHotelByNum } from "../../../../redux/actions";
 import { useDispatch, useSelector } from "react-redux";
 import { UserContext } from "../../../../context/UserContext";
 import { InfoContext } from "../InfoContext";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 
 export function Hotel() {
 
@@ -13,6 +14,7 @@ export function Hotel() {
   const { miInfo } = useContext(InfoContext)
   const dispatch = useDispatch()
   const hotelInfo = useSelector((state) => state.hotelInfo)
+  const [imgArray, setImgArray] = useState("")
   const contentRef = useRef(null);
 
 
@@ -27,7 +29,7 @@ export function Hotel() {
       contentRef.current.measure((x, y, width, height) => {
         console.log("he: ", height)
         Animated.timing(heightAnim, {
-          toValue: 400, // Ajusta según tus necesidades
+          toValue: 850, // Ajusta según tus necesidades
           //toValue: height + 480,
           duration: 100,
           useNativeDriver: false,
@@ -45,10 +47,20 @@ export function Hotel() {
   }, [isExpanded]);
 
   useEffect(() => {
-    dispatch(getHotelByNum(miInfo.hotelId))
-  }, [])
+    if (miInfo.hotelId !== "") {
+      dispatch(getHotelByNum(miInfo.hotelId))
+    }
+  }, [miInfo])
 
-  // console.log(JSON.stringify(hotelInfo, null, 3));
+  useEffect(() => {
+    if (hotelInfo.length !== 0) {
+      const imagenes = JSON.parse(hotelInfo.fotos)
+      setImgArray(imagenes)
+    }
+  }, [hotelInfo])
+
+  console.log("esto es mi info: ", imgArray);
+  //console.log("HOTEL! :",JSON.stringify(hotelInfo, null, 3));
 
   return (
     <Animated.View ref={contentRef} style={{ height: heightAnim, width: 373, backgroundColor: "white", marginTop: "5%", borderRadius: 10, padding: "2%", justifyContent: "flex-start", alignItems: "center", marginBottom: 10 }}>
@@ -89,6 +101,80 @@ export function Hotel() {
           </View>
         </View>
       </TouchableOpacity>
+      {
+        isExpanded === true ?
+          <>
+            <View style={{ width: 373, height: 220 }}>
+              <MapView
+                provider={PROVIDER_GOOGLE}
+                style={{ height: 200, width: 373, borderRadius: 10 }}
+                initialRegion={{
+                  latitude: JSON.parse(hotelInfo.latitude),
+                  longitude: JSON.parse(hotelInfo.longitude),
+                  latitudeDelta: 0.05, // Utilizar el nivel de zoom actual
+                  longitudeDelta: 0.05,
+                }}
+              >
+                <Marker
+                  coordinate={{
+                    latitude: JSON.parse(hotelInfo.latitude),
+                    longitude: JSON.parse(hotelInfo.longitude),
+                  }}
+                  image={require('../../../../assets/marker.png')}
+                  style={{ height: 41, width: 68 }}
+                />
+              </MapView>
+            </View>
+            <View style={{ width: "90%", height: 160 }}>
+              <View style={{ height: 50, justifyContent: "center" }}>
+                <Text style={{ fontWeight: "800", fontSize: 14, lineHeight: 16, color: "#564C71" }}>
+                  Hotel
+                </Text>
+                <Text style={{ fontWeight: "400", fontSize: 16, lineHeight: 19, color: "#564C71" }}>
+                  {hotelInfo.nombre}
+                </Text>
+              </View>
+              <View style={{ height: 50, justifyContent: "center" }}>
+                <Text style={{ fontWeight: "800", fontSize: 14, lineHeight: 16, color: "#564C71" }}>
+                  Dirección
+                </Text>
+                <Text style={{ fontWeight: "400", fontSize: 16, lineHeight: 19, color: "#564C71" }}>
+                  {hotelInfo.direccion}
+                </Text>
+              </View>
+              <View style={{ height: 50, justifyContent: "center" }}>
+                <Text style={{ fontWeight: "800", fontSize: 14, lineHeight: 16, color: "#564C71" }}>
+                  Teléfono
+                </Text>
+                <Text style={{ fontWeight: "400", fontSize: 16, lineHeight: 19, color: "#564C71" }}>
+                  {hotelInfo.telefono}
+                </Text>
+              </View>
+            </View>
+            <View style={{ width: "98%", height: 350}}>
+              {
+                imgArray.slice(0, 4).map((foto, index) => (
+                  <View key={index} style={{ marginBottom: 15 }}>
+                    <Image
+                      source={{ uri: foto }}
+                      style={{
+                        width: index === 0 ? "100%" : "33%",
+                        height: index === 0 ? 200 : 112,
+                        resizeMode: 'cover'
+                      }}
+                    />
+                  </View>
+                ))
+              }
+            </View>
+            <View style={{width:"95%", alignItems:"flex-end"}}>
+              <Text style={{ fontWeight: "600", fontSize: 14, lineHeight: 16, color: "#564C71" }}>
+                Ver mas
+              </Text>
+            </View>
+          </>
+          : null
+      }
     </Animated.View>
   )
 }

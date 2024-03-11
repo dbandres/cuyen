@@ -128,7 +128,7 @@ export function ModalAlertCarga({ visible, onClose, texto, data, children, setNe
             </View>
           </View>
           {
-            loading === true ?
+            loading === true && limiteImg === imageAdjunto.length ?
               <View>
                 <ActivityIndicator size="large" color="#FF3D00" />
                 <Text>

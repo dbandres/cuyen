@@ -14,7 +14,7 @@ export function EstadoDePagosComponent({data}) {
       // Mide la altura del contenido cuando se expande
       contentRef.current.measure((x, y, width, height) => {
         Animated.timing(heightAnim, {
-          toValue: 300, // Ajusta según tus necesidades
+          toValue: 250, // Ajusta según tus necesidades
           //toValue: height + 480,
           duration: 100,
           useNativeDriver: false,
