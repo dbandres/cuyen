@@ -4,7 +4,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions, Statu
 import { useForm } from "react-hook-form";
 import { ButtonCustom } from "../../../components/ButtomCustom";
 import { UserContext } from "../../../context/UserContext";
-import { loginAuth } from "../../../redux/actions";
+import { CurrentContrato, loginAuth } from "../../../redux/actions";
 import { InputLogin } from "./InputLogin";
 import { ContainerWithBackground } from "../../ContainerWithBackground";
 import AwesomeAlert from "react-native-awesome-alerts";
@@ -66,6 +66,7 @@ export default function Login({ navigation }) {
 						id: response.payload.data.usuario.id
 					})
 					AsyncStorage.setItem("userStorage", JSON.stringify(response.payload.data))
+					// dispatch(CurrentContrato(response.payload.data.usuario.contrato[0]))
 					setShowAlert2(false)
 					navigation.navigate("landing")
 				}

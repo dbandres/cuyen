@@ -13,6 +13,7 @@ import { RouteGestion } from '../screens/tabScreens/gestionViaje/RouteGestion';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RouteInicial } from '../screens/tabScreens/infoViaje/RouteInicial';
 import { AuthContext } from '../context/AuthContext';
+import { GestionContrato } from '../screens/tabScreens/gestionarContrato/GestionContrato';
 
 
 
@@ -34,7 +35,7 @@ const CustomDrawerContent = ({ navigation }) => {
 			usuario: ""
 		})
 		setAuthenticate(false)
-		navigation.navigate("login")
+		navigation.navigate("introScreen")
 	}
 
 	const abrirLink = (linkUrl) => {
@@ -88,7 +89,9 @@ const CustomDrawerContent = ({ navigation }) => {
 								/>
 							</TouchableOpacity>
 						</View>
-						<Text style={{ color: "white" }}>Contrato {userdata.contrato}</Text>
+						<View style={{borderWidth:1, borderColor:"#93E396" ,height:44, justifyContent:"center", borderRadius:5}}>
+						<Text style={{ color: "#93E396", fontWeight:"600", fontSize:12, lineHeight:14, textAlign:"center" }}>Contrato {userdata.contrato[0]}</Text>
+						</View>
 					</View>
 					{
 						data.map((d, index) => (
@@ -146,7 +149,7 @@ function DrawerNavigator() {
 		>
 			<Drawer.Screen name="Inicio" component={RouteLanding} options={{ headerShown: false }} />
 			<Drawer.Screen name="info-viaje" component={RouteInicial} options={{ headerShown: false }} />
-			{/* <Drawer.Screen name="carga-pasajero" component={CargaPasajero} options={{ headerShown: false }} />  */}
+			{/* <Drawer.Screen name="gestio-contrato" component={GestionContrato} options={{ headerShown: false }} />  */}
 			<Drawer.Screen name="muro" component={RouteMuro} options={{ headerShown: false }} />
 			<Drawer.Screen name="ubiViaje" component={Ubicacion} options={{ headerShown: false }} />
 			<Drawer.Screen name="folleto-screen" component={Folleto} options={{ headerShown: false }} />

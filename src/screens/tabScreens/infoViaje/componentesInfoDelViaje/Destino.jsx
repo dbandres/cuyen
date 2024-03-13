@@ -1,11 +1,10 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Image, Text, TouchableOpacity, View, Animated } from "react-native";
-import { getDestino } from "../../../../redux/actions";
+import { cleanDestino, getDestino } from "../../../../redux/actions";
 import { UserContext } from "../../../../context/UserContext";
 import { useDispatch, useSelector } from "react-redux";
 import { InfoContext } from "../InfoContext";
-
-
+import { useFocusEffect } from "@react-navigation/native";
 
 export function Destino() {
 
@@ -15,6 +14,7 @@ export function Destino() {
   const dispatch = useDispatch()
   const { userdata } = useContext(UserContext)
   const { miInfo, setMiInfo } = useContext(InfoContext)
+  const contratoActual = useSelector((state) => state.currentContrato)
   const contentRef = useRef(null);
 
   const toggleExpand = () => {
@@ -24,7 +24,18 @@ export function Destino() {
 
   useEffect(() => {
     dispatch(getDestino(userdata.contrato[0]))
-  }, [])
+  }, [contratoActual])
+
+  // useFocusEffect(
+	// 	React.useCallback(() => {
+	// 		dispatch(getDestino(contratoActual))
+  //     return () => {
+  //       // Este código se ejecuta cuando el componente se desenfoca o se desmonta
+  //       console.log('Pantalla desenfocada. Limpieza o desmontaje aquí.');
+	// 			dispatch(cleanDestino())
+  //     };
+	// 	}, [])
+	// )
 
   useEffect(() => {
     if (destino.length !== 0) {

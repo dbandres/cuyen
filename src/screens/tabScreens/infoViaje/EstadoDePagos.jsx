@@ -23,7 +23,7 @@ export function EstadoDePagos({navigation}) {
     dispatch(getCodigoBarraPasajero(userdata.contrato[0], miInfo.numPasajero))
   },[])
 
-  // console.log(JSON.stringify(codPasajero, null, 3));
+  console.log(JSON.stringify(miInfo, null, 3));
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: "#D2DCEB" }}>

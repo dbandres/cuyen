@@ -25,6 +25,12 @@ export const MenuBottonItem = ({ text, onPress, img }) => {
                   source={require("../assets/wall_art.png")}
                   style={{ width: 24, height: 26 }}
                 /> :
+                img === "contract" ?
+                <Image
+                  source={require("../assets/contract_white.png")}
+                  style={{ width: 24, height: 26 }}
+                />
+                :
                 <Image
                   source={require("../assets/explore.png")}
                   style={{ width: 24, height: 26 }}

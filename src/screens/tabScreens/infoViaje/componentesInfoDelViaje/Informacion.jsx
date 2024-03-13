@@ -1,9 +1,10 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Image, Text, TouchableOpacity, View, Animated } from "react-native"
 import { getContratoByNum } from "../../../../redux/actions";
 import { useDispatch, useSelector } from "react-redux";
 import { UserContext } from "../../../../context/UserContext";
 import { DetalleInfoContrato } from "./DetalleInfoContrato";
+import { useFocusEffect } from "@react-navigation/native";
 
 export function Informacion() {
 
@@ -13,6 +14,7 @@ export function Informacion() {
   const dispatch = useDispatch()
   const [heightAnim] = useState(new Animated.Value(88));
   const contentRef = useRef(null);
+  const contratoActual = useSelector((state) => state.currentContrato)
 
   const toggleExpand = () => {
     // Envía el índice del componente al padre para gestionar la expansión individual
@@ -22,8 +24,14 @@ export function Informacion() {
   useEffect(() => {
     dispatch(getContratoByNum(userdata.contrato[0]))
   }, [])
+  
+  // useFocusEffect(
+	// 	React.useCallback(() => {
+	// 		dispatch(getContratoByNum(contratoActual))
+	// 	}, [])
+	// )
 
-  //console.log("info: ", JSON.stringify(contratoInfo, null, 3));
+  // console.log("info: ", JSON.stringify(contratoInfo, null, 3));
 
   useEffect(() => {
     if (isExpanded) {
@@ -82,7 +90,7 @@ export function Informacion() {
       </TouchableOpacity>
       {
         isExpanded &&
-          <DetalleInfoContrato InfoContrato={contratoInfo}/>
+          <DetalleInfoContrato InfoContrato={contratoInfo[0]}/>
       }
     </Animated.View>
   )

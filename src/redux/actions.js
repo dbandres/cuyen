@@ -11,7 +11,7 @@ export const GET_ALL_COLEGIOS_X_VIAJE = "GET_ALL_COLEGIOS_X_VIAJE";
 export const GET_ALL_PASAJEROS_X_COLEGIO = "GET_ALL_PASAJEROS_X_COLEGIO";
 export const GET_ALL_PASAJEROS_X_COLEGIO_FILTER = "GET_ALL_PASAJEROS_X_COLEGIO_FILTER";
 export const GET_ITINERARIO = "GET_ITINERARIO";
-export const GET_DESTINO = "GET_DESTINO"; 
+export const GET_DESTINO = "GET_DESTINO";
 export const GET_PASAJERO = "GET_PASAJERO";
 export const GET_CONTRATO_BY_NUM = "GET_CONTRATO_BY_NUM";
 export const GET_HOTEL_BY_NUM = "GET_HOTEL_BY_NUM";
@@ -19,6 +19,8 @@ export const VERIFU_USER_DNI = "VERIFU_USER_DNI";
 export const GET_ALL_COLEGIOS = "GET_ALL_COLEGIOS";
 export const GET_CUOTAS_PASAJERO = "GET_CUOTAS_PASAJERO"
 export const GET_CODIGO_BARRA_PASAJERO = "GET_CODIGO_BARRA_PASAJERO"
+export const LIMPIAR_DESTINO = "LIMPIAR_DESTINO"
+export const SET_CURRENT_CONTRATO = "SET_CURRENT_CONTRATO"
 
 
 export function loginAuth(usuario, contraseña) {
@@ -46,6 +48,14 @@ export function CurrentUser(user) {
 	return {
 		type: SET_CURRENT_USER,
 		payload: user,
+	};
+}
+
+export function CurrentContrato(num) {
+	console.log(num)
+	return {
+		type: SET_CURRENT_CONTRATO,
+		payload: num,
 	};
 }
 
@@ -80,7 +90,7 @@ export function getAllPost(travelId) {
 						'Content-Type': 'application/json',
 					},
 				});
-				console.log("aca? ",response.data);
+				console.log("aca? ", response.data);
 				return dispatch({
 					type: GET_ALL_POST,
 					payload: response.data,
@@ -199,7 +209,7 @@ export function getAllColegiosXViaje(num) {
 export function getAllPasajerosXColegio(data) {
 	return async function (dispatch) {
 		try {
-			console.log("desde actions: ",data);
+			console.log("desde actions: ", data);
 			let nums;
 			nums = data.map((data) => data.num)
 			// Crear un array de promesas para cada solicitud individual
@@ -251,11 +261,11 @@ export function getAllPasajerosXColegioFilter(num) {
 	};
 }
 
-export function getItinerario(num){
-	return async function(dispatch){
+export function getItinerario(num) {
+	return async function (dispatch) {
 		try {
-			const response = await axios.get(`/itinerario/contract/${num}`,{
-				headers:{
+			const response = await axios.get(`/itinerario/contract/${num}`, {
+				headers: {
 					'x-access-token': `${token}`,
 					'Content-Type': 'application/json',
 				}
@@ -270,30 +280,45 @@ export function getItinerario(num){
 	}
 }
 
-export function getDestino(num){
-	return async function(dispatch){
+export function getDestino(num) {
+	console.log("esto es num en getDestino: ", num);
+	return async function (dispatch) {
 		try {
-			const response = await axios.get(`/nuevoviaje/${num}`,{
-				headers:{
+			const response = await axios.get(`/nuevoviaje/${num}`, {
+				headers: {
 					'x-access-token': `${token}`,
 					'Content-Type': 'application/json',
 				}
 			})
+			console.log("response: ",response.data);
 			return dispatch({
 				type: GET_DESTINO,
 				payload: response.data
 			})
 		} catch (error) {
 			console.log('Error de Axios getDestino:', error)
+			dispatch({
+				type: GET_DESTINO,
+				payload: [],
+			});
 		}
 	}
 }
 
-export function getPasajero(num){
-	return async function(dispatch){
+export function cleanDestino(){
+	return function(dispatch) {
+		dispatch({
+				type: LIMPIAR_DESTINO,
+				payload: null
+		});
+};
+}
+
+export function getPasajero(num) {
+	return async function (dispatch) {
 		try {
-			const response = await axios.get(`/pasajero/relation/${num}`,{
-				headers:{
+			const response = await axios.get(`/pasajero/relation/${num}`, {
+				headers: {
 					'x-access-token': `${token}`,
 					'Content-Type': 'application/json',
 				}
@@ -308,30 +333,58 @@ export function getPasajero(num){
 	}
 }
 
-export function getContratoByNum(num){
-	return async function(dispatch){
+export function getContratoByNum(num) {
+	console.log("esto es num actions: ", num);
+	return async function (dispatch) {
 		try {
-			const response = await axios.get(`/contrato/${num}`,{
-				headers:{
-					'x-access-token': `${token}`,
-					'Content-Type': 'application/json',
-				}
-			})
-			return dispatch({
-				type: GET_CONTRATO_BY_NUM,
-				payload: response.data
-			})
+			if (Array.isArray(num)) {
+				console.log('El parámetro num es un array');
+				// Realizar todas las solicitudes HTTP en paralelo
+				const promises = num.map(async (numItem) => {
+					return await axios.get(`/contrato/${numItem}`, {
+						headers: {
+							'x-access-token': `${token}`,
+							'Content-Type': 'application/json',
+						}
+					});
+				});
+
+				// Esperar a que todas las solicitudes se completen y obtener las respuestas
+				const responses = await Promise.all(promises);
+
+				// Luego, puedes hacer lo que necesites con las respuestas, como guardarlas, enviarlas al store, etc.
+				console.log('Respuestas obtenidas:', responses);
+
+				return dispatch({
+					type: GET_CONTRATO_BY_NUM,
+					payload: responses.map(response => response.data)
+				});
+			} else {
+				// Si num no es un array, realizar la solicitud HTTP GET normalmente
+				const response = await axios.get(`/contrato/${num}`, {
+					headers: {
+						'x-access-token': `${token}`,
+						'Content-Type': 'application/json',
+					}
+				});
+
+				return dispatch({
+					type: GET_CONTRATO_BY_NUM,
+					payload: [response.data]
+				});
+			}
 		} catch (error) {
-			console.log('Error de Axios getContratoByNum:', error)
+			console.log('Error de Axios getContratoByNum:', error);
 		}
-	}
+	};
 }
 
-export function getHotelByNum(num){
-	return async function(dispatch){
+
+export function getHotelByNum(num) {
+	return async function (dispatch) {
 		try {
-			const response = await axios.get(`/hoteles/${num}`,{
-				headers:{
+			const response = await axios.get(`/hoteles/${num}`, {
+				headers: {
 					'x-access-token': `${token}`,
 					'Content-Type': 'application/json',
 				}
@@ -346,11 +399,11 @@ export function getHotelByNum(num){
 	}
 }
 
-export function verifyUserByDni(num){
-	return async function(dispatch){
+export function verifyUserByDni(num) {
+	return async function (dispatch) {
 		try {
-			const response = await axios.get(`/usuarios/verify/${num}`,{
-				headers:{
+			const response = await axios.get(`/usuarios/verify/${num}`, {
+				headers: {
 					'x-access-token': `${token}`,
 					'Content-Type': 'application/json',
 				}
@@ -365,11 +418,11 @@ export function verifyUserByDni(num){
 	}
 }
 
-export function getCuotasPasajero(num, id){
-	return async function(dispatch){
+export function getCuotasPasajero(num, id) {
+	return async function (dispatch) {
 		try {
-			const response = await axios.get(`/cuotas/statusfee/${num}/${id}`,{
-				headers:{
+			const response = await axios.get(`/cuotas/statusfee/${num}/${id}`, {
+				headers: {
 					'x-access-token': `${token}`,
 					'Content-Type': 'application/json',
 				}
@@ -381,19 +434,19 @@ export function getCuotasPasajero(num, id){
 		} catch (error) {
 			console.log('Error de Axios getCuotasPasajero:', error)
 			// Establecer el estado como null en caso de error
-      dispatch({
-        type: GET_CUOTAS_PASAJERO,
-        payload: null,
-      });
+			dispatch({
+				type: GET_CUOTAS_PASAJERO,
+				payload: null,
+			});
 		}
 	}
 }
 
-export function getCodigoBarraPasajero(num, id){
-	return async function(dispatch){
+export function getCodigoBarraPasajero(num, id) {
+	return async function (dispatch) {
 		try {
-			const response = await axios.get(`/cuotas/allfee/${num}/${id}`,{
-				headers:{
+			const response = await axios.get(`/cuotas/allfee/${num}/${id}`, {
+				headers: {
 					'x-access-token': `${token}`,
 					'Content-Type': 'application/json',
 				}
@@ -405,10 +458,10 @@ export function getCodigoBarraPasajero(num, id){
 		} catch (error) {
 			console.log('Error de Axios getCodigoBarraPasajero:', error)
 			// Establecer el estado como null en caso de error
-      dispatch({
-        type: GET_CODIGO_BARRA_PASAJERO,
-        payload: null,
-      });
+			dispatch({
+				type: GET_CODIGO_BARRA_PASAJERO,
+				payload: null,
+			});
 		}
 	}
 }

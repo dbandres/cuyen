@@ -1,6 +1,5 @@
 import { useFocusEffect } from "@react-navigation/native";
 import React, { useContext, useEffect, useRef, useState } from "react";
-
 import { Image, Text, TouchableOpacity, View, Animated } from "react-native"
 import { getPasajero } from "../../../../redux/actions";
 import { UserContext } from "../../../../context/UserContext";

@@ -1,10 +1,11 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Image, Text, TouchableOpacity, View, Animated } from "react-native"
 import { getHotelByNum } from "../../../../redux/actions";
 import { useDispatch, useSelector } from "react-redux";
 import { UserContext } from "../../../../context/UserContext";
 import { InfoContext } from "../InfoContext";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
+import { useFocusEffect } from "@react-navigation/native";
 
 export function Hotel() {
 
@@ -46,11 +47,19 @@ export function Hotel() {
     }
   }, [isExpanded]);
 
-  useEffect(() => {
-    if (miInfo.hotelId !== "") {
-      dispatch(getHotelByNum(miInfo.hotelId))
-    }
-  }, [miInfo])
+  // useEffect(() => {
+  //   if (miInfo.hotelId !== "") {
+  //     dispatch(getHotelByNum(miInfo.hotelId))
+  //   }
+  // }, [miInfo])
+
+  useFocusEffect(
+		React.useCallback(() => {
+			if (miInfo.hotelId !== "") {
+        dispatch(getHotelByNum(miInfo.hotelId))
+      }
+		}, [])
+	)
 
   useEffect(() => {
     if (hotelInfo.length !== 0) {
@@ -59,8 +68,8 @@ export function Hotel() {
     }
   }, [hotelInfo])
 
-  console.log("esto es mi info: ", imgArray);
-  //console.log("HOTEL! :",JSON.stringify(hotelInfo, null, 3));
+  // console.log("esto es mi info: ", imgArray);
+  // console.log("HOTEL! :", JSON.stringify(hotelInfo, null, 3));
 
   return (
     <Animated.View ref={contentRef} style={{ height: heightAnim, width: 373, backgroundColor: "white", marginTop: "5%", borderRadius: 10, padding: "2%", justifyContent: "flex-start", alignItems: "center", marginBottom: 10 }}>
@@ -105,25 +114,34 @@ export function Hotel() {
         isExpanded === true ?
           <>
             <View style={{ width: 373, height: 220 }}>
-              <MapView
-                provider={PROVIDER_GOOGLE}
-                style={{ height: 200, width: 373, borderRadius: 10 }}
-                initialRegion={{
-                  latitude: JSON.parse(hotelInfo.latitude),
-                  longitude: JSON.parse(hotelInfo.longitude),
-                  latitudeDelta: 0.05, // Utilizar el nivel de zoom actual
-                  longitudeDelta: 0.05,
-                }}
-              >
-                <Marker
-                  coordinate={{
-                    latitude: JSON.parse(hotelInfo.latitude),
-                    longitude: JSON.parse(hotelInfo.longitude),
-                  }}
-                  image={require('../../../../assets/marker.png')}
-                  style={{ height: 41, width: 68 }}
-                />
-              </MapView>
+              {
+                hotelInfo.latitude !== null || hotelInfo.longitude !== null ?
+                  <MapView
+                    provider={PROVIDER_GOOGLE}
+                    style={{ height: 200, width: 373, borderRadius: 10 }}
+                    initialRegion={{
+                      latitude: JSON.parse(hotelInfo.latitude),
+                      longitude: JSON.parse(hotelInfo.longitude),
+                      latitudeDelta: 0.05, // Utilizar el nivel de zoom actual
+                      longitudeDelta: 0.05,
+                    }}
+                  >
+                    <Marker
+                      coordinate={{
+                        latitude: JSON.parse(hotelInfo.latitude),
+                        longitude: JSON.parse(hotelInfo.longitude),
+                      }}
+                      image={require('../../../../assets/marker.png')}
+                      style={{ height: 41, width: 68 }}
+                    />
+                  </MapView>
+                  :
+                  <View style={{width:"100%", height:200, justifyContent:"center", alignItems:"center"}}>
+                    <Text style={{ color: "#564C71", fontWeight: "400", fontSize: 16, lineHeight: 19 }}>
+                      No hay ubicación del Hotel
+                    </Text>
+                  </View>
+              }
             </View>
             <View style={{ width: "90%", height: 160 }}>
               <View style={{ height: 50, justifyContent: "center" }}>
@@ -151,7 +169,7 @@ export function Hotel() {
                 </Text>
               </View>
             </View>
-            <View style={{ width: "98%", height: 350}}>
+            <View style={{ width: "98%", height: 350 }}>
               {
                 imgArray.slice(0, 4).map((foto, index) => (
                   <View key={index} style={{ marginBottom: 15 }}>
@@ -167,7 +185,7 @@ export function Hotel() {
                 ))
               }
             </View>
-            <View style={{width:"95%", alignItems:"flex-end"}}>
+            <View style={{ width: "95%", alignItems: "flex-end" }}>
               <Text style={{ fontWeight: "600", fontSize: 14, lineHeight: 16, color: "#564C71" }}>
                 Ver mas
               </Text>
