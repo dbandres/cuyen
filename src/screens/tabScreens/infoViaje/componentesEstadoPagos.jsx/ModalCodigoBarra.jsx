@@ -12,7 +12,7 @@ export function ModalCodigoBarra({ visible, onClose, data }) {
       onRequestClose={onClose}
     >
       <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'center', backgroundColor: transparent }}>
-        <View style={{ borderRadius: 10, width: 373, height: 610, backgroundColor: "white", justifyContent: 'center', alignItems: 'center', marginTop: 10 }}>
+        <View style={{ borderRadius: 10, width: 373, height: 610, backgroundColor: "white", justifyContent: 'center', alignItems: 'center', marginTop: 50 }}>
           <View style={{ top: 20, position: "absolute" }}>
             <Text style={{fontWeight:"500", fontSize:16, lineHeight:19, textAlign:"center", color:"#334EA2"}}>
               Código de pago

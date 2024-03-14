@@ -65,7 +65,7 @@ export function ItineratioDelViaje({ navigation }) {
 								<ExpandibleItinerarioInfo key={index} data={texto}/>
 							)) :
 							<View>
-								<Text>
+								<Text style={{color:"#564C71"}}>
 									El itinerario no esta disponible
 								</Text>
 							</View>

@@ -114,10 +114,10 @@ export function Destino() {
       {
         isExpanded === true ?
         <View style={{width:"90%", height:95, borderRadius:20, justifyContent:"center", alignItems:"center", borderWidth:1, borderColor:"#949AAF"}}>
-          <Text style={{fontWeight:"800", fontSize:12, lineHeight:14, textAlign:"center"}}>
+          <Text style={{fontWeight:"800", fontSize:12, lineHeight:14, textAlign:"center", color:"#564C71"}}>
             Salida
           </Text>
-          <Text style={{fontWeight:"700", fontSize:16, lineHeight:19, textAlign:"center"}}>
+          <Text style={{fontWeight:"700", fontSize:16, lineHeight:19, textAlign:"center", color:"#564C71"}}>
             {destino.salida}
           </Text>
         </View>

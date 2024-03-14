@@ -67,7 +67,7 @@ export function ExpandibleItinerarioInfo({ data }) {
               {
                 data.descripcion.map((descripcion, index) => (
                   <View key={index} style={{ width: "98%", height: descripcion.length > 46 ? 33 : 25, justifyContent: "center", padding:5 }}>
-                    <Text style={{ fontWeight: "400", fontSize: 10, lineHeight: 12 }}>* {descripcion}</Text>
+                    <Text style={{ fontWeight: "400", fontSize: 10, lineHeight: 12, color:"#564C71" }}>* {descripcion}</Text>
                   </View>
                 ))
               }

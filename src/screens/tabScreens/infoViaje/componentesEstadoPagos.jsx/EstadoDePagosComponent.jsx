@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Animated, Image, Text, TouchableOpacity, View } from "react-native";
 import { AnimatedCircularProgress } from "react-native-circular-progress"
 
-export function EstadoDePagosComponent({data}) {
+export function EstadoDePagosComponent({ data }) {
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [heightAnim] = useState(new Animated.Value(88));
@@ -38,24 +38,24 @@ export function EstadoDePagosComponent({data}) {
 
 
   // console.log(data);
-  const calcularFill = () =>{
+  const calcularFill = () => {
     const result = 100 / data["Cantidad cuotas"]
     return result
   }
 
-  const impagas = () =>{
+  const impagas = () => {
     const fill = calcularFill(); //porcentaje que ocupa cada cuota en el grafico
     const resultImpagas = fill * data["Cuotas impagas"] //miltiplucamos el porsentaje por la cantidad de cuotas impagas
     return resultImpagas
   }
 
-  const pagadas = () =>{
+  const pagadas = () => {
     const fill = calcularFill(); //porcentaje que ocupa cada cuota en el grafico
     const resultPagadas = fill * data["Cuotas pagas"]
     return resultPagadas
   }
 
-  const vencidas = () =>{
+  const vencidas = () => {
     const fill = calcularFill(); //porcentaje que ocupa cada cuota en el grafico
     const resultVencidas = fill * data["Cuotas vencidas"]
     return resultVencidas
@@ -89,9 +89,9 @@ export function EstadoDePagosComponent({data}) {
       </TouchableOpacity>
       {
         isExpanded === true ?
-          <View style={{ width: "90%", height: 180, justifyContent: "space-between", alignItems: "center", display:"flex", flexDirection:"row"}}>
-            <View style={{ height:130}}>
-              <View style={{ transform: [{ rotate: '270deg' }] }}>
+          <View style={{ width: "90%", height: 130, justifyContent: "space-between", alignItems: "center", display: "flex", flexDirection: "row" }}>
+            <View style={{ height: 130 }}>
+              <View style={{width:70, height:70, transform: [{ rotate: '270deg' }] }}>
                 <AnimatedCircularProgress
                   size={70}
                   width={10}
@@ -99,18 +99,18 @@ export function EstadoDePagosComponent({data}) {
                   tintColor="#93E396"
                   onAnimationComplete={() => console.log('onAnimationComplete')}
                   backgroundColor="#D9D9D9" />
+                <View style={{ position: "absolute", right: "45%", top: "43%", transform: [{ rotate: '90deg' }] }} >
+                  <Text style={{ fontWeight: "500", fontSize: 10, lineHeight: 12, textAlign: "center", color: "#564C71" }}>{data["Cuotas pagas"]}</Text>
+                </View>
               </View>
-              <View style={{ position: "absolute", left:33, top:30 }}>
-                <Text style={{fontWeight:"500", fontSize:10, lineHeight:12, textAlign:"center", color:"#564C71"}}>{data["Cuotas pagas"]}</Text>
-              </View>
-              <View style={{marginTop:30}}>
-                <Text style={{fontWeight:"500", fontSize:10, lineHeight:12, textAlign:"center", color:"#564C71"}}>Cuotas pagadas</Text>
+              <View style={{ marginTop: 30 }}>
+                <Text style={{ fontWeight: "500", fontSize: 10, lineHeight: 12, textAlign: "center", color: "#564C71" }}>Cuotas pagadas</Text>
               </View>
             </View>
 
 
-            <View style={{ height:130}}>
-              <View style={{ transform: [{ rotate: '270deg' }] }}>
+            <View style={{ height: 130 }}>
+              <View style={{width:70, height:70, transform: [{ rotate: '270deg' }] }}>
                 <AnimatedCircularProgress
                   size={70}
                   width={10}
@@ -118,18 +118,18 @@ export function EstadoDePagosComponent({data}) {
                   tintColor="#93E396"
                   onAnimationComplete={() => console.log('onAnimationComplete')}
                   backgroundColor="#D9D9D9" />
+                <View style={{ position: "absolute", right: "45%", top: "43%", transform: [{ rotate: '90deg' }], }}>
+                  <Text style={{ fontWeight: "500", fontSize: 10, lineHeight: 12, textAlign: "center", color: "#564C71" }}>{data["Cuotas impagas"]}</Text>
+                </View>
               </View>
-              <View style={{ position: "absolute", left:33, top:30 }}>
-                <Text style={{fontWeight:"500", fontSize:10, lineHeight:12, textAlign:"center", color:"#564C71"}}>{data["Cuotas impagas"]}</Text>
-              </View>
-              <View style={{marginTop:30}}>
-                <Text style={{fontWeight:"500", fontSize:10, lineHeight:12, textAlign:"center", color:"#564C71"}}>Cuotas impagas</Text>
+              <View style={{ marginTop: 30 }}>
+                <Text style={{ fontWeight: "500", fontSize: 10, lineHeight: 12, textAlign: "center", color: "#564C71" }}>Cuotas impagas</Text>
               </View>
             </View>
 
 
-            <View style={{ height:130}}>
-              <View style={{ transform: [{ rotate: '270deg' }] }}>
+            <View style={{ height: 130 }}>
+              <View style={{width:70, height:70, transform: [{ rotate: '270deg' }] }}>
                 <AnimatedCircularProgress
                   size={70}
                   width={10}
@@ -137,12 +137,12 @@ export function EstadoDePagosComponent({data}) {
                   tintColor="#FF6363"
                   onAnimationComplete={() => console.log('onAnimationComplete')}
                   backgroundColor="#D9D9D9" />
+                <View style={{ position: "absolute", right: "45%", top: "43%", transform: [{ rotate: '90deg' }], }}>
+                  <Text style={{ fontWeight: "500", fontSize: 10, lineHeight: 12, textAlign: "center", color: "#564C71" }}>{data["Cuotas vencidas"]}</Text>
+                </View>
               </View>
-              <View style={{ position: "absolute", left:33, top:30 }}>
-                <Text style={{fontWeight:"500", fontSize:10, lineHeight:12, textAlign:"center", color:"#564C71"}}>{data[ "Cuotas vencidas"]}</Text>
-              </View>
-              <View style={{marginTop:30}}>
-                <Text style={{fontWeight:"500", fontSize:10, lineHeight:12, textAlign:"center", color:"#564C71"}}>Cuotas vencidas</Text>
+              <View style={{ marginTop: 30 }}>
+                <Text style={{ fontWeight: "500", fontSize: 10, lineHeight: 12, textAlign: "center", color: "#564C71" }}>Cuotas vencidas</Text>
               </View>
             </View>
           </View>
