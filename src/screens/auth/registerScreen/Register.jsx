@@ -15,15 +15,12 @@ import { getAllColegios } from "../../../redux/actions";
 
 export default function Register({ navigation }) {
 
-	const { height } = Dimensions.get("screen")
 	const { control, handleSubmit, setValue, watch, trigger } = useForm()
 	const dispatch = useDispatch()
 
 	const [showAlert1, setShowAlert1] = useState(false)
-	const [showAlert2, setShowAlert2] = useState(false)
 	const [showAlert3, setShowAlert3] = useState(false)
 	const [showAlert4, setShowAlert4] = useState(false)
-	const [showAlert5, setShowAlert5] = useState(false)
 	const [inputValue, setInputValue] = useState('');
 	const [colegiosFiltrados, setColegiosFiltrados] = useState("")
 
@@ -34,7 +31,6 @@ export default function Register({ navigation }) {
 	const [colegioSeleccionado, setColegioSeleccionado] = useState("");
 	const [match, setMatch] = useState(false)
 
-	const { setUserData } = useContext(UserContext)
 	const [toggleCheckBox, setToggleCheckBox] = useState(false)
 	const pwd = watch("userpass")
 
@@ -42,23 +38,6 @@ export default function Register({ navigation }) {
 
 	let dni = watch('userdni')
 	let contrato = watch("contrato")
-
-	const showAlerts = (show, setShow, titulo, msg, text) => {
-		return (
-			<AwesomeAlert
-				show={show}
-				showProgress={false}
-				title={titulo}
-				message={msg}
-				closeOnTouchOutside={false}
-				closeOnHardwareBackPress={false}
-				showConfirmButton={true}
-				confirmText={text}
-				confirmButtonColor="#DD6B55"
-				onConfirmPressed={() => setShow(false)}
-			/>
-		);
-	}
 
 	const myFunction = () => {
 		if (error === true) {
@@ -74,25 +53,14 @@ export default function Register({ navigation }) {
 		navigation.navigate("login")
 	}
 
-	const getAlert = (show) => {
-		return (
-			<AwesomeAlert
-				show={show}
-				showProgress={true}
-				progressColor="black"
-				progressSize={50}
-				closeOnTouchOutside={false}
-			/>
-		)
-	}
-
-
 	const configAlertOk = () => {
 		setError(false)
 	}
 
 	const configAlertError = () => {
+		setInputValue('');
 		setError(true)
+		setValue('contrato', '')
 	}
 
 	// Función para manejar el cambio en el valor del TextInput

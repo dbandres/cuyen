@@ -100,7 +100,8 @@ export function CustomInput({ control, name, placeholder, rules = {}, secureText
 								lineHeight: 16,
 								backgroundColor: formIntro === true ? "white" : "transparent",
 								borderRadius: 8,
-								color: "#564C71"
+								color: "#564C71",
+								height:'100%'
 							}}
 							placeholderTextColor="#CDD1DF"
 							keyboardType={numeric}

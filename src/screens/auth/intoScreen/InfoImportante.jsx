@@ -1,8 +1,9 @@
-import { ScrollView, View, Text } from "react-native"
+import { ScrollView, View, Text, Dimensions } from "react-native"
 import { useDispatch, useSelector } from "react-redux"
 import { getAllTextoOrder } from "../../../redux/actions"
 import { useEffect } from "react"
 
+const {height} = Dimensions.get('screen')
 
 export function InfoImportante() {
 
@@ -24,7 +25,7 @@ export function InfoImportante() {
             style>
             {
               allTextoOrder?.map((texto, index) => (
-                <View key={index} style={{ height: 286, width: 320, backgroundColor: "white", margin: 14, borderRadius: 10 }}>
+                <View key={index} style={{ height: height * 0.35, width: 320, backgroundColor: "white", margin: 14, borderRadius: 10 }}>
                   <View style={{ height: "30%", justifyContent: "center", margin: "5%" }}>
                     <Text style={{ fontSize: 20, fontWeight: "400", lineHeight: 24, color: "#564C71" }}>{texto.titulo}</Text>
                   </View>

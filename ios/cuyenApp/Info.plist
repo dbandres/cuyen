@@ -42,8 +42,8 @@
 
 	<key>NSCameraUsageDescription</key>
   <string>App wants to access camera</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-  <string>App wants to access image gallery</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Necesitas adjuntar fotos a tu perfil.</string>
 
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>

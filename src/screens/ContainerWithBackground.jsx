@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { View, ScrollView, Image, StatusBar, Dimensions, StyleSheet } from 'react-native';
+import { View, ScrollView, Image, StatusBar, Dimensions, StyleSheet, Platform } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
 const { height } = Dimensions.get('window');
@@ -15,8 +15,8 @@ export const ContainerWithBackground=({children})=>{
       <StatusBar backgroundColor="#fff"
         barStyle="dark-content" />
       <View style={{ position: "absolute", height:"100%", width: "100%" }}>
-        <View style={{ width: "100%", top: "10%",alignItems: "center", height: 715, justifyContent: "center" }}>
-          <View style={{ height: "75%", width: "95%", backgroundColor: "white", alignItems: "center", borderRadius: 10 }}>
+        <View style={{ width: "100%", top: Platform.OS === 'android'  ?  height*0.12 : height*0.05 ,alignItems: "center", height: 715, justifyContent: "center" }}>
+          <View style={{ height: height * 0.8, width: "95%", backgroundColor: "white", alignItems: "center", borderRadius: 10 }}>
             <View style={Platform.OS === 'ios' ? styles.iosShadow : styles.androidShadow}>
               <Image
                 source={require("../assets/logoCuyen.png")}
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
 		shadowRadius: 4, // Ajusta este valor según tu preferencia
 		height: '32%',
 		width: '85%',
-		backgroundColor: 'red',
+		backgroundColor: '#FFFFFF',
 		position: 'absolute',
 		top: -100,
 		borderRadius: 10,

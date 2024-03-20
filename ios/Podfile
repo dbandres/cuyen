@@ -2,19 +2,19 @@ require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 require_relative '../node_modules/react-native-permissions/scripts/setup'
 
-+ def node_require(script)
-+   # Resolve script with node to allow for hoisting
-+   require Pod::Executable.execute_command('node', ['-p',
-+     "require.resolve(
-+       '#{script}',
-+       {paths: [process.argv[1]]},
-+     )", __dir__]).strip
-+ end
+ def node_require(script)
+   # Resolve script with node to allow for hoisting
+   require Pod::Executable.execute_command('node', ['-p',
+     "require.resolve(
+       '#{script}',
+       {paths: [process.argv[1]]},
+     )", __dir__]).strip
+ end
 
-+ node_require('react-native/scripts/react_native_pods.rb')
-+ node_require('react-native-permissions/scripts/setup.rb')
+ node_require('react-native/scripts/react_native_pods.rb')
+ node_require('react-native-permissions/scripts/setup.rb')
 
-platform :ios, min_ios_version_supported
+platform :ios, 13.4
 prepare_react_native_project!
 
 setup_permissions ( [ 
@@ -27,12 +27,12 @@ setup_permissions ( [
   # 'LocationAccuracy',
   # 'LocationAlways',
   # 'LocationWhenInUse',
-    'MediaLibrary',
+  #'MediaLibrary',
   # 'Microphone',
   # 'Motion',
   # 'Notifications',
-  # 'PhotoLibrary',
-  # 'PhotoLibraryAddOnly',
+   'PhotoLibrary',
+   'PhotoLibraryAddOnly',
   # 'Reminders',
   # 'SpeechRecognition',
   # 'StoreKit'
@@ -76,6 +76,11 @@ target 'cuyenApp' do
   # pod 'Permission-LocationAccuracy', :path => "#{permissions_path}/LocationAccuracy"
   # pod 'Permission-LocationAlways', :path => "#{permissions_path}/LocationAlways"
   # pod 'Permission-LocationWhenInUse', :path => "#{permissions_path}/LocationWhenInUse"
+
+  # React Native Maps dependencies
+
+rn_maps_path = '../node_modules/react-native-maps'
+pod 'react-native-google-maps', :path => rn_maps_path
 
   config = use_native_modules!
 

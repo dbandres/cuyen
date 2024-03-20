@@ -3,25 +3,35 @@ import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { check, request, PERMISSIONS, RESULTS, openSettings } from 'react-native-permissions';
 
 const requestGalleryPermission = async () => {
-  try {
-    const granted = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-      {
-        title: 'Permiso de acceso a la galería',
-        message: 'Necesitamos acceder a tu galería de fotos para que puedas seleccionar imágenes y utilizarlas en la aplicación. ' +
-          'Por favor, otorga el permiso para continuar.',
-        buttonPositive: 'Continuar',
-      },
-    );
-    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-      return granted
-    } else {
-      console.log("log granted: ",granted);
-      console.log('Permiso a galería denegado');
+  if(Platform.OS === 'ios'){
+    const granted = await request(PERMISSIONS.IOS.PHOTO_LIBRARY_ADD_ONLY)
+    if(granted !== 'granted'){
       openSettings()
+    }else{
+      return granted
     }
-  } catch (err) {
-    console.warn(err);
+  }else{
+    try {
+    
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES,
+        {
+          title: 'Permiso de acceso a la galería',
+          message: 'Necesitamos acceder a tu galería de fotos para que puedas seleccionar imágenes y utilizarlas en la aplicación. ' +
+            'Por favor, otorga el permiso para continuar.',
+          buttonPositive: 'Continuar',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        return granted
+      } else {
+        console.log("log granted: ",granted);
+        console.log('Permiso a galería denegado');
+        openSettings()
+      }
+    } catch (err) {
+      console.warn(err);
+    }
   }
 };
 

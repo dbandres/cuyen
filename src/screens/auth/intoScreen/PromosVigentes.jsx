@@ -1,7 +1,9 @@
 import { useEffect} from "react";
-import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Dimensions, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllInicioOrder } from "../../../redux/actions";
+
+const {height} = Dimensions.get('screen')
 
 export function PromosVigentes({navigation}) {
 
@@ -23,7 +25,7 @@ export function PromosVigentes({navigation}) {
             style>
             {
               allInicioOrder?.map((post, index) => (
-                <View key={index} style={{ height: 350, width: 320, margin: 14, borderRadius: 10 }}>
+                <View key={index} style={{ height: height * 0.45, width: 320, margin: 14, borderRadius: 10 }}>
                   <View>
                     <Image
                       source={{
