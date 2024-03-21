@@ -5,6 +5,7 @@ import { UserContext } from "../../../context/UserContext";
 import { useDispatch, useSelector } from "react-redux";
 import { getDestino, getItinerario } from "../../../redux/actions";
 import { ExpandibleItinerarioInfo } from "./ExpandibleItinerarioInfo";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 
 export function ItineratioDelViaje({ navigation }) {
@@ -28,7 +29,8 @@ export function ItineratioDelViaje({ navigation }) {
 	}, [itinerario])
 
 	return (
-		<View style={styles.container}>
+		<SafeAreaView style={{flex:1}}>
+			<View style={styles.container}>
 			<Header children="Itinerario de viaje" navigation={navigation} />
 			<ScrollView>
 				<View style={{ width: 373, height: 91, backgroundColor: "#FFFFFF", marginTop: 20, borderRadius: 10, alignItems: "center", justifyContent: "flex-start", display: "flex", flexDirection: "row", padding: 20 }}>
@@ -73,6 +75,7 @@ export function ItineratioDelViaje({ navigation }) {
 				</View>
 			</ScrollView>
 		</View>
+		</SafeAreaView>
 	)
 }
 

@@ -8,6 +8,7 @@ import { UserContext } from "../../../context/UserContext";
 import { useDispatch, useSelector } from "react-redux";
 import { getCodigoBarraPasajero, getCuotasPasajero } from "../../../redux/actions";
 import { InfoContext } from "./InfoContext";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 
 export function EstadoDePagos({navigation}) {
@@ -26,7 +27,8 @@ export function EstadoDePagos({navigation}) {
   console.log(JSON.stringify(miInfo, null, 3));
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: "#D2DCEB" }}>
+    <SafeAreaView style={{flex:1}}>
+      <ScrollView style={{ flex: 1, backgroundColor: "#D2DCEB" }}>
       <View style={styles.container}>
         <Header children="Contrato" navigation={navigation} />
         <ResumenDeuda
@@ -36,6 +38,7 @@ export function EstadoDePagos({navigation}) {
         <ProximosVencimientos data={codPasajero}/>
       </View>
     </ScrollView>
+    </SafeAreaView>
   )
 }
 

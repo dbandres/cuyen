@@ -12,6 +12,7 @@ import LinearGradient from "react-native-linear-gradient";
 import { API_URL, token } from "../../../api";
 import { ModalAlert } from "./ModalAlert";
 import { getAllColegios } from "../../../redux/actions";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Register({ navigation }) {
 
@@ -233,7 +234,8 @@ export default function Register({ navigation }) {
 
 
 	return (
-		<View style={styles.container}>
+		<SafeAreaView style={{flex:1}}>
+			<View style={styles.container}>
 			<LinearGradient
 				start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} colors={['#FF3D00', '#FFB800']}
 				style={styles.gradient}
@@ -485,6 +487,7 @@ export default function Register({ navigation }) {
 			</View>
 			<ModalAlert visible={showAlert1} onClose={myFunction} texto={texto} error={error} loading={showAlert4}/>
 		</View>
+		</SafeAreaView>
 	)
 }
 

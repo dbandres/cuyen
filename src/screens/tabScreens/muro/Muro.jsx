@@ -10,6 +10,7 @@ import axios from "axios";
 import { token } from "../../../api";
 import AwesomeAlert from "react-native-awesome-alerts";
 import { useFocusEffect } from "@react-navigation/native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 
 const Height = Dimensions.get("screen").height
@@ -117,7 +118,8 @@ export function Muro({ navigation }) {
 
 
 	return (
-		<View style={styles.container}>
+		<SafeAreaView style={{flex:1}}>
+			<View style={styles.container}>
 			<Header children="Publicaciones" navigation={navigation} />
 			<View style={styles.centeredFlatList}>
 				{
@@ -158,6 +160,7 @@ export function Muro({ navigation }) {
 			}
 			{showAlert ? getAlert() : null}
 		</View>
+		</SafeAreaView>
 	)
 }
 

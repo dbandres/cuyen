@@ -6,6 +6,7 @@ import { getDestino } from "../../redux/actions";
 import { Header } from "./muro/Header";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { useFocusEffect } from "@react-navigation/native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export function Ubicacion({ navigation }) {
 
@@ -58,7 +59,8 @@ export function Ubicacion({ navigation }) {
 	};
 
 	return (
-		<View style={styles.container}>
+		<SafeAreaView style={{flex:1}}>
+			<View style={styles.container}>
 			<Header children={destino.destino} navigation={navigation} />
 			<ScrollView>
 				<View style={{ width: 373, height: 91, backgroundColor: "#FFFFFF", marginTop: 20, borderRadius: 10, alignItems: "center", justifyContent: "flex-start", display: "flex", flexDirection: "row", padding: 20 }}>
@@ -144,6 +146,7 @@ export function Ubicacion({ navigation }) {
 				}
 			</ScrollView>
 		</View>
+		</SafeAreaView>
 	)
 }
 

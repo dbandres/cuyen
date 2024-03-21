@@ -7,11 +7,12 @@ import { HeaderLanding } from "./HeaderLanding";
 import { PromosVigentes } from "../intoScreen/PromosVigentes";
 import { InfoImportante } from "../intoScreen/InfoImportante";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Width = Dimensions.get("screen").width
 const Height = Dimensions.get("window").height
 
-export function Landing({navigation}) {
+export function Landing({ navigation }) {
 
   const { userdata } = useContext(UserContext)
 
@@ -37,33 +38,35 @@ export function Landing({navigation}) {
   };
 
   return (
-    <View style={styles.constainer}>
-      <ScrollView ref={scrollViewRef} style={{width:"100%"}}>
-        <HeaderLanding openDrawer={openDrawer} scrollToContacto={scrollToContacto}/>
-        <View style={{ alignItems: "center", }}>
-          <View style={{ width: "82%", justifyContent: "flex-start", display: "flex", flexDirection: "row" }}>
-            <Text style={{ fontWeight: "bold", fontSize: 14, marginRight: 4, color: "#564C71" }}>Promos</Text>
-            <Text style={{ fontSize: 14, color: "#564C71" }}>vigentes</Text>
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={styles.constainer}>
+        <ScrollView ref={scrollViewRef} style={{ width: "100%" }}>
+          <HeaderLanding openDrawer={openDrawer} scrollToContacto={scrollToContacto} />
+          <View style={{ alignItems: "center", }}>
+            <View style={{ width: "82%", justifyContent: "flex-start", display: "flex", flexDirection: "row" }}>
+              <Text style={{ fontWeight: "bold", fontSize: 14, marginRight: 4, color: "#564C71" }}>Promos</Text>
+              <Text style={{ fontSize: 14, color: "#564C71" }}>vigentes</Text>
+            </View>
           </View>
-        </View>
-        <View style={{ height: Height * 0.52, justifyContent:"center", alignItems:"center"}}>
-          <PromosVigentes navigation={navigation}/>
-        </View>
-        <View style={{ alignItems: "center", paddingTop: 10 }}>
-          <View style={{ width: "82%", justifyContent: "flex-start", display: "flex", flexDirection: "row" }}>
-            <Text style={{ fontWeight: "bold", fontSize: 14, marginRight: 4, color: "#564C71" }}>Info</Text>
-            <Text style={{ fontSize: 14, color: "#564C71" }}>importante</Text>
+          <View style={{ height: Height * 0.52, justifyContent: "center", alignItems: "center" }}>
+            <PromosVigentes navigation={navigation} />
           </View>
-        </View>
-        <View style={{ height: Height * 0.45, justifyContent:"center", alignItems:"center" }}>
-          <InfoImportante/>
-        </View>
-        <FormContact ref={contactoRef}/>
-        <View style={{height:500}}>
-          <Footer />
-        </View>
-      </ScrollView>
-    </View>
+          <View style={{ alignItems: "center", paddingTop: 10 }}>
+            <View style={{ width: "82%", justifyContent: "flex-start", display: "flex", flexDirection: "row" }}>
+              <Text style={{ fontWeight: "bold", fontSize: 14, marginRight: 4, color: "#564C71" }}>Info</Text>
+              <Text style={{ fontSize: 14, color: "#564C71" }}>importante</Text>
+            </View>
+          </View>
+          <View style={{ height: Height * 0.45, justifyContent: "center", alignItems: "center" }}>
+            <InfoImportante />
+          </View>
+          <FormContact ref={contactoRef} />
+          <View style={{ height: 500 }}>
+            <Footer />
+          </View>
+        </ScrollView>
+      </View>
+    </SafeAreaView>
   )
 }
 

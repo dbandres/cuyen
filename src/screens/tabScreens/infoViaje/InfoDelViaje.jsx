@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { cleanDestino, getContratoByNum, getDestino, getPasajero } from "../../../redux/actions";
 import { UserContext } from "../../../context/UserContext";
 import { useFocusEffect } from "@react-navigation/native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 
 export function InfoDelViaje({ navigation }) {
@@ -26,10 +27,10 @@ export function InfoDelViaje({ navigation }) {
 	// useFocusEffect(
 	// 	React.useCallback(() => {
 	// 		return () => {
-  //       // Este código se ejecuta cuando el componente se desenfoca o se desmonta
-  //       console.log('Pantalla desenfocada. Limpieza o desmontaje aquí.');
+	//       // Este código se ejecuta cuando el componente se desenfoca o se desmonta
+	//       console.log('Pantalla desenfocada. Limpieza o desmontaje aquí.');
 	// 			dispatch(cleanDestino())
-  //     };
+	//     };
 	// 	}, [])
 	// )
 
@@ -38,15 +39,17 @@ export function InfoDelViaje({ navigation }) {
 
 	return (
 
-		<ScrollView style={{ flex: 1, backgroundColor: "#D2DCEB" }}>
-			<View style={styles.container}>
-				<Header children="Informacion del viaje" navigation={navigation} />
-				<Destino />
-				<Informacion />
-				<Contingente navigation={navigation} />
-				<Hotel />
-			</View>
-		</ScrollView>
+		<SafeAreaView style={{ flex: 1 }}>
+			<ScrollView style={{ flex: 1, backgroundColor: "#D2DCEB" }}>
+				<View style={styles.container}>
+					<Header children="Informacion del viaje" navigation={navigation} />
+					<Destino />
+					<Informacion />
+					<Contingente navigation={navigation} />
+					<Hotel />
+				</View>
+			</ScrollView>
+		</SafeAreaView>
 
 	)
 }

@@ -2,33 +2,36 @@
 import React from 'react';
 import { View, ScrollView, Image, StatusBar, Dimensions, StyleSheet, Platform } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const { height } = Dimensions.get('window');
 
-export const ContainerWithBackground=({children})=>{
-  return (
-    <View style={styles.container}>
-      <LinearGradient
-        start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} colors={['#FF3D00', '#FFB800']}
-        style={styles.gradient}
-      />
-      <StatusBar backgroundColor="#fff"
-        barStyle="dark-content" />
-      <View style={{ position: "absolute", height:"100%", width: "100%" }}>
-        <View style={{ width: "100%", top: Platform.OS === 'android'  ?  height*0.12 : height*0.05 ,alignItems: "center", height: 715, justifyContent: "center" }}>
-          <View style={{ height: height * 0.8, width: "95%", backgroundColor: "white", alignItems: "center", borderRadius: 10 }}>
-            <View style={Platform.OS === 'ios' ? styles.iosShadow : styles.androidShadow}>
-              <Image
-                source={require("../assets/logoCuyen.png")}
-                style={{ width: "50%" }}
-              />
-            </View>
-            {children}
-          </View>
-        </View>
-      </View>
-    </View>
-  )
+export const ContainerWithBackground = ({ children }) => {
+	return (
+		<SafeAreaView style={{ flex: 1 }}>
+			<View style={styles.container}>
+				<LinearGradient
+					start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} colors={['#FF3D00', '#FFB800']}
+					style={styles.gradient}
+				/>
+				<StatusBar backgroundColor="#fff"
+					barStyle="dark-content" />
+				<View style={{ position: "absolute", height: "100%", width: "100%" }}>
+					<View style={{ width: "100%", top: Platform.OS === 'android' ? height * 0.16 : height * 0.12, alignItems: "center", height: height * 0.8, justifyContent: "center" }}>
+						<View style={{ height: height * 0.7, width: "95%", backgroundColor: "white", alignItems: "center", borderRadius: 10 }}>
+							<View style={Platform.OS === 'ios' ? styles.iosShadow : styles.androidShadow}>
+								<Image
+									source={require("../assets/logoCuyen.png")}
+									style={{ width: "50%" }}
+								/>
+							</View>
+							{children}
+						</View>
+					</View>
+				</View>
+			</View>
+		</SafeAreaView>
+	)
 }
 
 const styles = StyleSheet.create({

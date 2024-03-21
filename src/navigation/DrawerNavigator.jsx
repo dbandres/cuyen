@@ -1,5 +1,5 @@
 import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigation/drawer';
-import { StyleSheet, View, Text, Image, Linking } from "react-native"
+import { StyleSheet, View, Text, Image, Linking, Platform } from "react-native"
 import { Ubicacion } from '../screens/tabScreens/Ubicacion';
 import { MenuBottonItem } from './MenuBottonItem';
 import { data } from './dataDrawer';
@@ -53,7 +53,7 @@ const CustomDrawerContent = ({ navigation }) => {
 					style={styles.drawerImage}
 				/>
 			</View>
-			<View style={{ height: 70, alignItems: "center", position: "absolute", top: "25%", left: "20%" }}>
+			<View style={{ height: 70, alignItems: "center", position: "absolute", top: Platform.OS === 'android' ? "25%" : '29%', left: "20%" }}>
 				<View style={{ width: "80%", height: "100%", display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "flex-end" }}>
 					<TouchableOpacity onPress={()=>{abrirLink("https://www.instagram.com/cuyenturismo/")}}>
 						<Image
@@ -64,7 +64,7 @@ const CustomDrawerContent = ({ navigation }) => {
 					<TouchableOpacity onPress={()=>{abrirLink("https://www.facebook.com/cuyenturismo/?locale=es_LA")}}>
 						<Image
 							source={require("../assets/Facebook.png")}
-							style={{ width: 32, height: 32 }}
+							style={{ width: 32, height: 34 }}
 						/>
 					</TouchableOpacity>
 					<TouchableOpacity>
@@ -76,7 +76,7 @@ const CustomDrawerContent = ({ navigation }) => {
 				</View>
 			</View>
 			<View style={{ alignItems: "center" }}>
-				<View style={{ height: 250, width: "80%", marginTop: "15%" }}>
+				<View style={{ height: 250, width: "80%", marginTop: Platform.OS === 'ios' ? "8%" : '15%' }}>
 					<View style={{ height: "30%", marginBottom: "10%" }}>
 						<View style={{ height: "70%", display: "flex", justifyContent: "space-between", flexDirection: "row" }}>
 							<View style={{ width: "50%" }}>
