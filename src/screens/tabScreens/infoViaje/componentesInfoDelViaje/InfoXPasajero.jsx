@@ -62,7 +62,7 @@ export function InfoXpasajero({ info }) {
           </Text>
         </TouchableOpacity>
       </View>
-      <View style={{ height: 44, justifyContent: "center", marginTop: 30, marginBottom: 20 }}>
+      <View style={{ height: 54, justifyContent: "center", marginTop: 30, marginBottom: 20, width:"100%" }}>
         <MensajeAlerta />
       </View>
       <View style={{ height: 90, display: "flex", flexDirection: "row", justifyContent: "space-around", marginBottom: 20, alignItems: "center" }}>

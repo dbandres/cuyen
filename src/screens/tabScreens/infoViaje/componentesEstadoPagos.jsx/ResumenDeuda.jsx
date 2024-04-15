@@ -78,7 +78,7 @@ export function ResumenDeuda({ data }) {
                 style={{ width: 21, height: 24, marginRight:15 }}
               />
               <Text style={{fontWeight:"400", fontSize:12, lineHeight:30, color:"#949AAF"}}>
-                Cantidad de cuotas: <Text style={{fontWeight:"700", fontSize:12, lineHeight:30, color:"#949AAF"}}>${data["Cantidad cuotas"]}</Text>
+                Cantidad de cuotas: <Text style={{fontWeight:"700", fontSize:12, lineHeight:30, color:"#949AAF"}}>{data["Cantidad cuotas"]}</Text>
               </Text>
             </View>
             <View style={{display:"flex", flexDirection:"row", justifyContent:"flex-start", alignItems:"center", height:40}}>

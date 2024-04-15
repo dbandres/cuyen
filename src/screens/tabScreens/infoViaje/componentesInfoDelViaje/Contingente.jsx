@@ -23,13 +23,13 @@ export function Contingente({ navigation }) {
 
   useFocusEffect(
     React.useCallback(() => {
-      console.log('Pantalla enfocada. Puedes ejecutar operaciones aquí.');
+      console.log('Pantalla enfocada en Contingente. Puedes ejecutar operaciones aquí.');
 
       // Puedes realizar otras operaciones aquí, como cargar datos, etc.
       dispatch(getPasajero(userdata.id))
       return () => {
         // Este código se ejecuta cuando el componente se desenfoca o se desmonta
-        console.log('Pantalla desenfocada. Limpieza o desmontaje aquí.');
+        console.log('Pantalla desenfocada Contingente. Limpieza o desmontaje aquí.');
       };
     }, []))
 
@@ -56,7 +56,7 @@ export function Contingente({ navigation }) {
       contentRef.current.measure((x, y, width, height) => {
         console.log("he: ", height)
         Animated.timing(heightAnim, {
-          toValue: newValue === "" ? pasajero.length * 91 + 200 : newValue, // Ajusta según tus necesidades
+          toValue: newValue === "" ? pasajero.length * 91 + 200 : pasajero.length * 50 + newValue, // Ajusta según tus necesidades
           //toValue: height + 480,
           duration: 100,
           useNativeDriver: false,
@@ -94,6 +94,8 @@ export function Contingente({ navigation }) {
     const anyExpanded = newExpandedStates.some((expanded) => expanded);
     setIsAnyExpanded(anyExpanded);
   };
+
+/*   console.log("data!!: ",JSON.stringify(pasajero, null ,3)); */
 
 
   return (

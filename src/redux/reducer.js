@@ -21,7 +21,7 @@ const initialState = {
   cuotasPasajero: "",
   codPasajero: [],
   destinoClean: [],
-  currentContrato: ""
+  currentContrato: []
 }
 
 function rootReducer(state = initialState, action) {

@@ -11,7 +11,7 @@ import { ModalDieta } from "./ModalDieta";
 
 export function ExpandibleInfoPasajero({ data, setNewFetch }) {
 
-  // console.log("data!!: ",JSON.stringify(data, null ,3));
+  //console.log("data!!: ",JSON.stringify(data, null ,3));
 
   const [contentHeight, setContentHeight] = useState(0);
   const [error, setError] = useState(true)
@@ -194,10 +194,10 @@ export function ExpandibleInfoPasajero({ data, setNewFetch }) {
     <ScrollView>
       <ModalComponent visible={modalVisible} onClose={closeModal} data={datosTotales} inputChanged={inputChanged} setNewFetch={setNewFetch} />
       <ModalDieta visible={modalVisible2} onClose={closerDietaModal} data={data} setError={setError} increaseProgress={increaseProgress} />
-      <Animated.View ref={contentRef} style={{ height: heightAnim, width: 373, backgroundColor: "white", marginTop: "5%", borderRadius: 10, justifyContent: "flex-start", alignItems: "center" }}>
 
-        <View style={{ backgroundColor: "#FFFFFF", borderRadius: 10, alignItems: "center", display: "flex", flexDirection: "row", padding: 20, width: "100%", justifyContent: "space-between", height: isExpanded ? 91 : "100%" }}>
-          <TouchableOpacity onPress={toggleExpand} style={{ display: "flex", flexDirection: "row", width:300 }}>
+      <Animated.View ref={contentRef} style={{ height: heightAnim, width: 373, backgroundColor: "white", marginTop: "5%", borderRadius: 10, justifyContent: "flex-start", alignItems: "center" }}>
+        <View style={{ backgroundColor: "#FFFFFF", borderRadius: 10, alignItems: "center", display: "flex", flexDirection: "row", padding: 20, width: "100%", justifyContent: "space-between", height: isExpanded ? 80 : "100%" }}>
+          <TouchableOpacity onPress={toggleExpand} style={{ display: "flex", flexDirection: "row", width: 300 }}>
             <View style={{ width: 48, height: 48, borderRadius: 10, backgroundColor: "#FFB800", alignItems: "center", justifyContent: "center" }}>
               <Image
                 source={require('../../../assets/attribution.png')}
@@ -219,92 +219,99 @@ export function ExpandibleInfoPasajero({ data, setNewFetch }) {
           </TouchableOpacity>
         </View>
         {
-          isExpanded && editing === false ?
-            <View style={{ alignItems: "center", justifyContent: "center", width: "100%" }}>
-              <InfoPasajero info={data} />
-            </View>
-            :
-            isExpanded === true && seteoData === true && editing === true ?
-              <View style={{ alignItems: "center", justifyContent: "center", width: "100%" }}>
-                <FormEditarDatos info={data} setInputChanged={setInputChanged} formValues={formValues} setFormValues={setFormValues} newDate={newDate} setNewDate={setNewDate} />
-              </View>
-              : null
-        }
-        {
-          seteoData === false ?
-            <TouchableOpacity onPress={changeInputs} style={{ width: 331, height: 47, borderRadius: 10, borderWidth: 1, borderColor: "#334EA2", justifyContent: "center", alignItems: "center" }}>
-              <Text style={{ fontWeight: "600", fontSize: 12, lineHeight: 14, color: "#334EA2" }}>
-                Editar datos
-              </Text>
-            </TouchableOpacity>
-            :
+          isExpanded ?
             <>
-              <TouchableOpacity onPress={handleSubmit} disabled={inputChanged === true || newDate.length !== 0 ? false : true} style={{ width: 331, height: 47, borderRadius: 10, justifyContent: "center", alignItems: "center", backgroundColor: inputChanged === true || newDate.length !== 0 ? "#FF3D00" : "#CDD1DF", marginBottom: 15, marginTop: 10 }}>
-                <Text style={{ fontWeight: "600", fontSize: 12, lineHeight: 14, color: "#FFFFFF" }}>
-                  Guardar cambios
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={changeInputsCancel} style={{ width: 331, height: 47, borderRadius: 10, borderWidth: 1, borderColor: "#334EA2", justifyContent: "center", alignItems: "center" }}>
-                <Text style={{ fontWeight: "600", fontSize: 12, lineHeight: 14, color: "#334EA2" }}>
-                  Cancelar
-                </Text>
-              </TouchableOpacity>
-            </>
-        }
-        <View style={{ width: 232, height: 44, justifyContent: "center", alignItems: "center", marginTop: 30, marginBottom: 20 }}>
-          <MensajeAlerta />
-        </View>
-        <View style={{ width: 320, height: 96, marginTop: 20, display: "flex", flexDirection: "row", justifyContent: "space-around", marginBottom: 20 }}>
-          {archivos.map((archivo, index) => (
-            <AdjuntarArchivos key={index} children={archivo} increaseProgress={increaseProgress} data={data} adjuntos={adjuntos} setNewFetch={setNewFetch} />
-          ))}
-        </View>
-        <View>
-          <TouchableOpacity onPress={handleDieta} style={{ width: 331, height: 47, borderRadius: 10, borderWidth: 1, borderColor: "#334EA2", justifyContent: "center", alignItems: "center", marginTop: 20 }}>
-            <Text style={{ fontWeight: "600", fontSize: 12, lineHeight: 14, color: "#334EA2" }}>
-              Ajustar Dieta especial del pasajero
-            </Text>
-          </TouchableOpacity>
-          {
-            error === true ?
-              <View style={{ display: "flex", flexDirection: "row", width: 318, height: 30, alignItems: "center", marginBottom: 20 }}>
-                <Image
-                  source={require("../../../assets/Error.png")}
-                  style={{ width: 30, height: 30, marginLeft: 10 }}
-                />
-                <Text style={{ color: "#FF6363", fontWeight: "400", fontSize: 10, lineHeight: 12 }}>
-                  Se requiere completar la dieta especial.
-                </Text>
+              {
+                isExpanded && editing === false ?
+                  <View style={{ alignItems: "center", justifyContent: "center", width: "100%" }}>
+                    <InfoPasajero info={data} />
+                  </View>
+                  :
+                  isExpanded === true && seteoData === true && editing === true ?
+                    <View style={{ alignItems: "center", justifyContent: "center", width: "100%" }}>
+                      <FormEditarDatos info={data} setInputChanged={setInputChanged} formValues={formValues} setFormValues={setFormValues} newDate={newDate} setNewDate={setNewDate} />
+                    </View>
+                    : null
+              }
+              {
+                seteoData === false ?
+                  <TouchableOpacity onPress={changeInputs} style={{ width: 331, height: 47, borderRadius: 10, borderWidth: 1, borderColor: "#334EA2", justifyContent: "center", alignItems: "center" }}>
+                    <Text style={{ fontWeight: "600", fontSize: 12, lineHeight: 14, color: "#334EA2" }}>
+                      Editar datos
+                    </Text>
+                  </TouchableOpacity>
+                  :
+                  <>
+                    <TouchableOpacity onPress={handleSubmit} disabled={inputChanged === true || newDate.length !== 0 ? false : true} style={{ width: 331, height: 47, borderRadius: 10, justifyContent: "center", alignItems: "center", backgroundColor: inputChanged === true || newDate.length !== 0 ? "#FF3D00" : "#CDD1DF", marginBottom: 15, marginTop: 10 }}>
+                      <Text style={{ fontWeight: "600", fontSize: 12, lineHeight: 14, color: "#FFFFFF" }}>
+                        Guardar cambios
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={changeInputsCancel} style={{ width: 331, height: 47, borderRadius: 10, borderWidth: 1, borderColor: "#334EA2", justifyContent: "center", alignItems: "center" }}>
+                      <Text style={{ fontWeight: "600", fontSize: 12, lineHeight: 14, color: "#334EA2" }}>
+                        Cancelar
+                      </Text>
+                    </TouchableOpacity>
+                  </>
+              }
+              <View style={{ width: 232, height: 44, justifyContent: "center", alignItems: "center", marginTop: 30, marginBottom: 20 }}>
+                <MensajeAlerta />
               </View>
-              :
-              <View style={{ display: "flex", flexDirection: "row", width: 318, height: 30, alignItems: "center", marginBottom: 20 }}>
-                <Image
-                  source={require("../../../assets/Vector.png")}
-                  style={{ width: 16, height: 16, }}
-                />
-                <Text style={{ color: "#564C71", fontWeight: "400", fontSize: 10, lineHeight: 12, marginLeft: 10 }}>
-                  Información de dieta especial completo.
-                </Text>
+              <View style={{ width: 320, height: 96, marginTop: 20, display: "flex", flexDirection: "row", justifyContent: "space-around", marginBottom: 20 }}>
+                {archivos.map((archivo, index) => (
+                  <AdjuntarArchivos key={index} children={archivo} increaseProgress={increaseProgress} data={data} adjuntos={adjuntos} setNewFetch={setNewFetch} />
+                ))}
               </View>
-          }
-          <View style={{ width: 331, height: 33, justifyContent: "center", alignItems: "center" }}>
-            <View style={{ width: "100%", height: 10, backgroundColor: "#E5EBFF", borderRadius: 10 }}>
-              <View style={{ width: `${getSum()}%`, height: 10, backgroundColor: "#93E396", borderRadius: 10 }}>
+              <View>
+                <TouchableOpacity onPress={handleDieta} style={{ width: 331, height: 47, borderRadius: 10, borderWidth: 1, borderColor: "#334EA2", justifyContent: "center", alignItems: "center", marginTop: 20 }}>
+                  <Text style={{ fontWeight: "600", fontSize: 12, lineHeight: 14, color: "#334EA2" }}>
+                    Ajustar Dieta especial del pasajero
+                  </Text>
+                </TouchableOpacity>
+                {
+                  error === true ?
+                    <View style={{ display: "flex", flexDirection: "row", width: 318, height: 30, alignItems: "center", marginBottom: 20 }}>
+                      <Image
+                        source={require("../../../assets/Error.png")}
+                        style={{ width: 30, height: 30, marginLeft: 10 }}
+                      />
+                      <Text style={{ color: "#FF6363", fontWeight: "400", fontSize: 10, lineHeight: 12 }}>
+                        Se requiere completar la dieta especial.
+                      </Text>
+                    </View>
+                    :
+                    <View style={{ display: "flex", flexDirection: "row", width: 318, height: 30, alignItems: "center", marginBottom: 20 }}>
+                      <Image
+                        source={require("../../../assets/Vector.png")}
+                        style={{ width: 16, height: 16, }}
+                      />
+                      <Text style={{ color: "#564C71", fontWeight: "400", fontSize: 10, lineHeight: 12, marginLeft: 10 }}>
+                        Información de dieta especial completo.
+                      </Text>
+                    </View>
+                }
+                <View style={{ width: 331, height: 33, justifyContent: "center", alignItems: "center" }}>
+                  <View style={{ width: "100%", height: 10, backgroundColor: "#E5EBFF", borderRadius: 10 }}>
+                    <View style={{ width: `${getSum()}%`, height: 10, backgroundColor: "#93E396", borderRadius: 10 }}>
 
+                    </View>
+                  </View>
+                  <View style={{ display: "flex", flexDirection: "row", marginTop: 10 }}>
+                    <View style={{ width: 25 }}>
+                      <Text style={{ color: "#564C71", fontWeight: "700", fontSize: 10, lineHeight: 12 }}>
+                        {getSum()}%
+                      </Text>
+                    </View>
+                    <Text style={{ color: "#564C71", fontWeight: "400", fontSize: 10, lineHeight: 12 }}>
+                      Completado
+                    </Text>
+                  </View>
+                </View>
               </View>
-            </View>
-            <View style={{ display: "flex", flexDirection: "row", marginTop: 10 }}>
-              <View style={{ width: 25 }}>
-                <Text style={{ color: "#564C71", fontWeight: "700", fontSize: 10, lineHeight: 12 }}>
-                  {getSum()}%
-                </Text>
-              </View>
-              <Text style={{ color: "#564C71", fontWeight: "400", fontSize: 10, lineHeight: 12 }}>
-                Completado
-              </Text>
-            </View>
-          </View>
-        </View>
+            </>
+            :
+            null
+        }
       </Animated.View>
     </ScrollView>
   )

@@ -114,7 +114,7 @@ export const FormContact = React.forwardRef((props, ref) => {
           placeholder="Nombre y apellido"
           rules={{
             required: true,
-            pattern: { value: /^[a-zA-Z]+$/, message: "El nombre es incorrecto"},
+            pattern: { value: /^[a-zA-Z\s]+$/, message: "El nombre es incorrecto"},
             minLength: {
               value: 2,
               message: "El nombre debe tener un minimo de 2 caracteres"

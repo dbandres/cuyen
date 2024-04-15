@@ -35,16 +35,14 @@
 			</dict>
 		</dict>
 	</dict>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Necesitamos acceder a tu ubicación para mostrarla en un mapa</string>
+	<key>NSCameraUsageDescription</key>
+	<string>App wants to access camera</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Necesitamos acceder a tu ubicación en segundo plano para mantenerte informado sobre tu Ubicacion.</string>
-
-	<key>NSCameraUsageDescription</key>
-  <string>App wants to access camera</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Necesitamos acceder a tu ubicación para mostrarla en un mapa</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Necesitas adjuntar fotos a tu perfil.</string>
-
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>

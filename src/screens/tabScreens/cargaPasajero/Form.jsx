@@ -10,29 +10,42 @@ import AwesomeAlert from "react-native-awesome-alerts";
 import { token } from "../../../api";
 import DatePicker from 'react-native-date-picker'
 import { ModalComponent } from "./ModalComponent";
+import { Dropdown } from "./Dropdown";
 
 
 export function Form({ agregarPasajero, setNewFetch, }) {
 
   const { control, handleSubmit, setValue, watch, trigger } = useForm()
-  const [itemsArray, setItemsArray] = useState([1])
   const [toggleCheckBox, setToggleCheckBox] = useState(false)
   const [showAlert2, setShowAlert2] = useState(false)
+  const [maxHeight, setMaxHeight] = useState(false)
   const { userdata } = useContext(UserContext)
   const [dataPasajero, setDataPasajero] = useState("")
 
   let dni = watch('userdni'); // Observa el campo del DNI
 
+  // estados para el primer dropdown
+  const [heightAnim] = useState(new Animated.Value(50)); // Inicia con la altura mínima
+  const contentRef = useRef(null);
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  // estados para el segundo dropdown
+  const [heightAnim1] = useState(new Animated.Value(50)); // Inicia con la altura mínima
+  const contentRef1 = useRef(null);
+  const [isExpanded1, setIsExpanded1] = useState(false);
+
   const [date, setDate] = useState(new Date())
   const [open, setOpen] = useState(false)
   const [newDate, setNewDate] = useState("")
 
-  const [heightAnim] = useState(new Animated.Value(50)); // Inicia con la altura mínima
-  const contentRef = useRef(null);
-  const [isExpanded, setIsExpanded] = useState(false);
+
   const [cuotaSeleccionada, setCuotaSeleccionada] = useState(null);
-  const [dataCuota, setDataCuota] = useState([1, 3, 6, 9, 12])
-  const fechaMax = new Date(2019, 0, 1);
+  const [FDPSeleccionado, setFDPSeleccionado] = useState(null)
+
+  const [dataCuota] = useState([1, 3, 6, 9, 12])
+  const [formaDePago] = useState(['Sin interés', 'Dolares', 'Actualizado por IPC'])
+
+  const [arreglo] = useState([1, 2])
   const fechaMin = new Date(2000, 0, 1)
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -61,11 +74,16 @@ export function Form({ agregarPasajero, setNewFetch, }) {
 
   const handleCuotaPress = (cuota) => {
     setCuotaSeleccionada(cuota);
-    setIsExpanded(!isExpanded)
+    setIsExpanded1(!isExpanded1)
   };
 
+  const handleFDPPress = (fdp) => {
+    setFDPSeleccionado(fdp)
+    setIsExpanded(!isExpanded)
+  }
+
   const handleSubmitcarga = (data) => {
-    setDatosTotales({ data, cuotaSeleccionada, newDate})
+    setDatosTotales({ data, cuotaSeleccionada, newDate, FDPSeleccionado })
     openModal();
   }
 
@@ -86,18 +104,21 @@ export function Form({ agregarPasajero, setNewFetch, }) {
           setDataPasajero(res.data)
           setValue('username', res.data.nombre);
           setValue('userlastname', res.data.apellido);
-          setValue("importedelviaje", res.data.monto)
+          setValue("importedelviajepesos", res.data.monto)
+          setValue("importedelviajedolares", res.data.cuotas_dolares)
         }
       }).catch((error) => {
         setShowAlert2(false)
         console.log("No existe registro: ", error.response.data);
         setDataPasajero(error.response.data)
-        setValue("importedelviaje", error.response.data.monto)
+        setValue("importedelviajepesos", error.response.data.monto)
+        setValue("importedelviajedolares", error.response.data.cuotas_dolares)
       })
     } else {
       console.log("es undefined");
     }
   }, [dni])
+
 
   useEffect(() => {
     if (date.getFullYear() < 2024) {
@@ -142,12 +163,62 @@ export function Form({ agregarPasajero, setNewFetch, }) {
   }, [isExpanded]);
 
   const toggleExpand = () => {
-    // Envía el índice del componente al padre para gestionar la expansión individual
     setIsExpanded(!isExpanded);
   };
 
+  useEffect(() => {
+    if (isExpanded1) {
+      // Mide la altura del contenido cuando se expande
+      contentRef1.current.measure((x, y, width, height) => {
+        Animated.timing(heightAnim1, {
+          toValue: 165, // Ajusta según tus necesidades
+          //toValue: height + 480,
+          duration: 100,
+          useNativeDriver: false,
+        }).start();
+      });
+    } else {
+      setIsExpanded1(false)
+      // Cuando se colapsa, simplemente usa la altura mínima
+      Animated.timing(heightAnim1, {
+        toValue: 50, // Altura mínima
+        duration: 300,
+        useNativeDriver: false,
+      }).start();
+    }
+  }, [isExpanded1]);
+
+  const toggleExpand1 = () => {
+    setIsExpanded1(!isExpanded1);
+  };
+
+  const toggleExpandDropdown = () => {
+    // Envía el índice del componente al padre para gestionar la expansión individual
+    setMaxHeight(!maxHeight)
+  };
+
+  //seteo de fecha max prueba
+  function obtenerFechaMaxima() {
+    const fechaActual = new Date();
+    const anioActual = fechaActual.getFullYear();
+    const anioMaximo = anioActual - 5;
+  
+    // Creamos una nueva fecha con el año máximo y el último día del último mes del año
+    const fechaMaxima = new Date(anioMaximo, 11, 31);
+  
+    return fechaMaxima;
+  }
+  
+  // Ejemplo de uso
+  const fechaMaxima = obtenerFechaMaxima();  
+  console.log(dataPasajero);
+
   return (
-    <View style={{ width: 373, height: isExpanded === true ? 850 : 758, backgroundColor: "#FFFFFF", marginTop: 15, borderRadius: 10, justifyContent: "center", alignItems: "center" }}>
+    <View style={{
+      width: 373,
+      height: !isExpanded && isExpanded1 || isExpanded && !isExpanded1 ? 950 : isExpanded && isExpanded1 ? 1100 : 850,
+      backgroundColor: "#FFFFFF", marginTop: 15, borderRadius: 10, justifyContent: "center", alignItems: "center"
+    }}>
       <View style={{ height: 50 }}>
         <Text style={{ color: "#334EA2", fontWeight: "500", fontSize: 16 }}>
           Datos del pasajero
@@ -265,7 +336,7 @@ export function Form({ agregarPasajero, setNewFetch, }) {
             confirmText="Confirmar"
             cancelText="Cancelar"
             locale="es"
-            maximumDate={fechaMax}
+            maximumDate={fechaMaxima}
             minimumDate={fechaMin}
           />
         </View>
@@ -279,35 +350,55 @@ export function Form({ agregarPasajero, setNewFetch, }) {
             pattern: { value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, message: "El Email ingresado no es válido." }
           }}
         />
-        <View style={{
-          width: "100%",
-          flexDirection: 'row',
-          alignItems: 'center',
-          borderWidth: 1,
-          borderColor: '#CDD1DF',
-          borderRadius: 10,
-          height: 50,
-          padding:5,
-          marginBottom:20
-          
-        }}>
-          <Image
-            source={require("../../../assets/attach_money.png")}
-            style={{ width: 10, height: 18 }}
-          />
-        <Text style={{color:"#564C71", marginLeft:5}}>
-          {dataPasajero.monto}
-        </Text>
+        <View style={{ marginBottom: 15 }}>
+          <Animated.View ref={contentRef} style={{
+            height: heightAnim, width: 331, backgroundColor: "white", borderRadius: 10, padding: "2%", justifyContent: "space-between", alignItems: "flex-start", flexDirection: 'column',
+            borderWidth: 1,
+            borderColor: '#CDD1DF',
+          }}>
+            <TouchableOpacity onPress={toggleExpand} style={{ width: "100%", justifyContent: "space-between", display: "flex", flexDirection: "row", borderBottomWidth: isExpanded === true ? 1 : 0, borderColor: "#CDD1DF" }}>
+              <View style={{ width: "80%", height: 30, justifyContent: "flex-start", display: "flex", flexDirection: "row", alignItems: "center" }}>
+                <Image source={require("../../../assets/request_quote.png")} style={{ width: 16, height: 20 }} />
+                {
+                  FDPSeleccionado ?
+                    <Text style={{ color: "#564C71", fontWeight: "600", fontSize: 14, lineHeight: 16, marginLeft: 7 }}>
+                      {FDPSeleccionado}
+                    </Text>
+                    :
+                    <Text style={{ color: "#CDD1DF", fontWeight: "600", fontSize: 14, lineHeight: 16, marginLeft: 7 }}>
+                      Forma de pago
+                    </Text>
+                }
+              </View>
+              <TouchableOpacity onPress={toggleExpand} style={{ alignItems: 'center' }} disabled={dataPasajero.length !== 0 ? false : true}>
+                <Text>{isExpanded ? <Image source={require("../../../assets/Not_more.png")} style={{ width: 24, height: 24 }} /> : <Image source={require("../../../assets/expand_more.png")} style={{ width: 24, height: 24 }} />}</Text>
+              </TouchableOpacity>
+            </TouchableOpacity>
+            <View style={{ width: "100%", height: "80%", marginTop: 10 }}>
+              {
+                dataPasajero.length !== 0 && isExpanded === true ?
+                  formaDePago.map((forma, index) => (
+                    <TouchableOpacity onPress={() => handleFDPPress(forma)} key={index} style={{ backgroundColor: forma === FDPSeleccionado ? "#E5EBFF" : null, borderRadius: 10, height: 24, justifyContent: "center" }}>
+                      <Text style={{ fontWeight: "600", fontSize: 14, lineHeight: 16, color: forma === FDPSeleccionado ? "#564C71" : "#CDD1DF", marginLeft: 5 }}>
+                        {forma}
+                      </Text>
+                    </TouchableOpacity>
+                  ))
+                  : null
+              }
+            </View>
+          </Animated.View>
         </View>
+
         {
-          itemsArray.length != 0 ?
+          FDPSeleccionado !== null ?
             <View>
-              <Animated.View ref={contentRef} style={{
-                height: heightAnim, width: 331, backgroundColor: "white", borderRadius: 10, padding: "2%", justifyContent: "space-between", alignItems: "flex-start", flexDirection: 'column',
+              <Animated.View ref={contentRef1} style={{
+                height: heightAnim1, width: 331, backgroundColor: "white", borderRadius: 10, padding: "2%", justifyContent: "space-between", alignItems: "flex-start", flexDirection: 'column',
                 borderWidth: 1,
                 borderColor: '#CDD1DF',
               }}>
-                <View style={{ width: "100%", justifyContent: "space-between", display: "flex", flexDirection: "row", borderBottomWidth: isExpanded === true ? 1 : 0, borderColor: "#CDD1DF" }}>
+                <TouchableOpacity onPress={toggleExpand1} style={{ width: "100%", justifyContent: "space-between", display: "flex", flexDirection: "row", borderBottomWidth: isExpanded1 === true ? 1 : 0, borderColor: "#CDD1DF" }}>
                   <View style={{ width: "80%", height: 30, justifyContent: "flex-start", display: "flex", flexDirection: "row", alignItems: "center" }}>
                     <Image source={require("../../../assets/request_quote.png")} style={{ width: 16, height: 20 }} />
                     {
@@ -317,19 +408,18 @@ export function Form({ agregarPasajero, setNewFetch, }) {
                         </Text>
                         :
                         <Text style={{ color: "#CDD1DF", fontWeight: "600", fontSize: 14, lineHeight: 16, marginLeft: 7 }}>
-                          Cantidad de cuotas
+                          Cuotas
                         </Text>
                     }
                   </View>
-                  <TouchableOpacity onPress={toggleExpand} style={{ alignItems: 'center' }}>
-                    {/* Botón flecha */}
-                    <Text>{isExpanded ? <Image source={require("../../../assets/Not_more.png")} style={{ width: 24, height: 24 }} /> : <Image source={require("../../../assets/expand_more.png")} style={{ width: 24, height: 24 }} />}</Text>
+                  <TouchableOpacity onPress={toggleExpand1} style={{ alignItems: 'center' }}>
+                    <Text>{isExpanded1 ? <Image source={require("../../../assets/Not_more.png")} style={{ width: 24, height: 24 }} /> : <Image source={require("../../../assets/expand_more.png")} style={{ width: 24, height: 24 }} />}</Text>
                   </TouchableOpacity>
-                </View>
+                </TouchableOpacity>
                 <View style={{ width: "100%", height: "80%", marginTop: 10 }}>
                   {
-                    isExpanded === true && dataPasajero.length !== 0 ?
-                      dataPasajero.cuotas.map((cuota, index) => (
+                    dataPasajero.length !== 0 && isExpanded1 === true && FDPSeleccionado == 'Sin interés' ?
+                      dataPasajero.cuotas_s_int.map((cuota, index) => (
                         cuota === 1 ?
                           <TouchableOpacity onPress={() => handleCuotaPress(cuota)} key={index} style={{ backgroundColor: cuota === cuotaSeleccionada ? "#E5EBFF" : null, borderRadius: 10, height: 24, justifyContent: "center" }}>
                             <Text style={{ fontWeight: "600", fontSize: 14, lineHeight: 16, color: cuota === cuotaSeleccionada ? "#564C71" : "#CDD1DF", marginLeft: 5 }}>
@@ -343,9 +433,8 @@ export function Form({ agregarPasajero, setNewFetch, }) {
                             </Text>
                           </TouchableOpacity>
                       ))
-                      :
-                      isExpanded === true && dataPasajero.length === 0 ?
-                        dataCuota.map((cuota, index) => (
+                      : isExpanded1 === true && FDPSeleccionado == 'Actualizado por IPC' ?
+                        dataPasajero.cuotas.map((cuota, index) => (
                           cuota === 1 ?
                             <TouchableOpacity onPress={() => handleCuotaPress(cuota)} key={index} style={{ backgroundColor: cuota === cuotaSeleccionada ? "#E5EBFF" : null, borderRadius: 10, height: 24, justifyContent: "center" }}>
                               <Text style={{ fontWeight: "600", fontSize: 14, lineHeight: 16, color: cuota === cuotaSeleccionada ? "#564C71" : "#CDD1DF", marginLeft: 5 }}>
@@ -360,16 +449,53 @@ export function Form({ agregarPasajero, setNewFetch, }) {
                             </TouchableOpacity>
                         ))
                         :
-                        null
+                        isExpanded1 === true &&
+                        dataPasajero.cuotas.map((cuota, index) => (
+                          cuota === 1 ?
+                            <TouchableOpacity onPress={() => handleCuotaPress(cuota)} key={index} style={{ backgroundColor: cuota === cuotaSeleccionada ? "#E5EBFF" : null, borderRadius: 10, height: 24, justifyContent: "center" }}>
+                              <Text style={{ fontWeight: "600", fontSize: 14, lineHeight: 16, color: cuota === cuotaSeleccionada ? "#564C71" : "#CDD1DF", marginLeft: 5 }}>
+                                {cuota} Cuota
+                              </Text>
+                            </TouchableOpacity>
+                            :
+                            <TouchableOpacity onPress={() => handleCuotaPress(cuota)} key={index} style={{ backgroundColor: cuota === cuotaSeleccionada ? "#E5EBFF" : null, borderRadius: 10, height: 24, justifyContent: "center" }}>
+                              <Text style={{ fontWeight: "600", fontSize: 14, lineHeight: 16, color: cuota === cuotaSeleccionada ? "#564C71" : "#CDD1DF", marginLeft: 5 }}>
+                                {cuota} Cuotas
+                              </Text>
+                            </TouchableOpacity>
+                        ))
                   }
                 </View>
               </Animated.View>
             </View>
-            :
-            <Text style={{ color: "#CDD1DF" }}>
-              Cargando cantidad de cuotas...
-            </Text>
+            : null
         }
+
+        {
+          FDPSeleccionado !== null ?
+            <View style={{
+              width: "100%",
+              flexDirection: 'row',
+              alignItems: 'center',
+              borderWidth: 1,
+              borderColor: '#CDD1DF',
+              borderRadius: 10,
+              height: 50,
+              padding: 5,
+              marginTop: 20
+
+            }}>
+              <Image
+                source={require("../../../assets/attach_money.png")}
+                style={{ width: 10, height: 18 }}
+              />
+              <Text style={{ color: "#564C71", marginLeft: 5 }}>
+                {FDPSeleccionado === "Dolares" ? dataPasajero.cuotas_dolares + ' Dolares' : dataPasajero.monto + ' Pesos'}
+              </Text>
+            </View>
+            : null
+        }
+
         <View style={{ height: "5%", display: "flex", flexDirection: "row", marginTop: 15 }}>
           <View>
             <CheckBox

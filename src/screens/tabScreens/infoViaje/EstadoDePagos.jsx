@@ -24,7 +24,7 @@ export function EstadoDePagos({navigation}) {
     dispatch(getCodigoBarraPasajero(userdata.contrato[0], miInfo.numPasajero))
   },[])
 
-  console.log(JSON.stringify(miInfo, null, 3));
+  console.log(JSON.stringify(cuotasPasajero, null, 3));
 
   return (
     <SafeAreaView style={{flex:1}}>

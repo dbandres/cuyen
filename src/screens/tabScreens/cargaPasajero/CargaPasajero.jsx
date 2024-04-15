@@ -7,6 +7,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { getPasajero } from "../../../redux/actions";
 import { UserContext } from "../../../context/UserContext";
 import { ExpandibleInfoPasajero } from "./ExpandibleInfoPasajero";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 
 export function CargaPasajero({ navigation }) {
@@ -33,52 +34,54 @@ export function CargaPasajero({ navigation }) {
 		}, []))
 
 
-		useEffect(()=>{
-			if(newFetch === true){
-				dispatch(getPasajero(userdata.id))
-				setNewFetch(false)
-				setShowForm(false)
-			}
-		},[newFetch])
+	useEffect(() => {
+		if (newFetch === true) {
+			dispatch(getPasajero(userdata.id))
+			setNewFetch(false)
+			setShowForm(false)
+		}
+	}, [newFetch])
 
 	//console.log(JSON.stringify(pasajero, null ,3));
 
 	return (
-		<ScrollView style={styles.container}>
-			<View style={{
-				flex: 1, display: "flex",
-				alignItems: "center",
-				justifyContent: "flex-start"
-			}}>
-				<Header
-					children="Registro de pasajero"
-					navigation={navigation}
-				/>
-				{
-					pasajero.length !== 0 ?
-						pasajero?.map((pas, index) => (
-							<ExpandibleInfoPasajero key={index} data={pas} setNewFetch={setNewFetch}/>
-						))
-						:
-						null
-				}
-				{
-					showForm !== false ?
-						<>
-							<Form agregarPasajero={agregarPasajero} setNewFetch={setNewFetch}/>
-						</>
-						:
-						null
-				}
-				<View style={{ height: 90 }}>
-					<TouchableOpacity onPress={agregarPasajero} style={{ width: 331, height: 47, backgroundColor: "#FFFFFF", borderRadius: 10, top: 20, justifyContent: "center", alignItems: "center", }}>
-						<Text style={{ color: "#334EA2", fontWeight: "600", fontSize: 12, lineHeight: 14, textAlign: "center" }}>
-							Agregar Pasajero
-						</Text>
-					</TouchableOpacity>
+		<SafeAreaView style={{flex:1}}>
+			<ScrollView style={styles.container}>
+				<View style={{
+					flex: 1, display: "flex",
+					alignItems: "center",
+					justifyContent: "flex-start"
+				}}>
+					<Header
+						children="Registro de pasajero"
+						navigation={navigation}
+					/>
+					{
+						pasajero.length !== 0 ?
+							pasajero?.map((pas, index) => (
+								<ExpandibleInfoPasajero key={index} data={pas} setNewFetch={setNewFetch} />
+							))
+							:
+							null
+					}
+					{
+						showForm !== false ?
+							<>
+								<Form agregarPasajero={agregarPasajero} setNewFetch={setNewFetch} />
+							</>
+							:
+							null
+					}
+					<View style={{ height: 90 }}>
+						<TouchableOpacity onPress={agregarPasajero} style={{ width: 331, height: 47, backgroundColor: "#FFFFFF", borderRadius: 10, top: 20, justifyContent: "center", alignItems: "center", }}>
+							<Text style={{ color: "#334EA2", fontWeight: "600", fontSize: 12, lineHeight: 14, textAlign: "center" }}>
+								Agregar Pasajero
+							</Text>
+						</TouchableOpacity>
+					</View>
 				</View>
-			</View>
-		</ScrollView>
+			</ScrollView>
+		</SafeAreaView>
 	)
 }
 

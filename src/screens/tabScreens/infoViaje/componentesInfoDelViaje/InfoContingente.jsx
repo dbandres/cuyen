@@ -37,7 +37,7 @@ export function InfoContingente({ pasaje, expandedHijo, onItemPress, index, disa
     }
   
     setIsExpanded(!isExpanded);
-    isExpanded ? expandedHijo("") : expandedHijo(1025);
+    isExpanded ? expandedHijo("") : expandedHijo(850);
     handlePress();
   };
 

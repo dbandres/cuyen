@@ -36,7 +36,7 @@ export default function App() {
     setError(null);
 
     try {
-      const response = await axios.get('https://www.turismocuyen.com.ar/version/1', {
+      const response = await axios.get('https://www.turismocuyen.com.ar/version/3', {
         headers: {
           'x-access-token': `${token}`,
           'Content-Type': 'application/json',

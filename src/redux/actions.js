@@ -52,7 +52,7 @@ export function CurrentUser(user) {
 }
 
 export function CurrentContrato(num) {
-	console.log(num)
+	console.log('numero de contrato actual: ', num)
 	return {
 		type: SET_CURRENT_CONTRATO,
 		payload: num,
@@ -80,7 +80,7 @@ export function getAllContratos() {
 }
 
 export function getAllPost(travelId) {
-	console.log("actions: ", travelId);
+
 	try {
 		return async function (dispatch) {
 			try {
@@ -90,7 +90,7 @@ export function getAllPost(travelId) {
 						'Content-Type': 'application/json',
 					},
 				});
-				console.log("aca? ", response.data);
+
 				return dispatch({
 					type: GET_ALL_POST,
 					payload: response.data,
@@ -209,7 +209,7 @@ export function getAllColegiosXViaje(num) {
 export function getAllPasajerosXColegio(data) {
 	return async function (dispatch) {
 		try {
-			console.log("desde actions: ", data);
+
 			let nums;
 			nums = data.map((data) => data.num)
 			// Crear un array de promesas para cada solicitud individual
@@ -281,7 +281,7 @@ export function getItinerario(num) {
 }
 
 export function getDestino(num) {
-	console.log("esto es num en getDestino: ", num);
+	console.log('numero de contrato para destino', num);
 	return async function (dispatch) {
 		try {
 			const response = await axios.get(`/nuevoviaje/${num}`, {
@@ -290,7 +290,6 @@ export function getDestino(num) {
 					'Content-Type': 'application/json',
 				}
 			})
-			console.log("response: ",response.data);
 			return dispatch({
 				type: GET_DESTINO,
 				payload: response.data
@@ -305,13 +304,13 @@ export function getDestino(num) {
 	}
 }
 
-export function cleanDestino(){
-	return function(dispatch) {
+export function cleanDestino() {
+	return function (dispatch) {
 		dispatch({
-				type: LIMPIAR_DESTINO,
-				payload: null
+			type: LIMPIAR_DESTINO,
+			payload: null
 		});
-};
+	};
 }
 
 export function getPasajero(num) {
@@ -334,7 +333,7 @@ export function getPasajero(num) {
 }
 
 export function getContratoByNum(num) {
-	console.log("esto es num actions: ", num);
+	console.log(num);
 	return async function (dispatch) {
 		try {
 			if (Array.isArray(num)) {
@@ -351,9 +350,6 @@ export function getContratoByNum(num) {
 
 				// Esperar a que todas las solicitudes se completen y obtener las respuestas
 				const responses = await Promise.all(promises);
-
-				// Luego, puedes hacer lo que necesites con las respuestas, como guardarlas, enviarlas al store, etc.
-				console.log('Respuestas obtenidas:', responses);
 
 				return dispatch({
 					type: GET_CONTRATO_BY_NUM,
@@ -397,6 +393,15 @@ export function getHotelByNum(num) {
 			console.log('Error de Axios getHotelByNum:', error)
 		}
 	}
+}
+
+export function cleanHotel() {
+	return function (dispatch) {
+		dispatch({
+			type: GET_HOTEL_BY_NUM,
+			payload: []
+		});
+	};
 }
 
 export function verifyUserByDni(num) {

@@ -1,23 +1,35 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Image, Text, TouchableOpacity, View, Animated } from "react-native"
-import { getHotelByNum } from "../../../../redux/actions";
+import { cleanHotel, getHotelByNum } from "../../../../redux/actions";
 import { useDispatch, useSelector } from "react-redux";
-import { UserContext } from "../../../../context/UserContext";
 import { InfoContext } from "../InfoContext";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
-import { useFocusEffect } from "@react-navigation/native";
 
 export function Hotel() {
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [heightAnim] = useState(new Animated.Value(88));
-  const { userdata } = useContext(UserContext)
   const { miInfo } = useContext(InfoContext)
   const dispatch = useDispatch()
   const hotelInfo = useSelector((state) => state.hotelInfo)
   const [imgArray, setImgArray] = useState("")
   const contentRef = useRef(null);
 
+  useEffect(() => {
+    if (miInfo.hotelId !== "") {
+      dispatch(getHotelByNum(miInfo.hotelId))
+    }else{
+      console.log('no hay info');
+      dispatch(cleanHotel())
+    }
+  }, [miInfo])
+
+  useEffect(() => {
+    if (hotelInfo.length !== 0 && miInfo.hotelId !== "") {
+      const imagenes = JSON.parse(hotelInfo.fotos)
+      setImgArray(imagenes)
+    }
+  }, [hotelInfo])
 
   const toggleExpand = () => {
     // Envía el índice del componente al padre para gestionar la expansión individual
@@ -46,30 +58,6 @@ export function Hotel() {
       }).start();
     }
   }, [isExpanded]);
-
-  useEffect(() => {
-    if (miInfo.hotelId !== "") {
-      dispatch(getHotelByNum(miInfo.hotelId))
-    }
-  }, [miInfo])
-
-  useFocusEffect(
-		React.useCallback(() => {
-			if (miInfo.hotelId !== "") {
-        dispatch(getHotelByNum(miInfo.hotelId))
-      }
-		}, [])
-	)
-
-  useEffect(() => {
-    if (hotelInfo.length !== 0) {
-      const imagenes = JSON.parse(hotelInfo.fotos)
-      setImgArray(imagenes)
-    }
-  }, [hotelInfo])
-
-  // console.log("esto es mi info: ", imgArray);
-  // console.log("HOTEL! :", JSON.stringify(hotelInfo, null, 3));
 
   return (
     <Animated.View ref={contentRef} style={{ height: heightAnim, width: 373, backgroundColor: "white", marginTop: "5%", borderRadius: 10, padding: "2%", justifyContent: "flex-start", alignItems: "center", marginBottom: 10 }}>

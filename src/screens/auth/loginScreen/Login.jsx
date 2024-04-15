@@ -66,7 +66,7 @@ export default function Login({ navigation }) {
 						id: response.payload.data.usuario.id
 					})
 					AsyncStorage.setItem("userStorage", JSON.stringify(response.payload.data))
-					// dispatch(CurrentContrato(response.payload.data.usuario.contrato[0]))
+					dispatch(CurrentContrato(response.payload.data.usuario.contrato[0]))
 					setShowAlert2(false)
 					navigation.navigate("landing")
 				}

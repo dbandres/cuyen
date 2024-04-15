@@ -1,30 +1,20 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Image, Text, TouchableOpacity, View, Animated } from "react-native";
-import { cleanDestino, getDestino } from "../../../../redux/actions";
-import { UserContext } from "../../../../context/UserContext";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { InfoContext } from "../InfoContext";
-import { useFocusEffect } from "@react-navigation/native";
 
 export function Destino() {
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [heightAnim] = useState(new Animated.Value(88));
   const destino = useSelector((state) => state.destino)
-  const dispatch = useDispatch()
-  const { userdata } = useContext(UserContext)
-  const { miInfo, setMiInfo } = useContext(InfoContext)
-  const contratoActual = useSelector((state) => state.currentContrato)
+  const { setMiInfo } = useContext(InfoContext)
   const contentRef = useRef(null);
 
   const toggleExpand = () => {
     // Envía el índice del componente al padre para gestionar la expansión individual
     setIsExpanded(!isExpanded);
   };
-
-  useEffect(() => {
-    dispatch(getDestino(userdata.contrato[0]))
-  }, [contratoActual])
 
   // useFocusEffect(
 	// 	React.useCallback(() => {
@@ -44,6 +34,11 @@ export function Destino() {
           ...prevState,
           hotelId: destino.hotelId
         }))
+    }else{
+      setMiInfo(prevState => ({
+        ...prevState,
+        hotelId: ""
+      }))
     }
 
   }, [destino])
@@ -74,7 +69,7 @@ export function Destino() {
 
   return (
     <Animated.View ref={contentRef} style={{ height: heightAnim, width: 373, backgroundColor: "white", marginTop: "5%", borderRadius: 10, padding: "2%", justifyContent: "flex-start", alignItems: "center" }}>
-      <TouchableOpacity onPress={toggleExpand} style={{ width: 333, display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", height: isExpanded ? 91 : "100%",  }}>
+      <TouchableOpacity onPress={toggleExpand} disabled={destino.length === 0 ? true : false} style={{ width: 333, display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", height: isExpanded ? 91 : "100%",  }}>
         <View style={{ display: "flex", flexDirection: "row" }}>
           <View style={{ width: 48, height: 48, borderRadius: 10, backgroundColor: destino.length !== 0 ? "#FF3D00" : "#D2DCEB", alignItems: "center", justifyContent: "center" }}>
             <Image

@@ -1,43 +1,24 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Image, Text, TouchableOpacity, View, Animated } from "react-native"
-import { getContratoByNum } from "../../../../redux/actions";
-import { useDispatch, useSelector } from "react-redux";
-import { UserContext } from "../../../../context/UserContext";
+import {  useSelector } from "react-redux";
 import { DetalleInfoContrato } from "./DetalleInfoContrato";
-import { useFocusEffect } from "@react-navigation/native";
 
 export function Informacion() {
 
   const [isExpanded, setIsExpanded] = useState(false);
   const contratoInfo = useSelector((state) => state.contratoInfo)
-  const { userdata } = useContext(UserContext)
-  const dispatch = useDispatch()
   const [heightAnim] = useState(new Animated.Value(88));
   const contentRef = useRef(null);
-  const contratoActual = useSelector((state) => state.currentContrato)
 
   const toggleExpand = () => {
     // Envía el índice del componente al padre para gestionar la expansión individual
     setIsExpanded(!isExpanded);
-  };
-
-  useEffect(() => {
-    dispatch(getContratoByNum(userdata.contrato[0]))
-  }, [])
-  
-  // useFocusEffect(
-	// 	React.useCallback(() => {
-	// 		dispatch(getContratoByNum(contratoActual))
-	// 	}, [])
-	// )
-
-  // console.log("info: ", JSON.stringify(contratoInfo, null, 3));
+  }
 
   useEffect(() => {
     if (isExpanded) {
       // Mide la altura del contenido cuando se expande
       contentRef.current.measure((x, y, width, height) => {
-        console.log("he: ", height)
         Animated.timing(heightAnim, {
           toValue: contratoInfo.length !== 0 ? 300 : 91, // Ajusta según tus necesidades
           //toValue: height + 480,
@@ -58,7 +39,7 @@ export function Informacion() {
 
   return (
     <Animated.View ref={contentRef} style={{ height: heightAnim, width: 373, backgroundColor: "white", marginTop: "5%", borderRadius: 10, padding: "2%", justifyContent: "flex-start", alignItems: "center" }}>
-      <TouchableOpacity onPress={toggleExpand} style={{ width: 333, display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", height: isExpanded ? 91 : "100%" }}>
+      <TouchableOpacity onPress={toggleExpand} disabled={contratoInfo.length === 0 ? true:false} style={{ width: 333, display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", height: isExpanded ? 91 : "100%" }}>
         <View style={{ display: "flex", flexDirection: "row" }}>
           <View style={{ width: 48, height: 48, borderRadius: 10, backgroundColor: contratoInfo.length !== 0 ? "#FF3D00" : "#D2DCEB", alignItems: "center", justifyContent: "center" }}>
             <Image

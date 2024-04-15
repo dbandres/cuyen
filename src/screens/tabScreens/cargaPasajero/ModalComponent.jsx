@@ -26,9 +26,18 @@ export function ModalComponent({ visible, onClose, data, inputChanged, setNewFet
   }
 
   useEffect(() => {
-    if (data) {
-      setImporte(parseInt(data?.data?.importedelviaje))
-      let total = parseInt(data?.data?.importedelviaje) / data?.cuotaSeleccionada
+    if (data && data.FDPSeleccionado !== 'Dolares') {
+      setImporte(parseInt(data?.data?.importedelviajepesos))
+      let total = parseInt(data?.data?.importedelviajepesos) / data?.cuotaSeleccionada
+      setTotalCuotas(total.toFixed(2));
+      if (data.importe) {
+        let total = parseInt(data.importe) / data?.cuotas
+        setTotalCuotas(total.toFixed(2));
+      }
+    }
+    else if(data && data.FDPSeleccionado === 'Dolares'){
+      setImporte(parseInt(data?.data?.importedelviajedolares))
+      let total = parseInt(data?.data?.importedelviajedolares) / data?.cuotaSeleccionada
       setTotalCuotas(total.toFixed(2));
       if (data.importe) {
         let total = parseInt(data.importe) / data?.cuotas
@@ -67,6 +76,7 @@ export function ModalComponent({ visible, onClose, data, inputChanged, setNewFet
           fechaNac: data.formValues.fechaNac,
           importe: importe,
           cuotas: data.cuotas,
+          forma_de_pago: data.FDPSeleccionado,
           loginId: userdata.id
         },
         {
@@ -98,6 +108,7 @@ export function ModalComponent({ visible, onClose, data, inputChanged, setNewFet
           estado: true,
           login: "",
           fechaNac: fecha,
+          forma_de_pago: data.FDPSeleccionado,
           importe: importe,
           cuotas: data.cuotaSeleccionada,
           loginId: userdata.id
@@ -124,6 +135,7 @@ export function ModalComponent({ visible, onClose, data, inputChanged, setNewFet
   }
 
   const transparent = "rgba(0,0,0,0.5)"
+  console.log(data);
 
   return (
     <Modal
@@ -164,9 +176,15 @@ export function ModalComponent({ visible, onClose, data, inputChanged, setNewFet
                   </Text>
                   <Text style={{ fontWeight: "700", fontSize: 12, color: "#949AAF", lineHeight: 30 }}>
                     Importe ${importe.toLocaleString('es-ES', { style: 'decimal'})}
+                    {
+                      data.FDPSeleccionado === 'Dolares' ? ' Dolares' : ' Pesos'
+                    }
                   </Text>
                   <Text style={{ fontWeight: "700", fontSize: 12, color: "#949AAF", lineHeight: 30 }}>
                     Cuotas {data?.cuotaSeleccionada} de ${totalCuotas}
+                    {
+                      data.FDPSeleccionado === 'Dolares' ? ' Dolares' : ' Pesos'
+                    }
                   </Text>
                 </>
                 :
