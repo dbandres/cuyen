@@ -13,12 +13,12 @@ export function Hotel() {
   const dispatch = useDispatch()
   const hotelInfo = useSelector((state) => state.hotelInfo)
   const [imgArray, setImgArray] = useState("")
-  const contentRef = useRef(null);
+  const contentRef = useRef(null)
 
   useEffect(() => {
     if (miInfo.hotelId !== "") {
       dispatch(getHotelByNum(miInfo.hotelId))
-    }else{
+    } else {
       console.log('no hay info');
       dispatch(cleanHotel())
     }
@@ -124,7 +124,7 @@ export function Hotel() {
                     />
                   </MapView>
                   :
-                  <View style={{width:"100%", height:200, justifyContent:"center", alignItems:"center"}}>
+                  <View style={{ width: "100%", height: 200, justifyContent: "center", alignItems: "center" }}>
                     <Text style={{ color: "#564C71", fontWeight: "400", fontSize: 16, lineHeight: 19 }}>
                       No hay ubicación del Hotel
                     </Text>
@@ -157,26 +157,35 @@ export function Hotel() {
                 </Text>
               </View>
             </View>
-            <View style={{ width: "98%", height: 350 }}>
+            <View style={{ width: "98%", height: 350, flexDirection: 'column' }}>
               {
-                imgArray.slice(0, 4).map((foto, index) => (
-                  <View key={index} style={{ marginBottom: 15 }}>
-                    <Image
-                      source={{ uri: foto }}
-                      style={{
-                        width: index === 0 ? "100%" : "33%",
-                        height: index === 0 ? 200 : 112,
-                        resizeMode: 'cover'
-                      }}
-                    />
-                  </View>
-                ))
+                <View style={{ marginBottom: 15, width: '100%', height: 200 }}>
+                  <Image
+                    source={{ uri: imgArray[0] }}
+                    style={{
+                      width: "100%",
+                      height: 200,
+                      resizeMode: 'cover'
+                    }}
+                  />
+                </View>
               }
-            </View>
-            <View style={{ width: "95%", alignItems: "flex-end" }}>
-              <Text style={{ fontWeight: "600", fontSize: 14, lineHeight: 16, color: "#564C71" }}>
-                Ver mas
-              </Text>
+              <View style={{ width: "98%", height: 150, flexDirection: 'row' }}>
+                {
+                  imgArray.slice(1, 4).map((foto, index) => (
+                    <View key={index} style={{width: '33%', height: 125, marginRight: 5, backgroundColor:"red" }}>
+                      <Image
+                        source={{ uri: foto }}
+                        style={{
+                          width: "100%",
+                          height: 125,
+                          resizeMode: 'cover',
+                        }}
+                      />
+                    </View>
+                  ))
+                }
+              </View>
             </View>
           </>
           : null

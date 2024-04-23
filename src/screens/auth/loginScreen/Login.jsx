@@ -4,11 +4,12 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions, Statu
 import { useForm } from "react-hook-form";
 import { ButtonCustom } from "../../../components/ButtomCustom";
 import { UserContext } from "../../../context/UserContext";
-import { CurrentContrato, loginAuth } from "../../../redux/actions";
+import { CurrentContrato, CurrentUser, loginAuth } from "../../../redux/actions";
 import { InputLogin } from "./InputLogin";
 import { ContainerWithBackground } from "../../ContainerWithBackground";
 import AwesomeAlert from "react-native-awesome-alerts";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AuthContext } from "../../../context/AuthContext";
 
 const height = Dimensions.get("screen").height
 
@@ -16,6 +17,8 @@ export default function Login({ navigation }) {
 
 	const dispatch = useDispatch()
 	const { setUserData } = useContext(UserContext)
+	const {authenticate, setAuthenticate} = useContext(AuthContext)
+
 	const [inputValue, setInputValue] = useState(false)
 	const [showAlert, setShowAlert] = useState(false)
 	const [showAlert2, setShowAlert2] = useState(false)
@@ -67,8 +70,9 @@ export default function Login({ navigation }) {
 					})
 					AsyncStorage.setItem("userStorage", JSON.stringify(response.payload.data))
 					dispatch(CurrentContrato(response.payload.data.usuario.contrato[0]))
+					setAuthenticate(true)
 					setShowAlert2(false)
-					navigation.navigate("landing")
+					//navigation.navigate("landing")
 				}
 			})
 			.catch((error) => {

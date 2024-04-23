@@ -18,39 +18,6 @@ export function GestionViaje({ navigation }) {
 	const [value, setValue] = useState(null);
 	const [items, setItems] = useState([]);
 	const [showAlert2, setShowAlert2] = useState(false)
-	// 	console.log("actualizo!");
-
-	// 	const fetchData = async () => {
-	// 		try {
-	// 			const res = await axios.post("/coordinador", {
-	// 				"contratos": userdata.contrato
-	// 			}, {
-	// 				headers: {
-	// 					'x-access-token': `${token}`,
-	// 					"Content-Type": "application/json",
-	// 				}
-	// 			});
-
-	// 			if (res.status === 200) {
-	// 				console.log("res! data: ", res.data)
-	// 				setItems(prevItems => [
-	// 					...prevItems,
-	// 					...res.data.map((data, index) => ({
-	// 						label: data.escuelas,
-	// 						value: data.travelId,
-	// 						key: index.toString(),
-	// 					}))
-	// 				]);
-	// 			}
-	// 		} catch (error) {
-	// 			console.log(error);
-	// 		}
-	// 	};
-
-	// 	fetchData();
-	// }, []);
-
-	console.log(userdata);
 
 
 	useFocusEffect(

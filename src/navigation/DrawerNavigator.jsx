@@ -13,14 +13,11 @@ import { RouteGestion } from '../screens/tabScreens/gestionViaje/RouteGestion';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RouteInicial } from '../screens/tabScreens/infoViaje/RouteInicial';
 import { AuthContext } from '../context/AuthContext';
-import { GestionContrato } from '../screens/tabScreens/gestionarContrato/GestionContrato';
-
-
 
 const CustomDrawerContent = ({ navigation }) => {
 
 	const { userdata, setUserData } = useContext(UserContext)
-	const {authenticate, setAuthenticate} = useContext(AuthContext)
+	const {setAuthenticate} = useContext(AuthContext)
 
 	const singOutSession = () => {
 		AsyncStorage.removeItem("userStorage")
@@ -35,7 +32,6 @@ const CustomDrawerContent = ({ navigation }) => {
 			usuario: ""
 		})
 		setAuthenticate(false)
-		navigation.navigate("introScreen")
 	}
 
 	const abrirLink = (linkUrl) => {
@@ -82,12 +78,12 @@ const CustomDrawerContent = ({ navigation }) => {
 							<View style={{ width: "50%" }}>
 								<Text style={{ fontWeight: "700", color: "white" }}>{userdata.apellido.toUpperCase()} {userdata.nombre}</Text>
 							</View>
-							<TouchableOpacity>
+							{/* <TouchableOpacity>
 								<Image
 									source={require("../assets/edit.png")}
 									style={{ width: 40, height: 40 }}
 								/>
-							</TouchableOpacity>
+							</TouchableOpacity> */}
 						</View>
 						<View style={{borderWidth:1, borderColor:"#93E396" ,height:44, justifyContent:"center", borderRadius:5}}>
 						<Text style={{ color: "#93E396", fontWeight:"600", fontSize:12, lineHeight:14, textAlign:"center" }}>Contrato {userdata.contrato[0]}</Text>

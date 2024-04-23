@@ -3,7 +3,7 @@ import { LOGIN_AUTH, SET_CURRENT_USER, GET_ALL_CONTRATO, GET_ALL_POST, GET_ALL_E
 
 const initialState = {
   loginStaus: "",
-  currentUser: "",
+  currentUser:false,
   allContratos: [],
   allPost: [],
   allEmojis: [],

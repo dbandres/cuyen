@@ -9,12 +9,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { getContratoByNum, getDestino, getPasajero } from "../../../redux/actions";
 import { UserContext } from "../../../context/UserContext";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { AuthContext } from "../../../context/AuthContext";
 
 
 export function InfoDelViaje({ navigation }) {
 
 	const dispatch = useDispatch()
 	const { userdata } = useContext(UserContext)
+	const { authenticate } = useContext(AuthContext)
 	const contratoActual = useSelector((state) => state.currentContrato)
 
 	useEffect(() => {

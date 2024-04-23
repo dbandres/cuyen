@@ -58,11 +58,11 @@ export default function Register({ navigation }) {
 		setError(false)
 	}
 
-	/* const configAlertError = () => {
+	const configAlertError = () => {
 		setInputValue('');
 		setError(true)
 		setValue('contrato', '')
-	} */
+	}
 
 	// Función para manejar el cambio en el valor del TextInput
 	const handleInputChange = (text) => {

@@ -8,29 +8,32 @@ import GetLocation from 'react-native-get-location'
 
 import BackgroundService from 'react-native-background-actions';
 import {veryIntensiveTask } from "./pruebaBackService";
+import { openSettings } from "react-native-permissions";
 
 export function GestionIniciarViaje({ navigation, route }) {
 
   const { totalSwitchesEnabled } = route.params
-  const [showAlert2, setShowAlert2] = useState(false)
   const { miDato, actualizarDato } = useContext(GestioViajeContext)
-  const [initialPosition, setInitialPosition] = useState(false)
+
   const [showAlert, setShowAlert] = useState(false);
+  const [showAlert2, setShowAlert2] = useState(false)
+  const [showAlert3, setShowAlert3] = useState(false)
+
+  const [initialPosition, setInitialPosition] = useState(false)
   const [errorMessage, setErrorMessage] = useState('');
   const [position, setPosition] = useState("")
 
 
   //prueba
   const options = {
-    taskName: 'Example',
-    taskTitle: 'ExampleTask title',
-    taskDesc: 'ExampleTask description',
+    taskName: 'Cuyen Turismo',
+    taskTitle: 'Transmitiendo Ubicacion',
+    taskDesc: '',
     taskIcon: {
       name: 'ic_launcher',
       type: 'mipmap',
     },
     color: '#ff00ff',
-    linkingURI: 'yourSchemeHere://chat/jane', // See Deep Linking for more info
     parameters: {
       delay: 1000,
       miDato,
@@ -39,24 +42,25 @@ export function GestionIniciarViaje({ navigation, route }) {
   };
 
   const checkPermissions = async () => {
-    //setShowAlert2(true)
     const status = await checkLocationPermissions();
     if (status === 'granted') {
       LocationTask()
       console.log("permisos otorgados");
-      console.log(position);
       if(position.length !== 0){
+        setShowAlert2(true);
         await BackgroundService.start(veryIntensiveTask, options);
         viajeIniciado(true)
+        console.log(position);
       }
       else{
-        setShowAlert(true);
-        setErrorMessage("Intente nuevamente por favor.")
+        setShowAlert3(true);
+        setErrorMessage("Permisos otorgados correctamente! Ahora puede Iniciar Viaje")
       }
     } else {
+      console.log('esto es status: ', status);
       setShowAlert2(false);
       setShowAlert(true);
-      setErrorMessage("Otorgando permisos, intente nuevamente!");
+      setErrorMessage(`Estado del permiso: ${status.toUpperCase()}, por favor otorgue los permisos adecuados para poder Iniciar el viaje. En la configuración de los permisos seleccione PREMITIR TODO EL TIEMPO.`);
     }
   }
 
@@ -79,11 +83,6 @@ export function GestionIniciarViaje({ navigation, route }) {
       />
     )
   }
-
-  useEffect(()=>{
-    LocationTask()
-    checkLocationPermissions()
-  },[])
 
   const LocationTask = async () => {
     try {
@@ -121,8 +120,13 @@ export function GestionIniciarViaje({ navigation, route }) {
 
 
   const hideAlert = () => {
-    setShowAlert(false);
+    setShowAlert3(false)
   };
+
+  const hideAlert2 =()=>{
+    setShowAlert(false);
+    openSettings()
+  }
 
   useEffect(() => {
     if (initialPosition !== false) {
@@ -133,6 +137,8 @@ export function GestionIniciarViaje({ navigation, route }) {
     }
 
   }, [initialPosition])
+
+  console.log('Esto es mi dato! ',miDato);
 
   return (
     <View style={styles.container}>
@@ -166,7 +172,19 @@ export function GestionIniciarViaje({ navigation, route }) {
         show={showAlert}
         showProgress={false}
         title="Error"
-        message={errorMessage || "Hubo un error al obtener la ubicación."}
+        message={errorMessage}
+        closeOnTouchOutside={true}
+        closeOnHardwareBackPress={false}
+        showCancelButton={false}
+        showConfirmButton={true}
+        confirmText="Ir a Configuracion"
+        confirmButtonColor="#DD6B55"
+        onConfirmPressed={() => hideAlert2()}
+      />
+      <AwesomeAlert
+        show={showAlert3}
+        showProgress={false}
+        message={errorMessage}
         closeOnTouchOutside={true}
         closeOnHardwareBackPress={false}
         showCancelButton={false}

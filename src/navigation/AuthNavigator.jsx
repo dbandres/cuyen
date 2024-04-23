@@ -63,14 +63,14 @@ export default function AuthNavigator() {
 					<>
 						<Stack.Screen name="introScreen" component={RouteInto} options={{ headerShown: false }} />
 						<Stack.Screen name="login" component={Login} options={{ headerShown: false }} />
-						<Stack.Screen name="register" component={Register} options={{ headerShown: false }} />
+						 <Stack.Screen name="register" component={Register} options={{ headerShown: false }} />
 						<Stack.Screen name="registerOk" component={RegisterOk} options={{ headerShown: false }} />
 						<Stack.Screen name="forgotPass" component={ForgotPassword} options={{ headerShown: false }} />
 						<Stack.Screen name="forgotPassOne" component={ForgotPassword1} options={{ headerShown: false }} />
 						<Stack.Screen name="forgotPasstwo" component={ForgotPassword2} options={{ headerShown: false }} />
 						<Stack.Screen name="forgotPassthree" component={ForgotPassword3} options={{ headerShown: false }} />
 						<Stack.Screen name="finishForgotPass" component={FinishForgotPass} options={{ headerShown: false }} />
-						<Stack.Screen name="landing" component={DrawerNavigator} options={{ headerShown: false }} />
+						{/*<Stack.Screen name="landing" component={DrawerNavigator} options={{ headerShown: false }} /> */}
 					</>
 			}
 		</Stack.Navigator>
