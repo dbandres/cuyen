@@ -26,21 +26,21 @@ export function ModalComponent({ visible, onClose, data, inputChanged, setNewFet
   }
 
   useEffect(() => {
-    if (data && data.FDPSeleccionado !== 'Dolares') {
-      setImporte(parseInt(data?.data?.importedelviajepesos))
-      let total = parseInt(data?.data?.importedelviajepesos) / data?.cuotaSeleccionada
+    if (data && data.FDP !== 'dolares') {
+      setImporte(parseInt(data?.montoRender))
+      let total = parseInt(data?.importe) / data?.cuota
       setTotalCuotas(total.toFixed(2));
       if (data.importe) {
-        let total = parseInt(data.importe) / data?.cuotas
+        let total = parseInt(data.importe) / data?.cuota
         setTotalCuotas(total.toFixed(2));
       }
     }
-    else if(data && data.FDPSeleccionado === 'Dolares'){
-      setImporte(parseInt(data?.data?.importedelviajedolares))
-      let total = parseInt(data?.data?.importedelviajedolares) / data?.cuotaSeleccionada
+    else if (data && data.FDP === 'dolares') {
+      setImporte(parseInt(data?.importe))
+      let total = parseInt(data?.importe) / data?.cuota
       setTotalCuotas(total.toFixed(2));
       if (data.importe) {
-        let total = parseInt(data.importe) / data?.cuotas
+        let total = parseInt(data.importe) / data?.cuota
         setTotalCuotas(total.toFixed(2));
       }
     }
@@ -63,7 +63,7 @@ export function ModalComponent({ visible, onClose, data, inputChanged, setNewFet
   const postPasajero = async () => {
     setShowAlert2(true)
     if (inputChanged === true) {
-      await axios.put(`/pasajero/${userdata.id}`,
+      await axios.put(`/pasajero/${data.id}`,
         {
           nombre: data.formValues.nombre,
           apellido: data.formValues.apellido,
@@ -74,9 +74,6 @@ export function ModalComponent({ visible, onClose, data, inputChanged, setNewFet
           estado: true,
           login: "",
           fechaNac: data.formValues.fechaNac,
-          importe: importe,
-          cuotas: data.cuotas,
-          forma_de_pago: data.FDPSeleccionado,
           loginId: userdata.id
         },
         {
@@ -108,7 +105,7 @@ export function ModalComponent({ visible, onClose, data, inputChanged, setNewFet
           estado: true,
           login: "",
           fechaNac: fecha,
-          forma_de_pago: data.FDPSeleccionado,
+          forma_de_pago: data.FDPSeleccionado === 'Actualizado por IPC' ? 'ipc' : data.FDPSeleccionado === 'Dólares' ? 'dolares' : data.FDPSeleccionado === 'Contado' ? 'contado' : 'sin_int',
           importe: importe,
           cuotas: data.cuotaSeleccionada,
           loginId: userdata.id
@@ -135,7 +132,7 @@ export function ModalComponent({ visible, onClose, data, inputChanged, setNewFet
   }
 
   const transparent = "rgba(0,0,0,0.5)"
-  console.log(data);
+  console.log(fecha);
 
   return (
     <Modal
@@ -144,7 +141,7 @@ export function ModalComponent({ visible, onClose, data, inputChanged, setNewFet
       visible={visible}
       onRequestClose={onClose}
     >
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor:transparent }}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: transparent }}>
         {/* Contenido del modal con fondo blanco */}
         <View style={{ borderRadius: 10, width: 373, height: 449, backgroundColor: "white", justifyContent: 'center', alignItems: 'center' }}>
           <View style={{ width: 275, height: 57, alignItems: "center", justifyContent: "center" }}>
@@ -163,29 +160,36 @@ export function ModalComponent({ visible, onClose, data, inputChanged, setNewFet
           </View>
           <View style={{ width: 306, height: 190, justifyContent: "center", alignItems: "center" }}>
             {
-              data.data ?
+              data ?
                 <>
                   <Text style={{ fontWeight: "700", fontSize: 12, color: "#949AAF", lineHeight: 30 }}>
-                    {data?.data?.username}, {data?.data?.userlastname}
+                    {data?.username}, {data?.userlastname}
                   </Text>
                   <Text style={{ fontWeight: "700", fontSize: 12, color: "#949AAF", lineHeight: 30 }}>
-                    DNI {data?.data?.userdni}
+                    DNI {data?.userdni}
                   </Text>
                   <Text style={{ fontWeight: "700", fontSize: 12, color: "#949AAF", lineHeight: 30 }}>
-                    Fecha de Nacimiento {data?.newDate}
+                    Fecha de Nacimiento {data?.fechaNac}
                   </Text>
                   <Text style={{ fontWeight: "700", fontSize: 12, color: "#949AAF", lineHeight: 30 }}>
-                    Importe ${importe.toLocaleString('es-ES', { style: 'decimal'})}
+                    Importe ${importe.toLocaleString('es-ES', { style: 'decimal' })}
                     {
-                      data.FDPSeleccionado === 'Dolares' ? ' Dolares' : ' Pesos'
+                      data.FDP === 'dolares' ? ' Dólares' : ' Pesos'
                     }
                   </Text>
-                  <Text style={{ fontWeight: "700", fontSize: 12, color: "#949AAF", lineHeight: 30 }}>
-                    Cuotas {data?.cuotaSeleccionada} de ${totalCuotas}
-                    {
-                      data.FDPSeleccionado === 'Dolares' ? ' Dolares' : ' Pesos'
-                    }
-                  </Text>
+                  {
+                    data.FDP === 'ipc' ?
+                      <Text style={{ fontWeight: "700", fontSize: 12, color: "#949AAF", lineHeight: 13 }}>
+                        Las cuotas serán ajustadas por el índice de precios al consumidor acumulado, a partir de la cuota 4.
+                      </Text>
+                    :
+                      <Text style={{ fontWeight: "700", fontSize: 12, color: "#949AAF", lineHeight: 30 }}>
+                        Cuotas {data?.cuota} de ${totalCuotas}
+                        {
+                          data.FDP === 'dolares' ? ' Dólares' : ' Pesos'
+                        }
+                      </Text>
+                  }
                 </>
                 :
                 <>

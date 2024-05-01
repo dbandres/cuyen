@@ -98,4 +98,22 @@ const openImageLibrary = (limit) => {
   });
 };
 
-export { requestGalleryPermission, handleCameraPermission, openCamera, openImageLibrary };
+async function checkCameraPermission() {
+  if (Platform.OS === 'android') {
+    const cameraPermission = await PermissionsAndroid.check(
+      PermissionsAndroid.PERMISSIONS.CAMERA
+    );
+    return cameraPermission;
+  }
+}
+
+async function checkGaleyPermission() {
+  if (Platform.OS === 'android') {
+    const galeryPermission = await PermissionsAndroid.check(
+      PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES
+    );
+    return galeryPermission;
+  }
+}
+
+export { requestGalleryPermission, handleCameraPermission, openCamera, openImageLibrary, checkCameraPermission, checkGaleyPermission };

@@ -11,7 +11,7 @@ import { ModalDieta } from "./ModalDieta";
 
 export function ExpandibleInfoPasajero({ data, setNewFetch }) {
 
-  //console.log("data!!: ",JSON.stringify(data, null ,3));
+  /* console.log("data!!: ",JSON.stringify(data, null ,3)); */
 
   const [contentHeight, setContentHeight] = useState(0);
   const [error, setError] = useState(true)

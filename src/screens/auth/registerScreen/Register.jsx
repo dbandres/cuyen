@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, ScrollView, Dimensions, Modal, TouchableOpacity, TouchableWithoutFeedback, TextInput, Image } from "react-native"
+import { Text, View, StyleSheet, ScrollView, Dimensions, Modal, TouchableOpacity, TouchableWithoutFeedback, TextInput, Image, Linking } from "react-native"
 import { CustomInput } from "./CustomInput"
 import { useForm } from "react-hook-form"
 import { ButtonCustom } from "../../../components/ButtomCustom"
@@ -39,6 +39,12 @@ export default function Register({ navigation }) {
 
 	let dni = watch('userdni')
 	let contrato = watch("contrato")
+
+	const abrirLink = (linkUrl) => {
+    const url = linkUrl;
+    Linking.openURL(url)
+      .catch((err) => console.error('Error al abrir el enlace:', err));
+  };
 
 	const myFunction = () => {
 		if (error === true) {
@@ -457,14 +463,14 @@ export default function Register({ navigation }) {
 										tintColors={true ? "black" : "black"}
 									/>
 								</View>
-								<View style={{ marginLeft: "3%" }}>
+								<TouchableOpacity onPress={()=>{abrirLink('https://8ball.ar/politica-de-privacidad-turismo-cuyen/')}} style={{ marginLeft: "3%" }}>
 									<Text style={{ fontSize: 12, color: "#949AAF" }}>
 										Estoy de acuerdo con los
 									</Text>
 									<Text style={{ fontWeight: "bold", fontSize: 11.5, color: "#949AAF" }}>
 										Términos de Servicios y Política de privacidad.
 									</Text>
-								</View>
+								</TouchableOpacity>
 							</View>
 							<View style={{ height: "7%", marginTop: "5%" }}>
 								<ButtonCustom

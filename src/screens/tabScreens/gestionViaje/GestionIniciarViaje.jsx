@@ -18,10 +18,23 @@ export function GestionIniciarViaje({ navigation, route }) {
   const [showAlert, setShowAlert] = useState(false);
   const [showAlert2, setShowAlert2] = useState(false)
   const [showAlert3, setShowAlert3] = useState(false)
+  const [showAlert4, setShowAlert4] = useState(false)
 
   const [initialPosition, setInitialPosition] = useState(false)
   const [errorMessage, setErrorMessage] = useState('');
   const [position, setPosition] = useState("")
+
+  useEffect(()=>{
+    setTimeout(()=>{
+      console.log("Renderizar alerta");
+      setShowAlert4(true)
+    },500)
+  },[])
+
+  const onCancel = () =>{
+    navigation.navigate('gestion de pasajeros')
+    setShowAlert4(false)
+  }
 
 
   //prueba
@@ -138,8 +151,6 @@ export function GestionIniciarViaje({ navigation, route }) {
 
   }, [initialPosition])
 
-  console.log('Esto es mi dato! ',miDato);
-
   return (
     <View style={styles.container}>
       <Header children="Gestión de Pasajeros" navigation={navigation} />
@@ -192,6 +203,20 @@ export function GestionIniciarViaje({ navigation, route }) {
         confirmText="Aceptar"
         confirmButtonColor="#DD6B55"
         onConfirmPressed={() => hideAlert()}
+      />
+      <AwesomeAlert
+        show={showAlert4}
+        showProgress={false}
+        message="Esta aplicacion recopila informacion sobre su ubicacion como COORDINADOR para poder Iniciar el Viaje y brindar, a los usuarios con rol Padre, la ubicacion del contingente aun cuando la app este cerrada y no se encuentre en uso."
+        closeOnTouchOutside={false}
+        closeOnHardwareBackPress={false}
+        showCancelButton={true}
+        showConfirmButton={true}
+        confirmText="Aceptar"
+        confirmButtonColor="#37E67D"
+        cancelButtonColor="red"
+        onConfirmPressed={() => setShowAlert4(false)}
+        onCancelPressed={()=> onCancel()}
       />
     </View>
   )
