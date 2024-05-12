@@ -179,7 +179,7 @@ export function ExpandibleInfoPasajero({ data, setNewFetch }) {
   }
 
   const handleSubmit = () => {
-    setDatosTotales({ formValues, id: data.id, cuotas: data.cuotas, importe: data.importe })
+    setDatosTotales({ username: formValues.nombre, userlastname: formValues.apellido, userdni: formValues.dni, fechaNac: formValues.fechaNac, idPasajero: data.id})
     openModal();
     setSeteoData(false)
     setEditing(false)
@@ -189,6 +189,8 @@ export function ExpandibleInfoPasajero({ data, setNewFetch }) {
     openDietaModal()
     setModalVisible2(true)
   }
+
+  console.log(inputChanged);
 
   return (
     <ScrollView>

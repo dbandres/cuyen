@@ -42,6 +42,8 @@ export function FormEditarDatos({ setInputChanged, formValues, setFormValues, ne
       // Formatear la fecha en el formato deseado
       const fechaFormateada = `${fechaObjeto.getUTCDate()}/${nombreMesAbreviado}/${fechaObjeto.getUTCFullYear()}`;
       setNewDate(fechaFormateada)
+      // Indicar que algún input ha cambiado
+    setInputChanged(true);
     }
   }, [date])
 

@@ -1,4 +1,4 @@
-import { Text, TouchableOpacity, View, Animated, Image, Linking } from "react-native";
+import { Text, TouchableOpacity, View, Animated, Image, Linking, Alert } from "react-native";
 import { CustomInput } from "../../auth/registerScreen/CustomInput";
 import { useForm } from "react-hook-form";
 import { useContext, useEffect, useRef, useState } from "react";
@@ -18,9 +18,14 @@ import ImporteText from "./ImporteText";
 export function Form({ agregarPasajero, setNewFetch, }) {
 
   const { control, handleSubmit, setValue, watch, trigger } = useForm()
-  const [toggleCheckBox, setToggleCheckBox] = useState(false)
-  const [showAlert2, setShowAlert2] = useState(false)
   const { userdata } = useContext(UserContext)
+
+  const [toggleCheckBox, setToggleCheckBox] = useState(false)
+  const [toggleCheckBoxIPC, setToggleCheckBoxIPC] = useState(true)
+  const [toggleCheckBoxDolares, setToggleCheckBoxDolares] = useState(true)
+  const [inputChanged, setInputChanged] = useState(false)
+
+  const [showAlert2, setShowAlert2] = useState(false)
   const [dataPasajero, setDataPasajero] = useState("")
 
   let dni = watch('userdni'); // Observa el campo del DNI
@@ -43,6 +48,9 @@ export function Form({ agregarPasajero, setNewFetch, }) {
   const [importe, setImporte] = useState(null)
   const [cuotaSeleccionada, setCuotaSeleccionada] = useState(null);
   const [FDPSeleccionado, setFDPSeleccionado] = useState('')
+
+  // render condicional para un statu 200 en verify
+  const [showDropDowns, setShowDropDowns] = useState(false)
 
   const fechaMin = new Date(2000, 0, 1)
 
@@ -76,42 +84,107 @@ export function Form({ agregarPasajero, setNewFetch, }) {
   }
 
 
-  useEffect(()=>{
+  useEffect(() => {
     setValue('FDP', FDPSeleccionado.valor);
     setValue('cuota', cuotaSeleccionada)
     setValue('fechaNac', newDate)
     setValue('importe', importe)
-  },[FDPSeleccionado, newDate,cuotaSeleccionada, importe])
+    setValue('valor_cuo_fija', dataPasajero.valor_cuo_fija)
+  }, [FDPSeleccionado, newDate, cuotaSeleccionada, importe])
+
+  useEffect(()=>{
+    if (FDPSeleccionado.valor === 'ipc') {
+      setToggleCheckBoxIPC(false)
+      setToggleCheckBoxDolares(true)
+    }
+    else if(FDPSeleccionado.valor === 'dolares'){
+      setToggleCheckBoxDolares(false)
+      setToggleCheckBoxIPC(true)
+    }
+    else if(FDPSeleccionado.valor === 'contado'){
+      setToggleCheckBoxDolares(true)
+      setToggleCheckBoxIPC(true)
+    }
+    else if(FDPSeleccionado.valor === 'sin_int'){
+      setToggleCheckBoxDolares(true)
+      setToggleCheckBoxIPC(true)
+    }
+    else{
+      setToggleCheckBoxDolares(true)
+      setToggleCheckBoxIPC(true)
+    }
+  },[FDPSeleccionado])
 
   const handleSubmitcarga = (data) => {
     setDatosTotales(data)
     openModal();
   }
 
-
+console.log(toggleCheckBox,toggleCheckBoxDolares,toggleCheckBoxIPC);
 
   useEffect(() => {
     if (dni !== undefined && dni.length === 8) {
       setShowAlert2(true)
-      axios.get(`/pasajero/verify/${dni}/${userdata.contrato[0]}`, {
+      axios.get(`/pasajero/verify/${dni}/${userdata.contrato[0]}/${userdata.id}`, {
         headers: {
           'x-access-token': `${token}`,
           'Content-Type': 'application/json',
         }
       }).then((res) => {
         if (res.status === 200) {
-          //console.log(res.data);
+          console.log('res dataaa! :', res.data);
           setShowAlert2(false)
+          setShowDropDowns(false)
+          setInputChanged(false)
           setValue('username', res.data.nombre);
           setValue('userlastname', res.data.apellido);
+          setValue('useremail', res.data.email);
+          setValue('idPasajero', res.data.id)
+          setValue('login', res.data.login)
+        }
+        else if(res.status === 201) {
+          setShowAlert2(false)
+          agregarPasajero()
+          console.log(res.data);
+          Alert.alert(
+            '',
+            `${res.data.message}`,
+            [
+              {
+                text: 'Aceptar',
+                onPress: () => console.log('Botón 1 presionado')
+              },
+            ],
+            { cancelable: false }
+          );
+        }
+        else if(res.status === 202){
+          console.log('res dataaa! :', res.data);
+          setShowAlert2(false)
+          setShowDropDowns(true)
+          setInputChanged(true)
+          setValue('username', res.data.nombre);
+          setValue('userlastname', res.data.apellido);
+          setValue('useremail', res.data.correo.trim());
+          setValue('idPasajero', res.data.id)
         }
       }).catch((error) => {
         setShowAlert2(false)
+        setShowDropDowns(false)
+        setInputChanged(false)
         setDataPasajero(error.response.data)
         setValue('montoRender', error.response.data.monto)
+        setValue('login', error.response.data.login)
       })
     } else {
       console.log("es undefined");
+      setValue('username', "");
+      setValue('userlastname', "");
+      setValue('useremail', "");
+      setValue('idPasajero', "")
+      setNewDate("")
+      setToggleCheckBox(false)
+      setFDPSeleccionado('')
     }
   }, [dni])
 
@@ -194,12 +267,12 @@ export function Form({ agregarPasajero, setNewFetch, }) {
 
   // Ejemplo de uso
   const fechaMaxima = obtenerFechaMaxima();
-  //console.log('data: ',dataPasajero);
+  //console.log('data: ',userdata);
 
   return (
     <View style={{
       width: 373,
-      height: !isExpanded && isExpanded1 || isExpanded && !isExpanded1 ? 950 : isExpanded && isExpanded1 ? 1100 : 850,
+      height: showDropDowns === true ? 600 : !isExpanded && isExpanded1 || isExpanded && !isExpanded1 ? 950 : isExpanded && isExpanded1 ? 1100 : 850,
       backgroundColor: "#FFFFFF", marginTop: 15, borderRadius: 10, justifyContent: "center", alignItems: "center"
     }}>
       <View style={{ height: 50 }}>
@@ -274,7 +347,7 @@ export function Form({ agregarPasajero, setNewFetch, }) {
           marginBottom: 20,
         }}>
           <TouchableOpacity style={{ width: "100%", display: "flex", flexDirection: "row", alignItems: "center" }} onPress={() => setOpen(true)}>
-            <Image source={require("../../../assets/calendar_month.png")} style={{ width: 20, height: 19, marginLeft: 5 }} />
+            <Image source={require("../../../assets/calendar_month.png")} style={{ width: 18, height: 19, marginLeft: 5 }} />
             {
               newDate ?
                 <Text style={{
@@ -319,8 +392,9 @@ export function Form({ agregarPasajero, setNewFetch, }) {
             confirmText="Confirmar"
             cancelText="Cancelar"
             locale="es"
-            maximumDate={fechaMaxima}
-            minimumDate={fechaMin}
+          /* maximumDate={fechaMaxima}
+          minimumDate={fechaMin} */
+
           />
         </View>
         <CustomInput
@@ -334,32 +408,43 @@ export function Form({ agregarPasajero, setNewFetch, }) {
           }}
         />
 
-        <DropdownFDP
-          isExpanded={isExpanded}
-          setIsExpanded={setIsExpanded}
-          contentRef={contentRef}
-          heightAnim={heightAnim}
-          setFDPSeleccionado={setFDPSeleccionado}
-          FDPSeleccionado={FDPSeleccionado}
-        />
-        <DropdownCuotas
-          isExpanded1={isExpanded1}
-          setIsExpanded1={setIsExpanded1}
-          contentRef1={contentRef1}
-          heightAnim1={heightAnim1}
-          dataPasajero={dataPasajero}
-          cuotaSeleccionada={cuotaSeleccionada}
-          setCuotaSeleccionada={setCuotaSeleccionada}
-          FDPSeleccionado={FDPSeleccionado}
-        />
+        {
+          showDropDowns === false ?
+            <>
+              <DropdownFDP
+                isExpanded={isExpanded}
+                setIsExpanded={setIsExpanded}
+                contentRef={contentRef}
+                heightAnim={heightAnim}
+                setFDPSeleccionado={setFDPSeleccionado}
+                FDPSeleccionado={FDPSeleccionado}
+              />
+              <DropdownCuotas
+                isExpanded1={isExpanded1}
+                setIsExpanded1={setIsExpanded1}
+                contentRef1={contentRef1}
+                heightAnim1={heightAnim1}
+                dataPasajero={dataPasajero}
+                cuotaSeleccionada={cuotaSeleccionada}
+                setCuotaSeleccionada={setCuotaSeleccionada}
+                FDPSeleccionado={FDPSeleccionado}
+              />
 
-        <ImporteText
-          dataPasajero={dataPasajero}
-          FDPSeleccionado={FDPSeleccionado}
-          cuotaSeleccionada={cuotaSeleccionada}
-          setImporte={setImporte}
-          importe={importe}
-        />
+              <ImporteText
+                dataPasajero={dataPasajero}
+                FDPSeleccionado={FDPSeleccionado}
+                cuotaSeleccionada={cuotaSeleccionada}
+                setImporte={setImporte}
+                importe={importe}
+                toggleCheckBoxIPC={toggleCheckBoxIPC}
+                setToggleCheckBoxIPC={setToggleCheckBoxIPC}
+                toggleCheckBoxDolares={toggleCheckBoxDolares}
+                setToggleCheckBoxDolares={setToggleCheckBoxDolares}
+              />
+            </>
+            :
+            null
+        }
 
         <View style={{ height: "5%", display: "flex", flexDirection: "row", marginTop: 15 }}>
           <View>
@@ -370,7 +455,7 @@ export function Form({ agregarPasajero, setNewFetch, }) {
               tintColors={true ? "black" : "black"}
             />
           </View>
-          <TouchableOpacity onPress={()=>{abrirLink('https://8ball.ar/politica-de-privacidad-turismo-cuyen/')}} style={{ marginLeft: "3%" }}>
+          <TouchableOpacity onPress={() => { abrirLink('https://8ball.ar/politica-de-privacidad-turismo-cuyen/') }} style={{ marginLeft: "3%" }}>
             <Text style={{ fontSize: 12, color: "#949AAF" }}>
               Estoy de acuerdo con los
             </Text>
@@ -381,14 +466,14 @@ export function Form({ agregarPasajero, setNewFetch, }) {
         </View>
         <View style={{ height: 47, width: 331, marginTop: "5%" }}>
           <ButtonCustom
-            disabled={toggleCheckBox === true ? false : true}
+            disabled={toggleCheckBox === true && toggleCheckBoxIPC === true && toggleCheckBoxDolares === true ? false : true}
             text="Agregar"
-            color={toggleCheckBox === true ? "#FF3D00" : "#CDD1DF"}
+            color={toggleCheckBox === true && toggleCheckBoxIPC === true && toggleCheckBoxDolares === true ? "#FF3D00" : "#CDD1DF"}
             onPress={handleSubmit(handleSubmitcarga)}
           />
         </View>
 
-        <ModalComponent visible={modalVisible} onClose={closeModal} data={datosTotales} setNewFetch={setNewFetch} agregarPasajero={agregarPasajero} />
+        <ModalComponent visible={modalVisible} onClose={closeModal} data={datosTotales} setNewFetch={setNewFetch} agregarPasajero={agregarPasajero} inputChanged={inputChanged}/>
 
         <View style={{ height: 47, width: 331, marginTop: "2%", borderColor: "#3462BF", borderWidth: 1, borderRadius: 10 }}>
           <ButtonCustom
@@ -403,3 +488,8 @@ export function Form({ agregarPasajero, setNewFetch, }) {
     </View>
   )
 }
+
+
+
+
+

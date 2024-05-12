@@ -13,11 +13,16 @@ import { RouteGestion } from '../screens/tabScreens/gestionViaje/RouteGestion';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RouteInicial } from '../screens/tabScreens/infoViaje/RouteInicial';
 import { AuthContext } from '../context/AuthContext';
+import { InfoContext } from '../screens/tabScreens/infoViaje/InfoContext';
+import { useDispatch } from 'react-redux';
+import { cleanPasajero } from '../redux/actions';
 
 const CustomDrawerContent = ({ navigation }) => {
 
+	const dispatch = useDispatch()
 	const { userdata, setUserData } = useContext(UserContext)
 	const {setAuthenticate} = useContext(AuthContext)
+	const { miInfo, setMiInfo } = useContext(InfoContext)
 
 	const singOutSession = () => {
 		AsyncStorage.removeItem("userStorage")
@@ -31,6 +36,11 @@ const CustomDrawerContent = ({ navigation }) => {
 			telefono: "",
 			usuario: ""
 		})
+		setMiInfo({
+			numPasajero: [],
+			hotelId: ""
+		})
+		dispatch(cleanPasajero())
 		setAuthenticate(false)
 	}
 

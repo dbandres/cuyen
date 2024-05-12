@@ -44,17 +44,23 @@ export function ModalComponent({ visible, onClose, data, inputChanged, setNewFet
         setTotalCuotas(total.toFixed(2));
       }
     }
-    if (data.newDate) {
+    if (data.fechaNac) {
+      const fechaNac = data.fechaNac
       const meses = {
         ene: 1, feb: 2, mar: 3, abr: 4, may: 5, jun: 6,
         jul: 7, ago: 8, sep: 9, oct: 10, nov: 11, dic: 12
       };
 
-      const [dia, mes, año] = data.newDate.split('/');
-      const numeroMes = meses[mes.toLowerCase()];
-      const fechaFormateada = `${año}-${numeroMes}-${dia}`;
-
-      setFecha(fechaFormateada);
+      if (fechaNac.includes('/')) {
+        const [dia, mes, año] = data.fechaNac.split('/');
+        const numeroMes = meses[mes.toLowerCase()];
+        const fechaFormateada = `${año}-${numeroMes}-${dia}`;
+        setFecha(fechaFormateada);
+      }else{
+        const [dia, mes, año] = data.fechaNac.split('-');
+        const fechaFormateada = `${año}-${mes}-${dia}`;
+        setFecha(fechaFormateada);
+      }
     }
   }, [data])
 
@@ -63,17 +69,16 @@ export function ModalComponent({ visible, onClose, data, inputChanged, setNewFet
   const postPasajero = async () => {
     setShowAlert2(true)
     if (inputChanged === true) {
-      await axios.put(`/pasajero/${data.id}`,
+      console.log('es un put');
+      await axios.put(`/pasajero/${data.idPasajero}`,
         {
-          nombre: data.formValues.nombre,
-          apellido: data.formValues.apellido,
-          dni: data.formValues.dni,
-          email: data.formValues.email,
+          nombre: data.username,
+          apellido: data.userlastname,
+          dni: data.userdni,
+          email: data.useremail,
           contrato: userdata.contrato,
           rol: "Pasajero",
-          estado: true,
-          login: "",
-          fechaNac: data.formValues.fechaNac,
+          fechaNac: fecha,
           loginId: userdata.id
         },
         {
@@ -96,18 +101,19 @@ export function ModalComponent({ visible, onClose, data, inputChanged, setNewFet
     } else {
       await axios.post("/pasajero",
         {
-          nombre: data.data.username,
-          apellido: data.data.userlastname,
-          dni: data.data.userdni,
-          email: data.data.useremail,
+          nombre: data.username,
+          apellido: data.userlastname,
+          dni: data.userdni,
+          email: data.useremail,
           contrato: userdata.contrato,
+          valor_cuo_fija: data.valor_cuo_fija,
           rol: "Pasajero",
           estado: true,
-          login: "",
+          login: data.login,
           fechaNac: fecha,
-          forma_de_pago: data.FDPSeleccionado === 'Actualizado por IPC' ? 'ipc' : data.FDPSeleccionado === 'Dólares' ? 'dolares' : data.FDPSeleccionado === 'Contado' ? 'contado' : 'sin_int',
+          forma_de_pago: data.FDP,
           importe: importe,
-          cuotas: data.cuotaSeleccionada,
+          cuotas: data.cuota,
           loginId: userdata.id
         },
         {
@@ -130,9 +136,8 @@ export function ModalComponent({ visible, onClose, data, inputChanged, setNewFet
         })
     }
   }
-
   const transparent = "rgba(0,0,0,0.5)"
-  console.log(fecha);
+  console.log(inputChanged);
 
   return (
     <Modal
@@ -146,7 +151,7 @@ export function ModalComponent({ visible, onClose, data, inputChanged, setNewFet
         <View style={{ borderRadius: 10, width: 373, height: 449, backgroundColor: "white", justifyContent: 'center', alignItems: 'center' }}>
           <View style={{ width: 275, height: 57, alignItems: "center", justifyContent: "center" }}>
             {
-              data?.data ?
+              data.FDP !== undefined ?
                 <Text style={{ color: "#564C71", fontWeight: "500", fontSize: 16, lineHeight: 19, textAlign: "center" }}>
                   Se va a dar de alta el pasajero y se crearán las cuotas del viaje.
                   ¿Desea confirmar?
@@ -158,19 +163,23 @@ export function ModalComponent({ visible, onClose, data, inputChanged, setNewFet
                 </Text>
             }
           </View>
-          <View style={{ width: 306, height: 190, justifyContent: "center", alignItems: "center" }}>
+          <View style={{ width: 306, height: 220, justifyContent: "center", alignItems: "center" }}>
+            <Text style={{ fontWeight: "700", fontSize: 12, color: "#949AAF", lineHeight: 30 }}>
+              {data?.username}, {data?.userlastname}
+            </Text>
+            <Text style={{ fontWeight: "700", fontSize: 12, color: "#949AAF", lineHeight: 30 }}>
+              DNI {data?.userdni}
+            </Text>
+            <Text style={{ fontWeight: "700", fontSize: 12, color: "#949AAF", lineHeight: 30 }}>
+              Fecha de Nacimiento {data?.fechaNac}
+            </Text>
+            <Text style={{ fontWeight: "700", fontSize: 12, color: "#949AAF", lineHeight: 30 }}>
+              Email {data?.useremail}
+            </Text>
             {
-              data ?
+              data.FDP === undefined ?
+                null :
                 <>
-                  <Text style={{ fontWeight: "700", fontSize: 12, color: "#949AAF", lineHeight: 30 }}>
-                    {data?.username}, {data?.userlastname}
-                  </Text>
-                  <Text style={{ fontWeight: "700", fontSize: 12, color: "#949AAF", lineHeight: 30 }}>
-                    DNI {data?.userdni}
-                  </Text>
-                  <Text style={{ fontWeight: "700", fontSize: 12, color: "#949AAF", lineHeight: 30 }}>
-                    Fecha de Nacimiento {data?.fechaNac}
-                  </Text>
                   <Text style={{ fontWeight: "700", fontSize: 12, color: "#949AAF", lineHeight: 30 }}>
                     Importe ${importe.toLocaleString('es-ES', { style: 'decimal' })}
                     {
@@ -179,10 +188,12 @@ export function ModalComponent({ visible, onClose, data, inputChanged, setNewFet
                   </Text>
                   {
                     data.FDP === 'ipc' ?
-                      <Text style={{ fontWeight: "700", fontSize: 12, color: "#949AAF", lineHeight: 13 }}>
-                        Las cuotas serán ajustadas por el índice de precios al consumidor acumulado, a partir de la cuota 4.
-                      </Text>
-                    :
+                      <View style={{ height: 65, justifyContent: "center" }}>
+                        <Text style={{ fontWeight: "700", fontSize: 12, color: "#949AAF", lineHeight: 13 }}>
+                          Acepto que mis cuotas serán ajustadas por el índice de precios al consumidor acumulado, a partir de la cuota definida por contrato
+                        </Text>
+                      </View>
+                      :
                       <Text style={{ fontWeight: "700", fontSize: 12, color: "#949AAF", lineHeight: 30 }}>
                         Cuotas {data?.cuota} de ${totalCuotas}
                         {
@@ -190,24 +201,6 @@ export function ModalComponent({ visible, onClose, data, inputChanged, setNewFet
                         }
                       </Text>
                   }
-                </>
-                :
-                <>
-                  <Text style={{ fontWeight: "700", fontSize: 12, color: "#949AAF", lineHeight: 30 }}>
-                    {data?.formValues?.nombre}, {data?.formValues?.apellido}
-                  </Text>
-                  <Text style={{ fontWeight: "700", fontSize: 12, color: "#949AAF", lineHeight: 30 }}>
-                    DNI {data?.formValues?.dni}
-                  </Text>
-                  <Text style={{ fontWeight: "700", fontSize: 12, color: "#949AAF", lineHeight: 30 }}>
-                    Fecha de Nacimiento {data?.formValues?.fechaNac}
-                  </Text>
-                  <Text style={{ fontWeight: "700", fontSize: 12, color: "#949AAF", lineHeight: 30 }}>
-                    Importe ${data?.importe}
-                  </Text>
-                  <Text style={{ fontWeight: "700", fontSize: 12, color: "#949AAF", lineHeight: 30 }}>
-                    Cuotas {data?.cuotas} de {totalCuotas}
-                  </Text>
                 </>
             }
           </View>

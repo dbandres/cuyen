@@ -16,6 +16,7 @@ import { useEffect, useState } from 'react';
 import { ActivityIndicator, Linking, Text, TouchableOpacity, View } from 'react-native';
 import axios from 'axios';
 import { token } from './src/api';
+import { InfoProvider } from './src/screens/tabScreens/infoViaje/InfoContext';
 
 
 export default function App() {
@@ -83,13 +84,13 @@ export default function App() {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#D2DCEB" }}>
         <View style={{ width: "90%", height: 300, backgroundColor: "#FFFFFF", justifyContent: "center", alignItems: "center", borderRadius: 10 }}>
-          <View style={{width:"90%", alignItems:"center", justifyContent:"center", height:90}}>
-            <Text style={{ fontWeight: "800", fontSize: 16, lineHeight: 18, color: "#564C71", textAlign:"center" }}>
+          <View style={{ width: "90%", alignItems: "center", justifyContent: "center", height: 90 }}>
+            <Text style={{ fontWeight: "800", fontSize: 16, lineHeight: 18, color: "#564C71", textAlign: "center" }}>
               {error.texto}
             </Text>
           </View>
-          <TouchableOpacity onPress={() => { abrirLink(error.url) }} style={{  width: 331, height: 47, backgroundColor: "#FF3D00", borderRadius: 10, justifyContent: "center", alignItems: "center" }}>
-            <Text style={{color:"white", fontWeight:"600", fontSize:14, lineHeight:14}}>
+          <TouchableOpacity onPress={() => { abrirLink(error.url) }} style={{ width: 331, height: 47, backgroundColor: "#FF3D00", borderRadius: 10, justifyContent: "center", alignItems: "center" }}>
+            <Text style={{ color: "white", fontWeight: "600", fontSize: 14, lineHeight: 14 }}>
               Actualizar
             </Text>
           </TouchableOpacity>
@@ -102,24 +103,26 @@ export default function App() {
     <Provider store={store}>
       <AuthProvider>
         <UserProvider>
-          <NavigationContainer>
-            {
-              loading === true ?
-                <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#D2DCEB" }}>
-                  <ActivityIndicator size="large" color="#FF3D00" />
-                  <View style={{ height: 50, justifyContent: "center", alignItems: "center", width:"90%" }}>
-                    <Text style={{ fontWeight: "800", fontSize: 16, lineHeight: 18, color: "#564C71", textAlign:"center" }}>
-                      Estamos comprobando la version de la aplicación.
-                    </Text>
+          <InfoProvider>
+            <NavigationContainer>
+              {
+                loading === true ?
+                  <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#D2DCEB" }}>
+                    <ActivityIndicator size="large" color="#FF3D00" />
+                    <View style={{ height: 50, justifyContent: "center", alignItems: "center", width: "90%" }}>
+                      <Text style={{ fontWeight: "800", fontSize: 16, lineHeight: 18, color: "#564C71", textAlign: "center" }}>
+                        Estamos comprobando la version de la aplicación.
+                      </Text>
+                    </View>
                   </View>
-                </View>
-                :
-                error !== null ?
-                  renderAlertError()
                   :
-                  <AuthNavigator />
-            }
-          </NavigationContainer>
+                  error !== null ?
+                    renderAlertError()
+                    :
+                    <AuthNavigator />
+              }
+            </NavigationContainer>
+          </InfoProvider>
         </UserProvider>
       </AuthProvider>
     </Provider>

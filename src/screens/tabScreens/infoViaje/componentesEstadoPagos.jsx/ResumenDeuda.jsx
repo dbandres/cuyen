@@ -35,6 +35,8 @@ export function ResumenDeuda({ data }) {
     setIsExpanded(!isExpanded);
   };
 
+  console.log(JSON.stringify(data, null, 3));
+
   return (
     <Animated.View ref={contentRef} style={{ height: heightAnim, width: 373, backgroundColor: "white", marginTop: "5%", borderRadius: 10, padding: "2%", justifyContent: "flex-start", alignItems: "center" }}>
       <TouchableOpacity onPress={toggleExpand} disabled={data ? false : true} style={{ width: 333, display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", height: isExpanded ? 91 : "100%", }}>

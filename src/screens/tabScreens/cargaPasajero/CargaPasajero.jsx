@@ -42,7 +42,7 @@ export function CargaPasajero({ navigation }) {
 		}
 	}, [newFetch])
 
-	//console.log(JSON.stringify(pasajero, null ,3));
+	console.log(JSON.stringify(pasajero, null ,3));
 
 	return (
 		<SafeAreaView style={{flex:1}}>

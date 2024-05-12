@@ -1,9 +1,10 @@
 import { Modal, Text, TouchableOpacity, View } from "react-native"
 import CheckBox from "@react-native-community/checkbox";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ButtonCustom } from "../../../components/ButtomCustom";
 import axios from "axios";
 import { token } from "../../../api";
+import { UserContext } from "../../../context/UserContext";
 
 
 const transparent = "rgba(0,0,0,0.5)"
@@ -13,6 +14,7 @@ export function ModalDieta({ visible, onClose, data, setError, increaseProgress 
   // console.log(JSON.stringify(data, null ,3));
 
   const [buttonDisabled, setButtonDisabled] = useState(false);
+  const { userdata } = useContext(UserContext)
 
   const [options, setOptions] = useState({
     vegetariano: data.dieta ? data.dieta.vegetariano : false,
@@ -73,7 +75,8 @@ export function ModalDieta({ visible, onClose, data, setError, increaseProgress 
 
   const putPasajeroDieta = async () => {
     const resp = await axios.put(`/pasajero/${data.id}`, {
-      dieta: options
+      dieta: options,
+      loginId: userdata.id
     },
       {
         headers: {
@@ -85,6 +88,8 @@ export function ModalDieta({ visible, onClose, data, setError, increaseProgress 
     onClose()
     increaseProgress("dieta",20)
   }
+
+  console.log(data.id, options);
 
   return (
     <Modal

@@ -262,6 +262,7 @@ export function getAllPasajerosXColegioFilter(num) {
 }
 
 export function getItinerario(num) {
+	console.log('numero de contrato para itinerario', num);
 	return async function (dispatch) {
 		try {
 			const response = await axios.get(`/itinerario/contract/${num}`, {
@@ -276,6 +277,10 @@ export function getItinerario(num) {
 			})
 		} catch (error) {
 			console.log('Error de Axios getItinerario:', error)
+			dispatch({
+				type: GET_ITINERARIO,
+				payload: [],
+			});
 		}
 	}
 }
@@ -330,6 +335,15 @@ export function getPasajero(num) {
 			console.log('Error de Axios getPasajero:', error)
 		}
 	}
+}
+
+export function cleanPasajero(){
+	return function (dispatch) {
+		dispatch({
+			type: GET_PASAJERO,
+			payload: []
+		});
+	};
 }
 
 export function getContratoByNum(num) {
@@ -424,6 +438,7 @@ export function verifyUserByDni(num) {
 }
 
 export function getCuotasPasajero(num, id) {
+	console.log(num, id);
 	return async function (dispatch) {
 		try {
 			const response = await axios.get(`/cuotas/statusfee/${num}/${id}`, {

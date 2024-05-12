@@ -1,7 +1,8 @@
 import { Modal, Text, TouchableOpacity, View, ActivityIndicator, StyleSheet } from "react-native"
 import { checkCameraPermission, checkGaleyPermission, handleCameraPermission, openCamera, openImageLibrary, requestGalleryPermission } from "./ImagePicker"
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import uploadImages from "./uploadImages";
+import { UserContext } from "../../../context/UserContext";
 
 export function ModalAlertCarga({ visible, onClose, texto, data, children, setNewFetch, setCantidadImg }) {
 
@@ -11,6 +12,8 @@ export function ModalAlertCarga({ visible, onClose, texto, data, children, setNe
 
   const [checkGalery, setCheckGalery] = useState(false)
   const [checkCamera, setCheckCamera] = useState(false)
+
+  const { userdata } = useContext(UserContext)
 
   useEffect(() => {
     if (visible === true) {
@@ -41,7 +44,7 @@ export function ModalAlertCarga({ visible, onClose, texto, data, children, setNe
   }
 
   const requireData = (img, name, dato) => {
-    uploadImages(img, name, dato)
+    uploadImages(img, name, dato, userdata.id)
       .then(res => {
         console.log('Todas las imágenes se han subido correctamente:', res);
         setNewFetch(true)

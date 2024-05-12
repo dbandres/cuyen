@@ -13,6 +13,7 @@ export function AdjuntarArchivos({ children, increaseProgress, data, setNewFetch
 
   const [dniUrl, setDniUrl] = useState([])
   const [carnetUrl, setCarnetUrl] = useState([])
+  
   const [fichaUrl, setFichaUrl] = useState("")
   const [declaracionUrl, setDeclaracionUrl] = useState("")
 

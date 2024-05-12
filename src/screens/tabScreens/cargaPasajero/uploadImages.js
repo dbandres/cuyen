@@ -1,7 +1,7 @@
 import axios from "axios";
 import { token } from "../../../api";
 
-const uploadImages = (img, name, data) => {
+const uploadImages = (img, name, data, idUser) => {
 
   return new Promise((resolve, reject) => {
     const promises = img.map(image => {
@@ -27,7 +27,8 @@ const uploadImages = (img, name, data) => {
             responsesArray.push(res.data);
             if (name === "Ficha medica") {
               const resp = axios.put(`/pasajero/${data}`, {
-                ficha_med: res.data
+                ficha_med: res.data,
+                loginId: idUser
               },
                 {
                   headers: {
@@ -41,7 +42,8 @@ const uploadImages = (img, name, data) => {
             }
             else if(name === "Declaración jurada") {
               const resp = axios.put(`/pasajero/${data}`, {
-                dec_jurada: res.data
+                dec_jurada: res.data,
+                loginId: idUser
               },
                 {
                   headers: {
@@ -57,7 +59,8 @@ const uploadImages = (img, name, data) => {
         });
         if (name === "Carnet de obra social" && responsesArray.length === 2) {
           const resp = axios.put(`/pasajero/${data}`, {
-            obra_soc: responsesArray
+            obra_soc: responsesArray,
+            loginId: idUser
           },
             {
               headers: {
@@ -71,7 +74,8 @@ const uploadImages = (img, name, data) => {
         }
         else if (name === "Documento de identidad" && responsesArray.length === 2) {
           const resp = axios.put(`/pasajero/${data}`, {
-            image_dni: responsesArray
+            image_dni: responsesArray,
+            loginId: idUser
           },
             {
               headers: {

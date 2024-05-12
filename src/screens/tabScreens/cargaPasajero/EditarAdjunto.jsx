@@ -1,7 +1,7 @@
 import { Image, Modal, Text, TouchableOpacity, View, ActivityIndicator, Platform } from "react-native";
 import { ButtonCustom } from "../../../components/ButtomCustom";
 import { deleteImgSpaces, deleteImgUrl } from "./EditarArchivos";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { openCamera, openImageLibrary } from "./ImagePicker";
 import AwesomeAlert from "react-native-awesome-alerts";
 import updateImage from "./updateImage";
@@ -10,6 +10,7 @@ import { token } from "../../../api";
 import { Ok } from "./Ok";
 import { getDownloadPermissionAndroid, downloadFile } from "./downloadFile";
 import RNFetchBlob from "rn-fetch-blob";
+import { UserContext } from "../../../context/UserContext";
 
 
 const transparent = "rgba(0,0,0,0.5)"
@@ -18,6 +19,8 @@ export function EditarAdjunto({ visible, onClose, data, children, id, setNewFetc
 
   const [urlData, setUrlData] = useState("")
   const [nuevasImagenes, setNuevasImagenes] = useState("")
+  const { userdata } = useContext(UserContext)
+
   const [activity, setActivity] = useState(false)
   const [activity2, setActivity2] = useState(false)
   const [showAlert, setShowAlert] = useState(false);
@@ -163,7 +166,8 @@ export function EditarAdjunto({ visible, onClose, data, children, id, setNewFetc
   const subirNuevosArchivos = () => {
     if (nuevasImagenes !== "" && children === "Documento de identidad") {
       axios.put(`/pasajero/${id}`, {
-        image_dni: nuevasImagenes
+        image_dni: nuevasImagenes,
+        loginId: userdata.id
       },
         {
           headers: {
@@ -181,7 +185,8 @@ export function EditarAdjunto({ visible, onClose, data, children, id, setNewFetc
         })
     }else if(nuevasImagenes !== "" && children === "Carnet de obra social"){
       axios.put(`/pasajero/${id}`, {
-        obra_soc: nuevasImagenes
+        obra_soc: nuevasImagenes,
+        loginId: userdata.id
       },
         {
           headers: {

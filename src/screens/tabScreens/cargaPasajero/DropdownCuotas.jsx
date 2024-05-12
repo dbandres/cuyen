@@ -34,13 +34,11 @@ export const DropdownCuotas = ({ isExpanded1, setIsExpanded1, contentRef1, heigh
               </TouchableOpacity>
               :
               item === "Actualizado por IPC" ?
-                dataPasajero.cuotas.slice(2).map((cuota, index) => (
-                  <TouchableOpacity key={index} onPress={() => { selectCuota(cuota) }} style={{ borderRadius: 10, height: 24, justifyContent: "center" }}>
+                  <TouchableOpacity onPress={() => { selectCuota(dataPasajero.cuo_disp_ipc) }} style={{ borderRadius: 10, height: 24, justifyContent: "center" }}>
                     <Text style={{ fontWeight: "600", fontSize: 14, lineHeight: 16, color: "#CDD1DF", marginLeft: 10 }}>
-                      {cuota}
+                      {dataPasajero.cuo_disp_ipc}
                     </Text>
                   </TouchableOpacity>
-                ))
                 :
                 dataPasajero.cuotas.map((cuota, index) => (
                   <TouchableOpacity key={index} onPress={() => { selectCuota(cuota) }} style={{ borderRadius: 10, height: 24, justifyContent: "center" }}>
