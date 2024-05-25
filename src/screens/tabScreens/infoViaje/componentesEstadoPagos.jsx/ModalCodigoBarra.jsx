@@ -1,9 +1,12 @@
 import { Modal, Text, TouchableOpacity, View } from "react-native";
 import Barcode from '@adrianso/react-native-barcode-builder';
+import { useState } from "react";
 
 export function ModalCodigoBarra({ visible, onClose, data }) {
 
   const transparent = "rgba(0,0,0,0.5)"
+  const [refresh, setRefresh] = useState(false)
+
   return (
     <Modal
       animationType="slide"

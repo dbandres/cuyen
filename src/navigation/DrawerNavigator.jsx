@@ -37,7 +37,7 @@ const CustomDrawerContent = ({ navigation }) => {
 			usuario: ""
 		})
 		setMiInfo({
-			numPasajero: [],
+			numPasajero: "",
 			hotelId: ""
 		})
 		dispatch(cleanPasajero())

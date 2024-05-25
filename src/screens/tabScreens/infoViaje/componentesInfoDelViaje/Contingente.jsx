@@ -14,7 +14,6 @@ export function Contingente({ navigation }) {
   const [heightAnim] = useState(new Animated.Value(88));
   const contentRef = useRef(null);
   const { userdata } = useContext(UserContext)
-  const { miInfo, setMiInfo } = useContext(InfoContext)
   const pasajero = useSelector((state) => state.pasajero)
   const dispatch = useDispatch()
   const [newValue, setNewValue] = useState("")
@@ -32,17 +31,6 @@ export function Contingente({ navigation }) {
         console.log('Pantalla desenfocada Contingente. Limpieza o desmontaje aquí.');
       };
     }, []))
-
-  useEffect(() => {
-    if (pasajero.length !== 0) {
-      // Función para cambiar el valor de numPasajero
-        setMiInfo(prevState => ({
-          ...prevState,
-          numPasajero: pasajero[0].numPas
-        }))
-    }
-
-  }, [pasajero])
 
 
   const toggleExpand = () => {

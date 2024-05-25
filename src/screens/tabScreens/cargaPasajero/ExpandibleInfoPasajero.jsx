@@ -210,7 +210,7 @@ export function ExpandibleInfoPasajero({ data, setNewFetch }) {
               <Text style={{ color: "#564C71", fontWeight: "800", fontSize: 12, lineHeight: 14, marginBottom: 6 }}>
                 Pasajero
               </Text>
-              <Text style={{ color: "#564C71", fontWeight: "400", fontSize: 16, lineHeight: 19 }}>
+              <Text style={{ color: "#564C71", fontWeight: "400", fontSize: 12, lineHeight: 19 }}>
                 {data.nombre}, {data.apellido}
               </Text>
             </View>

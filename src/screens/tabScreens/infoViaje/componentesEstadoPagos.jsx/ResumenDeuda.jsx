@@ -35,7 +35,7 @@ export function ResumenDeuda({ data }) {
     setIsExpanded(!isExpanded);
   };
 
-  console.log(JSON.stringify(data, null, 3));
+  /* console.log(JSON.stringify(data, null, 3)); */
 
   return (
     <Animated.View ref={contentRef} style={{ height: heightAnim, width: 373, backgroundColor: "white", marginTop: "5%", borderRadius: 10, padding: "2%", justifyContent: "flex-start", alignItems: "center" }}>

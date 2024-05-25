@@ -43,7 +43,7 @@ export function DetalleInfoContrato({InfoContrato}) {
           Quincena
         </Text>
         <Text style={styles.descrip}>
-          {InfoContrato. periodo}
+          {InfoContrato.periodo.trim()} - {InfoContrato.mes}
         </Text>
       </View>
       <View style={{marginBottom:5, display:"flex", flexDirection:"row"}}>

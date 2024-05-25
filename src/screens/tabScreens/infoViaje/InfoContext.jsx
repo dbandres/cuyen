@@ -4,7 +4,7 @@ export const InfoContext = createContext();
 
 export const InfoProvider = ({ children }) => {
   const [miInfo, setMiInfo] = useState({
-    numPasajero: [],
+    numPasajero: "",
     hotelId: ""
   });
 

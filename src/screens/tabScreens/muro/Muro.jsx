@@ -137,7 +137,7 @@ export function Muro({ navigation }) {
 						:
 						<View>
 							<Text>
-								No hay publicaiones
+							Su viaje aún no ha comenzado! Pronto vas a tener novedades!
 							</Text>
 						</View>
 				}

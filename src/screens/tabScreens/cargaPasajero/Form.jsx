@@ -330,10 +330,10 @@ console.log(toggleCheckBox,toggleCheckBoxDolares,toggleCheckBoxIPC);
               value: 2,
               message: "El Apellido no es válido."
             },
-            maxLength: {
+            /* maxLength: {
               value: 15,
               message: "El Apellido no es válido."
-            }
+            } */
           }}
         />
         <View style={{

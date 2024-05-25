@@ -19,7 +19,7 @@ const initialState = {
   hotelInfo: [],
   allColegios: [],
   cuotasPasajero: "",
-  codPasajero: [],
+  codPasajero: null,
   destinoClean: [],
   currentContrato: []
 }

@@ -75,7 +75,7 @@ export function Ubicacion({ navigation }) {
 								Destino
 							</Text>
 							<Text style={{ color: "#564C71", fontWeight: "400", fontSize: 16, lineHeight: 19 }}>
-								{destino.destino}
+								{destino.destino? destino.destino : 'Destino no disponible.'}
 							</Text>
 						</View>
 					</View>

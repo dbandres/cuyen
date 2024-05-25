@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Image } from "react-native";
 import { Header } from "../muro/Header";
 import { ResumenDeuda } from "./componentesEstadoPagos.jsx/ResumenDeuda";
 import { EstadoDePagosComponent } from "./componentesEstadoPagos.jsx/EstadoDePagosComponent";
@@ -10,8 +10,8 @@ import { getCodigoBarraPasajero, getCuotasPasajero } from "../../../redux/action
 import { InfoContext } from "./InfoContext";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AuthContext } from "../../../context/AuthContext";
-import { useFocusEffect } from "@react-navigation/native";
 import AwesomeAlert from "react-native-awesome-alerts";
+import { SelectPasajero } from "./componentesEstadoPagos.jsx/SelectPasajero";
 
 
 export function EstadoDePagos({ navigation }) {
@@ -26,49 +26,55 @@ export function EstadoDePagos({ navigation }) {
   const dispatch = useDispatch()
 
   const getAlert = () => {
-		return (
-			<AwesomeAlert
-				show={showAlert}
-				showProgress={true}
-				progressColor="black"
-				progressSize={50}
-				closeOnTouchOutside={false}
-			/>
-		)
-	}
-
-  useEffect(()=>{
-    setShowAlert(true)
-  },[])
+    return (
+      <AwesomeAlert
+        show={showAlert}
+        showProgress={true}
+        progressColor="black"
+        progressSize={50}
+        closeOnTouchOutside={false}
+      />
+    )
+  }
 
   useEffect(() => {
-    getAlert()
-    if (authenticate === true) {
+    if (miInfo.numPasajero !== "") {
+      setShowAlert(true)
       dispatch(getCuotasPasajero(userdata.contrato[0], miInfo.numPasajero))
       dispatch(getCodigoBarraPasajero(userdata.contrato[0], miInfo.numPasajero))
-      setTimeout(()=>{
+      setTimeout(() => {
         setShowAlert(false)
-      },4000)
+      }, 5000)
     } else {
-      setMiInfo({
-        numPasajero: [],
-        hotelId: ""
-      })
+      console.log('no hay ningun pasajero seleccionado');
     }
-  }, [dispatch, authenticate])
+  }, [miInfo])
 
-  console.log(showAlert);
+  /* console.log(codPasajero); */
+
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView style={{ flex: 1, backgroundColor: "#D2DCEB" }}>
         <View style={styles.container}>
-          <Header children="Contrato" navigation={navigation} />
+          <Header children="Estado de pagos" navigation={navigation} />
+          <SelectPasajero/>
           <ResumenDeuda
             data={cuotasPasajero}
           />
           <EstadoDePagosComponent data={cuotasPasajero} />
           <ProximosVencimientos data={codPasajero} />
+          <View style={{ width: 373, height: 88, backgroundColor: "#FFFFFF", borderRadius: 10, marginTop: 20, alignItems: "center", justifyContent: "flex-start", display: "flex", flexDirection: "row", padding: 20, marginBottom: 10 }}>
+            <View style={{ width: 44, height: 44, borderRadius: 50, backgroundColor: "#3FA9F5", alignItems: "center", justifyContent: "center" }}>
+              <Image
+                source={require('../../../assets/info.png')}
+                style={{ width: 20, height: 20 }}
+              />
+            </View>
+            <View style={{ height: 48, width: "80%", alignItems: "center", justifyContent: "center", marginLeft: 10 }}>
+              <Text style={{ color: "#564C71", fontWeight: "400", fontSize: 10, lineHeight: 12 }}>Tenga presente que la información relacionado con la creación de cuotas o el impacto de los pagos, puede demorar entre 48 y 72 hs en actualizarse.</Text>
+            </View>
+          </View>
         </View>
       </ScrollView>
       {showAlert ? getAlert() : null}
