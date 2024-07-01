@@ -3,9 +3,10 @@ import { Animated, Image, Text, TouchableOpacity, View, StyleSheet } from 'react
 import { UserContext } from '../../../context/UserContext';
 import { useDispatch } from 'react-redux';
 import { CurrentContrato } from '../../../redux/actions';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-export function InfoContrato({ contratoInfo }) {
+export function InfoContrato({ contratoInfo, navigation }) {
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [heightAnim] = useState(new Animated.Value(88));
@@ -25,7 +26,7 @@ export function InfoContrato({ contratoInfo }) {
       contentRef.current.measure((x, y, width, height) => {
         console.log("he: ", height)
         Animated.timing(heightAnim, {
-          toValue: 320, // Ajusta según tus necesidades
+          toValue: 290, // Ajusta según tus necesidades
           //toValue: height + 480,
           duration: 100,
           useNativeDriver: false,
@@ -44,16 +45,28 @@ export function InfoContrato({ contratoInfo }) {
 
   useEffect(()=>{
     if(isExpanded === true){
-      const contratoAcomodado = userdata.contrato.filter((contrato, index) => contrato === contratoInfo.num)
-      console.log(contratoAcomodado);
-      setContratoSelect(contratoAcomodado[0])
+      const contratoAcomodado = userdata.contrato.find((contrato) => contrato === contratoInfo.num)
+      setContratoSelect(contratoAcomodado)
     }
   },[contratoInfo, isExpanded])
 
-  console.log(contratoSelect);
+  const storeData = async (key, value) => {
+    try {
+      await AsyncStorage.setItem(key, value);
+      dispatch(CurrentContrato(contratoSelect))
+    } catch (e) {
+      // guarda el error si ocurre
+      console.error("Error al guardar los datos", e);
+    }
+  };
 
-  const select = () =>{
-    dispatch(CurrentContrato(contratoSelect))
+  console.log(userdata.contrato, contratoInfo.num);
+
+  const select = (num) =>{
+    console.log('num', num);
+    storeData('contratoNum', num);
+    toggleExpand()
+    navigation.openDrawer();
   }
 
 
@@ -120,7 +133,7 @@ export function InfoContrato({ contratoInfo }) {
                 Quincena
               </Text>
               <Text style={styles.texto}>
-                {contratoInfo.periodo.trim()}
+                {contratoInfo.periodo.trim()} {contratoInfo.año.trim()}
               </Text>
             </View>
             <View style={{ display: "flex", flexDirection: "row", }}>
@@ -131,16 +144,16 @@ export function InfoContrato({ contratoInfo }) {
                 {contratoInfo.destino.trim()}
               </Text>
             </View>
-            <TouchableOpacity onPress={select} style={{ width: 320, height: 40, borderRadius: 10, borderWidth: 1, borderColor: "#334EA2", justifyContent: "center", alignItems: "center", marginTop: 20 }}>
+            <TouchableOpacity onPress={()=>{select(contratoInfo.num)}} style={{ width: 320, height: 40, borderRadius: 10, borderWidth: 1, borderColor: "#334EA2", justifyContent: "center", alignItems: "center", marginTop: 20 }}>
               <Text style={{color:"#334EA2", fontWeight:"600", fontSize:12, lineHeight:14, textAlign:"center"}}>
                 Seleccionar
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity style={{ width: 320, height: 40, borderRadius: 10, borderWidth: 1, borderColor: "#FF6363", justifyContent: "center", alignItems: "center", marginTop: 10 }}>
+            {/* <TouchableOpacity style={{ width: 320, height: 40, borderRadius: 10, borderWidth: 1, borderColor: "#FF6363", justifyContent: "center", alignItems: "center", marginTop: 10 }}>
               <Text style={{color:"#FF6363", fontWeight:"600", fontSize:12, lineHeight:14, textAlign:"center"}}>
                 Desasociar contrato
               </Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
           :
           null

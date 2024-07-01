@@ -5,6 +5,7 @@ import { UserContext } from "../../../context/UserContext";
 import axios from "axios";
 import { token } from "../../../api";
 import AwesomeAlert from "react-native-awesome-alerts";
+import { useSelector } from "react-redux";
 
 export function ModalComponent({ visible, onClose, data, inputChanged, setNewFetch, agregarPasajero }) {
 
@@ -13,6 +14,7 @@ export function ModalComponent({ visible, onClose, data, inputChanged, setNewFet
   const [fecha, setFecha] = useState("")
   const [showAlert2, setShowAlert2] = useState(false)
   const [importe, setImporte] = useState("")
+  const contratoActual = useSelector((state) => state.currentContrato)
 
   const getAlert = () => {
     return (
@@ -25,17 +27,20 @@ export function ModalComponent({ visible, onClose, data, inputChanged, setNewFet
     )
   }
 
+  console.log(JSON.stringify(data, null, 3));
+
+
   useEffect(() => {
-    if (data && data.FDP !== 'dolares') {
-      setImporte(parseInt(data?.montoRender))
+    if (data && data.FDP !== 'Dolares') {
+      setImporte(parseInt(data?.importe))
       let total = parseInt(data?.importe) / data?.cuota
       setTotalCuotas(total.toFixed(2));
       if (data.importe) {
-        let total = parseInt(data.importe) / data?.cuota
-        setTotalCuotas(total.toFixed(2));
+        let total = Math.round(parseInt(data.importe) / data?.cuota)
+        setTotalCuotas((total.toLocaleString('es-ES')));
       }
     }
-    else if (data && data.FDP === 'dolares') {
+    else if (data && data.FDP === 'Dolares') {
       setImporte(parseInt(data?.importe))
       let total = parseInt(data?.importe) / data?.cuota
       setTotalCuotas(total.toFixed(2));
@@ -63,8 +68,6 @@ export function ModalComponent({ visible, onClose, data, inputChanged, setNewFet
       }
     }
   }, [data])
-
-  console.log(data);
 
   const postPasajero = async () => {
     setShowAlert2(true)
@@ -131,13 +134,12 @@ export function ModalComponent({ visible, onClose, data, inputChanged, setNewFet
           }
           console.log(res);
         }).catch((error) => {
-          console.log(error);
+          console.log(error.message);
           setShowAlert2(false)
         })
     }
   }
   const transparent = "rgba(0,0,0,0.5)"
-  console.log(inputChanged);
 
   return (
     <Modal
@@ -183,7 +185,7 @@ export function ModalComponent({ visible, onClose, data, inputChanged, setNewFet
                   <Text style={{ fontWeight: "700", fontSize: 12, color: "#949AAF", lineHeight: 30 }}>
                     Importe ${importe.toLocaleString('es-ES', { style: 'decimal' })}
                     {
-                      data.FDP === 'dolares' ? ' Dólares' : ' Pesos'
+                      data.FDP === 'Dolares' ? ' Dólares' : ' Pesos'
                     }
                   </Text>
                   {
@@ -197,7 +199,7 @@ export function ModalComponent({ visible, onClose, data, inputChanged, setNewFet
                       <Text style={{ fontWeight: "700", fontSize: 12, color: "#949AAF", lineHeight: 30 }}>
                         Cuotas {data?.cuota} de ${totalCuotas}
                         {
-                          data.FDP === 'dolares' ? ' Dólares' : ' Pesos'
+                          data.FDP === 'Dolares' ? ' Dólares' : ' Pesos'
                         }
                       </Text>
                   }

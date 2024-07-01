@@ -3,43 +3,31 @@ import { useEffect, useState } from "react";
 import { Image, Text, View } from "react-native";
 
 
-const ImporteText = ({ FDPSeleccionado, dataPasajero, importe, setImporte, toggleCheckBoxIPC, setToggleCheckBoxIPC, setToggleCheckBoxDolares, toggleCheckBoxDolares }) => {
+const ImporteText = ({ FDPSeleccionado, importe, setImporte, toggleCheckBoxIPC, setToggleCheckBoxIPC, setToggleCheckBoxDolares, toggleCheckBoxDolares, importeResponse }) => {
 
   const [moneda, setMoneda] = useState(null)
   const [mensajeIpc, setMensajeIpc] = useState('')
   const [mensajeDolares, setMensajeDolares] = useState('')
 
+  const buscarObjetoPorValor = (valor, array) => {
+    if(valor === 'Dolares'){
+      setMoneda('Dólares')
+      setMensajeDolares('Acepto que mis cuotas serán pagadas en dólares estadounidenses, y que el pago sólo podrá ser efectuado por transferencia o en las oficinas comerciales de Cuyen')
+    }else{
+      setMoneda('Pesos')
+      setMensajeDolares('')
+    }
+    return array.find(objeto => objeto.forma === valor);
+  };
+
+  console.log('importe: ', importeResponse, FDPSeleccionado);
+
   useEffect(() => {
-    switch (FDPSeleccionado.titulo) {
-      case 'Sin interés':
-        setMensajeIpc('')
-        setMensajeDolares('')
-        setImporte(dataPasajero.monto)
-        setMoneda('Pesos')
-        break;
-      case 'Dólares':
-        setMensajeIpc('')
-        setImporte(dataPasajero.valor_dolares)
-        setMoneda('Dólares')
-        setMensajeDolares('Acepto que mis cuotas serán pagadas en dólares estadounidenses, y que el pago sólo podrá ser efectuado por transferencia o en las oficinas comerciales de Cuyen')
-        break;
-      case 'Actualizado por IPC':
-        setImporte(dataPasajero.saldo_cuo_fija)
-        setMensajeIpc(`Acepto que mis cuotas serán ajustadas por el índice de precios al consumidor acumulado, a partir de la cuota definida por contrato`)
-        setMensajeDolares('')
-        break;
-      case 'Contado':
-        setMensajeIpc('')
-        setMensajeDolares('')
-        setImporte(dataPasajero.valor_contado)
-        setMoneda('Pesos')
-        break;
-      default:
-        break;
+    if (FDPSeleccionado) {
+      const resultImporte = buscarObjetoPorValor(FDPSeleccionado.valor, importeResponse)
+      setImporte(resultImporte.importe)
     }
   }, [FDPSeleccionado])
-
-  console.log(dataPasajero);
 
   const renderItem = (value) => {
     return (
@@ -115,7 +103,7 @@ const ImporteText = ({ FDPSeleccionado, dataPasajero, importe, setImporte, toggl
       }
       {
         mensajeDolares !== '' ?
-          <View style={{ height: "5%", display: "flex", flexDirection: "row", width: '87%',}}>
+          <View style={{ height: "5%", display: "flex", flexDirection: "row", width: '87%', }}>
             <View>
               <CheckBox
                 disabled={false}

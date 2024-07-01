@@ -18,7 +18,7 @@ export function EstadoDePagos({ navigation }) {
 
   const cuotasPasajero = useSelector((state) => state.cuotasPasajero)
   const codPasajero = useSelector((state) => state.codPasajero)
-  const { authenticate } = useContext(AuthContext)
+  const contratoActual = useSelector((state) => state.currentContrato)
   const { userdata } = useContext(UserContext)
   const { miInfo, setMiInfo } = useContext(InfoContext)
 
@@ -40,8 +40,8 @@ export function EstadoDePagos({ navigation }) {
   useEffect(() => {
     if (miInfo.numPasajero !== "") {
       setShowAlert(true)
-      dispatch(getCuotasPasajero(userdata.contrato[0], miInfo.numPasajero))
-      dispatch(getCodigoBarraPasajero(userdata.contrato[0], miInfo.numPasajero))
+      dispatch(getCuotasPasajero(contratoActual, miInfo.numPasajero))
+      dispatch(getCodigoBarraPasajero(contratoActual, miInfo.numPasajero))
       setTimeout(() => {
         setShowAlert(false)
       }, 5000)

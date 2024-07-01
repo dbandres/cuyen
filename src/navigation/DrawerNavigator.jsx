@@ -6,7 +6,7 @@ import { data } from './dataDrawer';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { RouteMuro } from '../screens/tabScreens/muro/RouteMuro';
 import { UserContext } from '../context/UserContext';
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Folleto } from '../screens/auth/intoScreen/Folleto';
 import { RouteLanding } from '../screens/auth/landing/RouteLanding';
 import { RouteGestion } from '../screens/tabScreens/gestionViaje/RouteGestion';
@@ -14,8 +14,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RouteInicial } from '../screens/tabScreens/infoViaje/RouteInicial';
 import { AuthContext } from '../context/AuthContext';
 import { InfoContext } from '../screens/tabScreens/infoViaje/InfoContext';
-import { useDispatch } from 'react-redux';
-import { cleanPasajero } from '../redux/actions';
+import { useDispatch, useSelector } from 'react-redux';
+import { cleanPasajero, CurrentContrato } from '../redux/actions';
+import { GestionContrato } from '../screens/tabScreens/gestionarContrato/GestionContrato';
 
 const CustomDrawerContent = ({ navigation }) => {
 
@@ -23,6 +24,7 @@ const CustomDrawerContent = ({ navigation }) => {
 	const { userdata, setUserData } = useContext(UserContext)
 	const {setAuthenticate} = useContext(AuthContext)
 	const { miInfo, setMiInfo } = useContext(InfoContext)
+	const contratoActual = useSelector((state) => state.currentContrato)
 
 	const singOutSession = () => {
 		AsyncStorage.removeItem("userStorage")
@@ -44,11 +46,49 @@ const CustomDrawerContent = ({ navigation }) => {
 		setAuthenticate(false)
 	}
 
+	const removeData = async (key) => {
+		try {
+			await AsyncStorage.removeItem(key);
+			console.log(`Data for key ${key} removed successfully`);
+		} catch (error) {
+			console.error('Failed to remove data', error);
+		}
+	};
+	
+
+	const getDataStorage = async (key) => {
+    try {
+      const value = await AsyncStorage.getItem(key);
+      if (value !== null) {
+				console.log("value storage: ", value);
+        return value;
+      }
+    } catch (error) {
+      console.error('Failed to retrieve data', error);
+    }
+  };
+
+	useEffect(() => {
+    // Obtener datos al inicio
+    const fetchData = async () => {
+      const value = await getDataStorage('contratoNum');
+      if (value) {
+        dispatch(CurrentContrato(value))
+      }
+    };
+
+    fetchData();
+		// Uso
+		/* removeData('contratoNum'); */
+  }, []);
+
 	const abrirLink = (linkUrl) => {
     const url = linkUrl;
     Linking.openURL(url)
       .catch((err) => console.error('Error al abrir el enlace:', err));
   };
+
+	console.log('contrato drawer: ', contratoActual);
 
 	return (
 		<DrawerContentScrollView style={{ backgroundColor: "#3462BF", flex: 1 }}>
@@ -96,7 +136,7 @@ const CustomDrawerContent = ({ navigation }) => {
 							</TouchableOpacity> */}
 						</View>
 						<View style={{borderWidth:1, borderColor:"#93E396" ,height:44, justifyContent:"center", borderRadius:5}}>
-						<Text style={{ color: "#93E396", fontWeight:"600", fontSize:12, lineHeight:14, textAlign:"center" }}>Contrato {userdata.contrato[0]}</Text>
+						<Text style={{ color: "#93E396", fontWeight:"600", fontSize:12, lineHeight:14, textAlign:"center" }}>Contrato {contratoActual.length !== 0 ? contratoActual : userdata.contrato[0]}</Text>
 						</View>
 					</View>
 					{
@@ -154,8 +194,8 @@ function DrawerNavigator() {
 			}}
 		>
 			<Drawer.Screen name="Inicio" component={RouteLanding} options={{ headerShown: false }} />
+			<Drawer.Screen name="gestio-contrato" component={GestionContrato} options={{ headerShown: false }} /> 
 			<Drawer.Screen name="info-viaje" component={RouteInicial} options={{ headerShown: false }} />
-			{/* <Drawer.Screen name="gestio-contrato" component={GestionContrato} options={{ headerShown: false }} />  */}
 			<Drawer.Screen name="muro" component={RouteMuro} options={{ headerShown: false }} />
 			<Drawer.Screen name="ubiViaje" component={Ubicacion} options={{ headerShown: false }} />
 			<Drawer.Screen name="folleto-screen" component={Folleto} options={{ headerShown: false }} />

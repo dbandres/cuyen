@@ -13,13 +13,14 @@ export function ItineratioDelViaje({ navigation }) {
 	const dispatch = useDispatch()
 	const itinerario = useSelector((state) => state.itinerario)
 	const destino = useSelector((state) => state.destino)
+	const contratoActual = useSelector((state) => state.currentContrato)
 	const { userdata } = useContext(UserContext)
 	const [textoGral, setTextoGral] = useState("")
 
 
 	useEffect(() => {
-		dispatch(getItinerario(userdata.contrato[0]))
-		dispatch(getDestino(userdata.contrato[0]))
+		dispatch(getItinerario(contratoActual))
+		dispatch(getDestino(contratoActual))
 	}, [userdata])
 
 	useEffect(() => {

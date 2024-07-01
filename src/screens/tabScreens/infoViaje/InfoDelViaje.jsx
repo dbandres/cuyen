@@ -20,8 +20,8 @@ export function InfoDelViaje({ navigation }) {
 	const contratoActual = useSelector((state) => state.currentContrato)
 
 	useEffect(() => {
-		dispatch(getDestino(userdata.contrato[0]))
-		dispatch(getContratoByNum(userdata.contrato[0]))
+		dispatch(getDestino(contratoActual))
+		dispatch(getContratoByNum(contratoActual))
 		dispatch(getPasajero(userdata.id))
 	}, [contratoActual, userdata])
 

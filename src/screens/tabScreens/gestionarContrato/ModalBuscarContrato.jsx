@@ -6,14 +6,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllColegios } from "../../../redux/actions";
 import axios from "axios";
 import { token } from "../../../api";
-import { ModalAlert } from "../../auth/registerScreen/ModalAlert";
+import { ModalAlert } from "../../auth/registerScreen/ModalAlert"
 import { UserContext } from "../../../context/UserContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+export function ModalBuscarContrato({ visible, onClose, setNewFetch, contratoInfo }) {
 
-export function ModalBuscarContrato({ visible, onClose, setNewFetch }) {
-
-  const { control, handleSubmit, setValue, watch, trigger } = useForm()
+  const { control, setValue, watch, trigger } = useForm()
   const allColegios = useSelector((state) => state.allColegios)
   const { userdata, setUserData } = useContext(UserContext)
   const dispatch = useDispatch()
@@ -32,10 +31,16 @@ export function ModalBuscarContrato({ visible, onClose, setNewFetch }) {
   const [showAlert4, setShowAlert4] = useState(false)
   const [error, setError] = useState(false)
 
+  const [totalColegios, setTotalColegios] = useState(null)
 
   useEffect(() => {
     dispatch(getAllColegios())
-  }, [])
+    const colegiosFiltrados = contratoInfo
+      .filter(info => info.colegio)
+      .map(colegio => colegio.colegio);
+    
+    setTotalColegios(allColegios.filter(nombre => !colegiosFiltrados.includes(nombre.nombre)))
+  }, [contratoInfo])
 
   useEffect(() => {
     if (inputValue !== "") {
@@ -60,7 +65,7 @@ export function ModalBuscarContrato({ visible, onClose, setNewFetch }) {
     let filteredData = [];
 
     if (inputValue.trim() !== '') {
-      filteredData = allColegios.filter((item) =>
+      filteredData = totalColegios.filter((item) =>
         item.nombre.toLowerCase().includes(inputValue.toLowerCase())
       ).slice(0, 5);
     }
@@ -136,9 +141,8 @@ export function ModalBuscarContrato({ visible, onClose, setNewFetch }) {
 
   const putContrato = async () => {
     const data = await AsyncStorage.getItem("userStorage")
-		const parseado = JSON.parse(data)
+    const parseado = JSON.parse(data)
     try {
-      console.log("que esta pasando");
       axios.put(`/usuarios/${userdata.id}`, {
         contrato: contratos
       },
@@ -153,7 +157,7 @@ export function ModalBuscarContrato({ visible, onClose, setNewFetch }) {
             console.log(res.data);
             setNewFetch(true)
             parseado.usuario.contrato = contratos,
-            AsyncStorage.setItem('userStorage', JSON.stringify(parseado))
+              AsyncStorage.setItem('userStorage', JSON.stringify(parseado))
             setUserData(prevUserData => ({
               ...prevUserData,
               contrato: contratos
@@ -177,8 +181,6 @@ export function ModalBuscarContrato({ visible, onClose, setNewFetch }) {
       console.log("error :", error);
     }
   }
-
-  console.log(contratos);
 
   const transparent = "rgba(0,0,0,0.5)"
   return (

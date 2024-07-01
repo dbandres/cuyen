@@ -16,11 +16,12 @@ export function Ubicacion({ navigation }) {
 	const [fecha, setFecha] = useState("")
 	const [latitude, setLatitude] = useState("")
 	const [longitude, setLongitude] = useState("")
+	const contratoActual = useSelector((state) => state.currentContrato)
 
 	useFocusEffect(
 		React.useCallback(() => {
 			try {
-				dispatch(getDestino(userdata.contrato[0]))
+				dispatch(getDestino(contratoActual))
 			} catch (error) {
 				console.log("Error en useFocusEffect: ", error);
 			}

@@ -106,7 +106,7 @@ export default function App() {
           <InfoProvider>
             <NavigationContainer>
               {
-                loading === true ?
+                /* loading === true ?
                   <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#D2DCEB" }}>
                     <ActivityIndicator size="large" color="#FF3D00" />
                     <View style={{ height: 50, justifyContent: "center", alignItems: "center", width: "90%" }}>
@@ -115,10 +115,10 @@ export default function App() {
                       </Text>
                     </View>
                   </View>
-                  :
-                  error !== null ?
+                  : */
+                  /* error !== null ?
                     renderAlertError()
-                    :
+                    : */
                     <AuthNavigator />
               }
             </NavigationContainer>

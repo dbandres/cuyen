@@ -35,7 +35,7 @@ export function GestionContrato({ navigation }) {
       dispatch(getContratoByNum(userdata.contrato))
     }
     setNewFetch(false)
-  }, [newFetch])
+  }, [])
 
   const openModal = () => {
     setShowModal(true)
@@ -44,7 +44,7 @@ export function GestionContrato({ navigation }) {
   const closedModal = () => {
     setShowModal(false)
   }
-  console.log(JSON.stringify(userdata, null, 3));
+/*   console.log(JSON.stringify(contratoInfo, null, 3)); */
 
   return (
     <View style={styles.container}>
@@ -57,7 +57,7 @@ export function GestionContrato({ navigation }) {
             <InfoContrato
               key={index}
               contratoInfo={contrato}
-              navigatio={navigation}
+              navigation={navigation}
             />
           ))
           :
@@ -74,6 +74,7 @@ export function GestionContrato({ navigation }) {
         visible={showModal}
         onClose={closedModal}
         setNewFetch={setNewFetch}
+        contratoInfo={contratoInfo}
       />
     </View>
   )

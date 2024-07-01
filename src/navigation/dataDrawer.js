@@ -1,14 +1,14 @@
 export const data = [
   {
+    text: "Gestionar contratos",
+    route: 'gestio-contrato',
+    img: "contract" // Ruta de la imagen como una cadena
+  },
+  {
     text: "Información del viaje",
     route: 'info-viaje',
     img: "infoViaje" // Ruta de la imagen como una cadena
   },
-  // {
-  //   text: "Gestionar contratos",
-  //   route: 'gestio-contrato',
-  //   img: "contract" // Ruta de la imagen como una cadena
-  // },
   {
     text: "Muro de publicaciones",
     route: 'muro',

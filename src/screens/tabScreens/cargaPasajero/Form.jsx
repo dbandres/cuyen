@@ -13,6 +13,7 @@ import { ModalComponent } from "./ModalComponent";
 import { Dropdown, DropdownFDP } from "./DropdownFDP";
 import { DropdownCuotas } from "./DropdownCuotas";
 import ImporteText from "./ImporteText";
+import { useSelector } from "react-redux";
 
 
 export function Form({ agregarPasajero, setNewFetch, }) {
@@ -45,17 +46,26 @@ export function Form({ agregarPasajero, setNewFetch, }) {
   const [newDate, setNewDate] = useState("")
 
   //importe 
-  const [importe, setImporte] = useState(null)
+  const [importe, setImporte] = useState('')
   const [cuotaSeleccionada, setCuotaSeleccionada] = useState(null);
   const [FDPSeleccionado, setFDPSeleccionado] = useState('')
+  const [FDPResponse, setFPDResponse] = useState('')
+
+  //cuotas response
+  const [cuotasResponse, setCuotasResponse] = useState('')
+
+  //importe response
+  const [importeResponse, setImporteResponse] = useState('')
 
   // render condicional para un statu 200 en verify
-  const [showDropDowns, setShowDropDowns] = useState(false)
+  const [showDropDowns, setShowDropDowns] = useState(true)
 
   const fechaMin = new Date(2000, 0, 1)
 
   const [modalVisible, setModalVisible] = useState(false);
   const [datosTotales, setDatosTotales] = useState({})
+
+  const contratoActual = useSelector((state) => state.currentContrato)
 
   const abrirLink = (linkUrl) => {
     const url = linkUrl;
@@ -92,40 +102,115 @@ export function Form({ agregarPasajero, setNewFetch, }) {
     setValue('valor_cuo_fija', dataPasajero.valor_cuo_fija)
   }, [FDPSeleccionado, newDate, cuotaSeleccionada, importe])
 
-  useEffect(()=>{
+  useEffect(() => {
     if (FDPSeleccionado.valor === 'ipc') {
       setToggleCheckBoxIPC(false)
       setToggleCheckBoxDolares(true)
     }
-    else if(FDPSeleccionado.valor === 'dolares'){
+    else if (FDPSeleccionado.valor === 'dolares') {
       setToggleCheckBoxDolares(false)
       setToggleCheckBoxIPC(true)
     }
-    else if(FDPSeleccionado.valor === 'contado'){
+    else if (FDPSeleccionado.valor === 'contado') {
       setToggleCheckBoxDolares(true)
       setToggleCheckBoxIPC(true)
     }
-    else if(FDPSeleccionado.valor === 'sin_int'){
+    else if (FDPSeleccionado.valor === 'sin_int') {
       setToggleCheckBoxDolares(true)
       setToggleCheckBoxIPC(true)
     }
-    else{
+    else {
       setToggleCheckBoxDolares(true)
       setToggleCheckBoxIPC(true)
     }
-  },[FDPSeleccionado])
+  }, [FDPSeleccionado])
 
   const handleSubmitcarga = (data) => {
     setDatosTotales(data)
     openModal();
   }
 
-console.log(toggleCheckBox,toggleCheckBoxDolares,toggleCheckBoxIPC);
+
 
   useEffect(() => {
     if (dni !== undefined && dni.length === 8) {
       setShowAlert2(true)
-      axios.get(`/pasajero/verify/${dni}/${userdata.contrato[0]}/${userdata.id}`, {
+      axios.get(`/pasajero/verify/${dni}/${contratoActual}/${userdata.id}`, {
+        headers: {
+          'x-access-token': `${token}`,
+          'Content-Type': 'application/json',
+        }
+      }).then((res) => {
+        if (res.status === 200) {
+
+          setShowAlert2(false)
+          setShowDropDowns(false)
+          setInputChanged(false)
+          setValue('username', res.data.nombre);
+          setValue('userlastname', res.data.apellido);
+          setValue('useremail', res.data.email);
+          setValue('idPasajero', res.data.id)
+        }
+        else if (res.status === 201) {
+          setShowAlert2(false)
+          agregarPasajero()
+
+          Alert.alert(
+            '',
+            `${res.data.message}`,
+            [
+              {
+                text: 'Aceptar',
+                onPress: () => console.log('Botón 1 presionado')
+              },
+            ],
+            { cancelable: false }
+          );
+        }
+        else if (res.status === 202) {
+          setShowAlert2(false)
+          setShowDropDowns(true)
+          setInputChanged(true)
+          setValue('username', res.data.nombre);
+          setValue('userlastname', res.data.apellido);
+          setValue('useremail', res.data.correo.trim());
+          setValue('idPasajero', res.data.id)
+        }
+      }).catch((error) => {
+        if (error.response.data.financiacion) {
+          setShowAlert2(false)
+          setShowDropDowns(false)
+          setInputChanged(false)
+          setDataPasajero(error.response.data)
+           setFPDResponse(error.response.data.financiacion.map((finan) => finan.medio_de_pago))
+           setCuotasResponse(error.response.data.financiacion.map(finan => ({
+             fdm: finan.medio_de_pago,
+             cuotas: finan.cuotas
+           })))
+           setImporteResponse(error.response.data.financiacion.map(finan => ({
+             importe: finan.importe,
+             forma: finan.medio_de_pago
+           })))
+          setValue('montoRender', error.response.data.monto)
+          setValue('login', error.response.data.login)
+        }else{
+          setShowAlert2(false)
+          console.log('log error: ', error.response.data);
+        }
+      })
+    }
+    else {
+      setValue('username', "");
+      setValue('userlastname', "");
+      setValue('useremail', "");
+      setValue('idPasajero', "")
+      setNewDate("")
+      setToggleCheckBox(false)
+      setFDPSeleccionado('')
+    }
+    /* if (dni !== undefined && dni.length === 8) {
+      setShowAlert2(true)
+      axios.get(`http://192.168.1.3/pasajero/verify/${dni}/${contratoActual}/${userdata.id}`, {
         headers: {
           'x-access-token': `${token}`,
           'Content-Type': 'application/json',
@@ -168,7 +253,11 @@ console.log(toggleCheckBox,toggleCheckBoxDolares,toggleCheckBoxIPC);
           setValue('useremail', res.data.correo.trim());
           setValue('idPasajero', res.data.id)
         }
+        else if(res.status === 400){
+          console.log('res dataaa 400! :', res.data);
+        }
       }).catch((error) => {
+        console.log("esto es error: ", error.response);
         setShowAlert2(false)
         setShowDropDowns(false)
         setInputChanged(false)
@@ -176,7 +265,7 @@ console.log(toggleCheckBox,toggleCheckBoxDolares,toggleCheckBoxIPC);
         setValue('montoRender', error.response.data.monto)
         setValue('login', error.response.data.login)
       })
-    } else {
+    } */ /* else {
       console.log("es undefined");
       setValue('username', "");
       setValue('userlastname', "");
@@ -185,9 +274,8 @@ console.log(toggleCheckBox,toggleCheckBoxDolares,toggleCheckBoxIPC);
       setNewDate("")
       setToggleCheckBox(false)
       setFDPSeleccionado('')
-    }
+    } */
   }, [dni])
-
 
   useEffect(() => {
     if (date.getFullYear() < 2024) {
@@ -214,7 +302,7 @@ console.log(toggleCheckBox,toggleCheckBoxDolares,toggleCheckBoxIPC);
       // Mide la altura del contenido cuando se expande
       contentRef.current.measure((x, y, width, height) => {
         Animated.timing(heightAnim, {
-          toValue: 165, // Ajusta según tus necesidades
+          toValue: FDPResponse.length * 3.5 + 165, // Ajusta según tus necesidades
           //toValue: height + 480,
           duration: 100,
           useNativeDriver: false,
@@ -231,12 +319,13 @@ console.log(toggleCheckBox,toggleCheckBoxDolares,toggleCheckBoxIPC);
     }
   }, [isExpanded]);
 
+
   useEffect(() => {
     if (isExpanded1) {
       // Mide la altura del contenido cuando se expande
       contentRef1.current.measure((x, y, width, height) => {
         Animated.timing(heightAnim1, {
-          toValue: 165, // Ajusta según tus necesidades
+          toValue: 90, // Ajusta según tus necesidades
           //toValue: height + 480,
           duration: 100,
           useNativeDriver: false,
@@ -411,29 +500,40 @@ console.log(toggleCheckBox,toggleCheckBoxDolares,toggleCheckBoxIPC);
         {
           showDropDowns === false ?
             <>
-              <DropdownFDP
-                isExpanded={isExpanded}
-                setIsExpanded={setIsExpanded}
-                contentRef={contentRef}
-                heightAnim={heightAnim}
-                setFDPSeleccionado={setFDPSeleccionado}
-                FDPSeleccionado={FDPSeleccionado}
-              />
-              <DropdownCuotas
-                isExpanded1={isExpanded1}
-                setIsExpanded1={setIsExpanded1}
-                contentRef1={contentRef1}
-                heightAnim1={heightAnim1}
-                dataPasajero={dataPasajero}
-                cuotaSeleccionada={cuotaSeleccionada}
-                setCuotaSeleccionada={setCuotaSeleccionada}
-                FDPSeleccionado={FDPSeleccionado}
-              />
+              {
+                FDPResponse !== '' ?
+                  <DropdownFDP
+                    isExpanded={isExpanded}
+                    setIsExpanded={setIsExpanded}
+                    contentRef={contentRef}
+                    heightAnim={heightAnim}
+                    setFDPSeleccionado={setFDPSeleccionado}
+                    FDPSeleccionado={FDPSeleccionado}
+                    FDPResponse={FDPResponse}
+                  />
+                  : null
+              }
+              {
+                cuotasResponse !== '' ?
+                  <DropdownCuotas
+                    isExpanded1={isExpanded1}
+                    setIsExpanded1={setIsExpanded1}
+                    contentRef1={contentRef1}
+                    heightAnim1={heightAnim1}
+                    dataPasajero={dataPasajero}
+                    cuotaSeleccionada={cuotaSeleccionada}
+                    setCuotaSeleccionada={setCuotaSeleccionada}
+                    FDPSeleccionado={FDPSeleccionado}
+                    cuotasResponse={cuotasResponse}
+                  />
+                  : null
+              }
 
               <ImporteText
                 dataPasajero={dataPasajero}
                 FDPSeleccionado={FDPSeleccionado}
                 cuotaSeleccionada={cuotaSeleccionada}
+                importeResponse={importeResponse}
                 setImporte={setImporte}
                 importe={importe}
                 toggleCheckBoxIPC={toggleCheckBoxIPC}
@@ -473,7 +573,7 @@ console.log(toggleCheckBox,toggleCheckBoxDolares,toggleCheckBoxIPC);
           />
         </View>
 
-        <ModalComponent visible={modalVisible} onClose={closeModal} data={datosTotales} setNewFetch={setNewFetch} agregarPasajero={agregarPasajero} inputChanged={inputChanged}/>
+        <ModalComponent visible={modalVisible} onClose={closeModal} data={datosTotales} setNewFetch={setNewFetch} agregarPasajero={agregarPasajero} inputChanged={inputChanged} />
 
         <View style={{ height: 47, width: 331, marginTop: "2%", borderColor: "#3462BF", borderWidth: 1, borderRadius: 10 }}>
           <ButtonCustom
