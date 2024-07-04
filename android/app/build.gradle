@@ -79,8 +79,8 @@ android {
         applicationId "com.cuyenapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 9
-        versionName "2.6"
+        versionCode 10
+        versionName "2.7"
     }
     signingConfigs {
         release {
