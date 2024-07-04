@@ -35,6 +35,19 @@ export const SelectPasajero = () => {
     }
   }, [isExpanded]);
 
+  useEffect(()=>{
+    if(pasajero.length === 1){
+      setNumPasajero((prev)=>({
+        ...prev,
+        numPass: pasajero[0].numPas,
+        pasajero: `${pasajero[0].nombre}, ${pasajero[0].apellido}`
+      }))
+    }else{
+      console.log('es mas de un pasajero o ningun pasajero');
+      setNumPasajero(null)
+    }
+  },[pasajero])
+
   const toggleExpand = () => {
     // Envía el índice del componente al padre para gestionar la expansión individual
     setIsExpanded(!isExpanded);
@@ -60,7 +73,7 @@ export const SelectPasajero = () => {
 
   }, [numPasajero])
 
-  /*  console.log(JSON.stringify(pasajero[0], null, 3)); */
+   console.log(JSON.stringify(pasajero[0], null, 3));
 
   return (
     <Animated.View ref={contentRef} style={{ height: heightAnim, width: 373, backgroundColor: "white", marginTop: "5%", borderRadius: 10, padding: "2%", justifyContent: "flex-start", alignItems: "center" }}>
@@ -75,7 +88,7 @@ export const SelectPasajero = () => {
           <View style={{ marginLeft: 15, height: 48, alignItems: "flex-start", justifyContent: "center", }}>
             <Text style={{ color: "#564C71", fontWeight: "400", fontSize: numPasajero !== null ? 12 : 16, lineHeight: 19, marginBottom: 6 }}>
               {
-                numPasajero !== null ? numPasajero.pasajero : 'Selecciones Pasajero'
+                numPasajero !== null ? numPasajero.pasajero : 'Seleccione Pasajero'
               }
             </Text>
           </View>

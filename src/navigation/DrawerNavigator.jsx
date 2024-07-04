@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { cleanPasajero, CurrentContrato } from '../redux/actions';
 import { GestionContrato } from '../screens/tabScreens/gestionarContrato/GestionContrato';
 
+
 const CustomDrawerContent = ({ navigation }) => {
 
 	const dispatch = useDispatch()
@@ -28,6 +29,7 @@ const CustomDrawerContent = ({ navigation }) => {
 
 	const singOutSession = () => {
 		AsyncStorage.removeItem("userStorage")
+		AsyncStorage.removeItem("contratoNum")
 		setUserData({
 			apellido: "",
 			contrato: "",
@@ -43,17 +45,9 @@ const CustomDrawerContent = ({ navigation }) => {
 			hotelId: ""
 		})
 		dispatch(cleanPasajero())
+		dispatch(CurrentContrato(''))
 		setAuthenticate(false)
 	}
-
-	const removeData = async (key) => {
-		try {
-			await AsyncStorage.removeItem(key);
-			console.log(`Data for key ${key} removed successfully`);
-		} catch (error) {
-			console.error('Failed to remove data', error);
-		}
-	};
 	
 
 	const getDataStorage = async (key) => {

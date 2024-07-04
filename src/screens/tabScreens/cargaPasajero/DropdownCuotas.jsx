@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Animated, Image, Text, TouchableOpacity, View } from "react-native"
 
-export const DropdownCuotas = ({ isExpanded1, setIsExpanded1, contentRef1, heightAnim1, FDPSeleccionado, cuotaSeleccionada, setCuotaSeleccionada, cuotasResponse }) => {
+export const DropdownCuotas = ({ isExpanded1, setIsExpanded1, contentRef1, heightAnim1, FDPSeleccionado, cuotaSeleccionada, setCuotaSeleccionada, cuotasResponse, setLengthCuotas }) => {
 
   const [cuotas, setCuotas] = useState(null)
 
@@ -22,6 +22,9 @@ export const DropdownCuotas = ({ isExpanded1, setIsExpanded1, contentRef1, heigh
     const resultCuotas = buscarObjetoPorValor(FDPSeleccionado.valor, cuotasResponse)
     console.log('result: ', resultCuotas);
     setCuotas(resultCuotas)
+    if (FDPSeleccionado) {
+      setLengthCuotas(resultCuotas.cuotas.length)
+    }
   }, [FDPSeleccionado])
 
   useEffect(() => {

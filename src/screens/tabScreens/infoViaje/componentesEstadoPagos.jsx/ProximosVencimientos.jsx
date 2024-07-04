@@ -143,7 +143,7 @@ export function ProximosVencimientos({ data }) {
                           />
                           :
                           <Image
-                            source={require("../../../../assets/visibility_off.png")}
+                            source={require("../../../../assets/Action_Correct.png")}
                             style={{ width: 20, height: 20, }}
                           />
                       }

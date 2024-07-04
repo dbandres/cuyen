@@ -79,7 +79,7 @@ export function ModalComponent({ visible, onClose, data, inputChanged, setNewFet
           apellido: data.userlastname,
           dni: data.userdni,
           email: data.useremail,
-          contrato: contratoActual,
+          contrato: [contratoActual],
           rol: "Pasajero",
           fechaNac: fecha,
           loginId: userdata.id
@@ -108,7 +108,7 @@ export function ModalComponent({ visible, onClose, data, inputChanged, setNewFet
           apellido: data.userlastname,
           dni: data.userdni,
           email: data.useremail,
-          contrato: contratoActual,
+          contrato: [contratoActual],
           valor_cuo_fija: data.valor_cuo_fija,
           rol: "Pasajero",
           estado: true,

@@ -35,7 +35,7 @@ export function GestionContrato({ navigation }) {
       dispatch(getContratoByNum(userdata.contrato))
     }
     setNewFetch(false)
-  }, [])
+  }, [newFetch])
 
   const openModal = () => {
     setShowModal(true)

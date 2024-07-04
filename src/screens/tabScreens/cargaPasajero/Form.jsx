@@ -319,13 +319,14 @@ export function Form({ agregarPasajero, setNewFetch, }) {
     }
   }, [isExpanded]);
 
+  const [lengthCuotas, setLengthCuotas] = useState(90)
 
   useEffect(() => {
     if (isExpanded1) {
       // Mide la altura del contenido cuando se expande
       contentRef1.current.measure((x, y, width, height) => {
         Animated.timing(heightAnim1, {
-          toValue: 90, // Ajusta según tus necesidades
+          toValue: lengthCuotas * 10 + 150 , // Ajusta según tus necesidades
           //toValue: height + 480,
           duration: 100,
           useNativeDriver: false,
@@ -356,12 +357,11 @@ export function Form({ agregarPasajero, setNewFetch, }) {
 
   // Ejemplo de uso
   const fechaMaxima = obtenerFechaMaxima();
-  //console.log('data: ',userdata);
 
   return (
     <View style={{
       width: 373,
-      height: showDropDowns === true ? 600 : !isExpanded && isExpanded1 || isExpanded && !isExpanded1 ? 950 : isExpanded && isExpanded1 ? 1100 : 850,
+      height: showDropDowns === true ? 600 : !isExpanded && isExpanded1 || isExpanded && !isExpanded1 ? 1050 : isExpanded && isExpanded1 ? 1200 : 850,
       backgroundColor: "#FFFFFF", marginTop: 15, borderRadius: 10, justifyContent: "center", alignItems: "center"
     }}>
       <View style={{ height: 50 }}>
@@ -525,6 +525,7 @@ export function Form({ agregarPasajero, setNewFetch, }) {
                     setCuotaSeleccionada={setCuotaSeleccionada}
                     FDPSeleccionado={FDPSeleccionado}
                     cuotasResponse={cuotasResponse}
+                    setLengthCuotas={setLengthCuotas}
                   />
                   : null
               }

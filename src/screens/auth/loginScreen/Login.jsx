@@ -4,7 +4,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions, Statu
 import { useForm } from "react-hook-form";
 import { ButtonCustom } from "../../../components/ButtomCustom";
 import { UserContext } from "../../../context/UserContext";
-import { CurrentContrato, CurrentUser, loginAuth } from "../../../redux/actions";
+import { CurrentContrato, loginAuth } from "../../../redux/actions";
 import { InputLogin } from "./InputLogin";
 import { ContainerWithBackground } from "../../ContainerWithBackground";
 import AwesomeAlert from "react-native-awesome-alerts";

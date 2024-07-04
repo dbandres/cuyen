@@ -38,7 +38,7 @@ export function ModalBuscarContrato({ visible, onClose, setNewFetch, contratoInf
     const colegiosFiltrados = contratoInfo
       .filter(info => info.colegio)
       .map(colegio => colegio.colegio);
-    
+
     setTotalColegios(allColegios.filter(nombre => !colegiosFiltrados.includes(nombre.nombre)))
   }, [contratoInfo])
 
@@ -127,6 +127,16 @@ export function ModalBuscarContrato({ visible, onClose, setNewFetch, contratoInf
   const myFunction = () => {
     if (error === true) {
       setShowAlert1(false)
+    } else {
+      setShowAlert1(false)
+      setNewFetch(true)
+      setInputValue("")
+      setTexto('')
+      setColegioSeleccionado("")
+      setValue("contrato", "")
+      setMatch(false)
+      setContratos(contratos)
+      onClose()
     }
   }
 
@@ -140,6 +150,8 @@ export function ModalBuscarContrato({ visible, onClose, setNewFetch, contratoInf
   }
 
   const putContrato = async () => {
+    setShowAlert1(true)
+    setShowAlert4(true)
     const data = await AsyncStorage.getItem("userStorage")
     const parseado = JSON.parse(data)
     try {
@@ -154,7 +166,9 @@ export function ModalBuscarContrato({ visible, onClose, setNewFetch, contratoInf
         })
         .then((res) => {
           if (res.status === 200) {
+            setShowAlert4(false)
             console.log(res.data);
+            setTexto('El contrato ha sido asignado correctamente')
             setNewFetch(true)
             parseado.usuario.contrato = contratos,
               AsyncStorage.setItem('userStorage', JSON.stringify(parseado))
@@ -162,15 +176,6 @@ export function ModalBuscarContrato({ visible, onClose, setNewFetch, contratoInf
               ...prevUserData,
               contrato: contratos
             }));
-            setTimeout(() => {
-              setNewFetch(true)
-              setInputValue("")
-              setColegioSeleccionado("")
-              setValue("contrato", "")
-              setMatch(false)
-              setContratos(contratos)
-              onClose()
-            }, 2000)
           }
 
         })
@@ -313,7 +318,7 @@ export function ModalBuscarContrato({ visible, onClose, setNewFetch, contratoInf
                   }
                 </View>
             }
-            <TouchableOpacity onPress={putContrato} disabled={match === false ? true : false} style={{ backgroundColor: match === true ? "#FF3D00" : "#CDD1DF", height: 47, width: 320, borderRadius: 10, justifyContent: "center", alignItems: "center", marginTop: 15 }}>
+            <TouchableOpacity onPress={putContrato} /* disabled={match === false ? true : false} */ style={{ backgroundColor: match === true ? "#FF3D00" : "#CDD1DF", height: 47, width: 320, borderRadius: 10, justifyContent: "center", alignItems: "center", marginTop: 15 }}>
               <Text style={{ color: "white" }}>
                 Aceptar
               </Text>
