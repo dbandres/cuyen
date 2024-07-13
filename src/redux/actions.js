@@ -318,10 +318,11 @@ export function cleanDestino() {
 	};
 }
 
-export function getPasajero(num) {
+export function getPasajero(loginId,num) {
+	console.log('login id y num', loginId, num);
 	return async function (dispatch) {
 		try {
-			const response = await axios.get(`/pasajero/relation/${num}`, {
+			const response = await axios.get(`/pasajero/relationbyNum/${loginId}/${num}`, {
 				headers: {
 					'x-access-token': `${token}`,
 					'Content-Type': 'application/json',
@@ -347,7 +348,7 @@ export function cleanPasajero(){
 }
 
 export function getContratoByNum(num) {
-	console.log(num);
+	console.log('contrato actual: ',num);
 	return async function (dispatch) {
 		try {
 			if (Array.isArray(num)) {

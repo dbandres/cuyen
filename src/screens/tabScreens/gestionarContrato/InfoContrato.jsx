@@ -53,7 +53,7 @@ export function InfoContrato({ contratoInfo, navigation }) {
   const storeData = async (key, value) => {
     try {
       await AsyncStorage.setItem(key, value);
-      dispatch(CurrentContrato(contratoSelect))
+      dispatch(CurrentContrato(value))
     } catch (e) {
       // guarda el error si ocurre
       console.error("Error al guardar los datos", e);

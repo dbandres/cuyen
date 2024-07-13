@@ -10,20 +10,48 @@ import { getContratoByNum, getDestino, getPasajero } from "../../../redux/action
 import { UserContext } from "../../../context/UserContext";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AuthContext } from "../../../context/AuthContext";
+import { useFocusEffect } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 export function InfoDelViaje({ navigation }) {
 
 	const dispatch = useDispatch()
 	const { userdata } = useContext(UserContext)
-	const { authenticate } = useContext(AuthContext)
-	const contratoActual = useSelector((state) => state.currentContrato)
 
-	useEffect(() => {
-		dispatch(getDestino(contratoActual))
-		dispatch(getContratoByNum(contratoActual))
-		dispatch(getPasajero(userdata.id))
-	}, [contratoActual, userdata])
+	const getDataStorage = async (key) => {
+		try {
+			const value = await AsyncStorage.getItem(key);
+			if (value !== null) {
+				console.log("value storage: ", value);
+				return value;
+			}
+		} catch (error) {
+			console.error('Failed to retrieve data', error);
+		}
+	};
+
+	useFocusEffect(
+		React.useCallback(() => {
+			console.log('Pantalla enfocada en InfoDelViaje. Puedes ejecutar operaciones aquí.');
+
+			const fetchData = async () => {
+				const value = await getDataStorage('contratoNum');
+				if (value) {
+					dispatch(getDestino(value))
+					dispatch(getContratoByNum(value))
+					dispatch(getPasajero(userdata.id, value))
+				}
+			};
+
+			fetchData();
+
+			// Puedes realizar otras operaciones aquí, como cargar datos, etc
+			return () => {
+				// Este código se ejecuta cuando el componente se desenfoca o se desmonta
+				console.log('Pantalla desenfocada InfoDelViaje. Limpieza o desmontaje aquí.');
+			};
+		}, []))
 
 	return (
 

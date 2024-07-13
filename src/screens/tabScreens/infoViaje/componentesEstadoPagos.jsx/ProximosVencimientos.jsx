@@ -16,7 +16,7 @@ export function ProximosVencimientos({ data }) {
       // Mide la altura del contenido cuando se expande
       contentRef.current.measure((x, y, width, height) => {
         Animated.timing(heightAnim, {
-          toValue: data.length === 1 ? 200 : data.length * 50 + 100, // Ajusta según tus necesidades
+          toValue: data.length === 1 ? 200 : (data.length * 50 + 10) + 100, // Ajusta según tus necesidades
           //toValue: height + 480,
           duration: 100,
           useNativeDriver: false,
@@ -118,7 +118,7 @@ export function ProximosVencimientos({ data }) {
                     </Text>
                   </View>
                   :
-                  <View key={index} style={{ width: "100%", height: 40, justifyContent: "space-around", alignItems: "center", display: "flex", flexDirection: "row" }}>
+                  <View key={index} style={{ width: "100%", height: 40, justifyContent: "space-around", alignItems: "center", display: "flex", flexDirection: "row"}}>
                     <View style={{ width: "33%" }}>
                       <Text style={{ fontWeight: "500", fontSize: 12, lineHeight: 14, textAlign: "center", color: "#564C71" }}>
                         {d.numCuota}
