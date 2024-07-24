@@ -6,6 +6,7 @@ import { UserContext } from "../../../../context/UserContext";
 import { useDispatch, useSelector } from "react-redux";
 import { InfoContingente } from "./InfoContingente";
 import { InfoContext } from "../InfoContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 export function Contingente({ navigation }) {
@@ -20,12 +21,30 @@ export function Contingente({ navigation }) {
   const [expandedStates, setExpandedStates] = useState(new Array(pasajero.length).fill(false));
   const [isAnyExpanded, setIsAnyExpanded] = useState(false);
 
+	const getDataStorage = async (key) => {
+		try {
+			const value = await AsyncStorage.getItem(key);
+			if (value !== null) {
+				console.log("value storage: ", value);
+				return value;
+			}
+		} catch (error) {
+			console.error('Failed to retrieve data', error);
+		}
+	};
+
   useFocusEffect(
     React.useCallback(() => {
       console.log('Pantalla enfocada en Contingente. Puedes ejecutar operaciones aquí.');
 
       // Puedes realizar otras operaciones aquí, como cargar datos, etc.
-      dispatch(getPasajero(userdata.id))
+      const fetchData = async () => {
+				const value = await getDataStorage('contratoNum');
+				if (value) {
+					dispatch(getPasajero(userdata.id, value))
+				}
+			};
+      fetchData()
       return () => {
         // Este código se ejecuta cuando el componente se desenfoca o se desmonta
         console.log('Pantalla desenfocada Contingente. Limpieza o desmontaje aquí.');

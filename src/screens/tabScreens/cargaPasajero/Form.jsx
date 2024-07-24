@@ -14,6 +14,7 @@ import { Dropdown, DropdownFDP } from "./DropdownFDP";
 import { DropdownCuotas } from "./DropdownCuotas";
 import ImporteText from "./ImporteText";
 import { useSelector } from "react-redux";
+import { ModalErrorFinanciacion } from "./ModalErrorFinanciacion";
 
 
 export function Form({ agregarPasajero, setNewFetch, }) {
@@ -27,9 +28,12 @@ export function Form({ agregarPasajero, setNewFetch, }) {
   const [inputChanged, setInputChanged] = useState(false)
 
   const [showAlert2, setShowAlert2] = useState(false)
+  const [showAlert3, setShowAlert3] = useState(false)
   const [dataPasajero, setDataPasajero] = useState("")
 
   let dni = watch('userdni'); // Observa el campo del DNI
+
+  const [errorFinan, setErrorFinan] = useState("")
 
   // estados para el primer dropdown
   const [heightAnim] = useState(new Animated.Value(50)); // Inicia con la altura mínima
@@ -195,7 +199,10 @@ export function Form({ agregarPasajero, setNewFetch, }) {
           setValue('login', error.response.data.login)
         }else{
           setShowAlert2(false)
-          console.log('log error: ', error.response.data);
+          setShowAlert3(true)
+          setValue('userdni', "");
+          setErrorFinan(error.response.data.message)
+          console.log('log error: ', error.response.data.message);
         }
       })
     }
@@ -208,73 +215,6 @@ export function Form({ agregarPasajero, setNewFetch, }) {
       setToggleCheckBox(false)
       setFDPSeleccionado('')
     }
-    /* if (dni !== undefined && dni.length === 8) {
-      setShowAlert2(true)
-      axios.get(`http://192.168.1.3/pasajero/verify/${dni}/${contratoActual}/${userdata.id}`, {
-        headers: {
-          'x-access-token': `${token}`,
-          'Content-Type': 'application/json',
-        }
-      }).then((res) => {
-        if (res.status === 200) {
-          console.log('res dataaa! :', res.data);
-          setShowAlert2(false)
-          setShowDropDowns(false)
-          setInputChanged(false)
-          setValue('username', res.data.nombre);
-          setValue('userlastname', res.data.apellido);
-          setValue('useremail', res.data.email);
-          setValue('idPasajero', res.data.id)
-          setValue('login', res.data.login)
-        }
-        else if(res.status === 201) {
-          setShowAlert2(false)
-          agregarPasajero()
-          console.log(res.data);
-          Alert.alert(
-            '',
-            `${res.data.message}`,
-            [
-              {
-                text: 'Aceptar',
-                onPress: () => console.log('Botón 1 presionado')
-              },
-            ],
-            { cancelable: false }
-          );
-        }
-        else if(res.status === 202){
-          console.log('res dataaa! :', res.data);
-          setShowAlert2(false)
-          setShowDropDowns(true)
-          setInputChanged(true)
-          setValue('username', res.data.nombre);
-          setValue('userlastname', res.data.apellido);
-          setValue('useremail', res.data.correo.trim());
-          setValue('idPasajero', res.data.id)
-        }
-        else if(res.status === 400){
-          console.log('res dataaa 400! :', res.data);
-        }
-      }).catch((error) => {
-        console.log("esto es error: ", error.response);
-        setShowAlert2(false)
-        setShowDropDowns(false)
-        setInputChanged(false)
-        setDataPasajero(error.response.data)
-        setValue('montoRender', error.response.data.monto)
-        setValue('login', error.response.data.login)
-      })
-    } */ /* else {
-      console.log("es undefined");
-      setValue('username', "");
-      setValue('userlastname', "");
-      setValue('useremail', "");
-      setValue('idPasajero', "")
-      setNewDate("")
-      setToggleCheckBox(false)
-      setFDPSeleccionado('')
-    } */
   }, [dni])
 
   useEffect(() => {
@@ -357,6 +297,11 @@ export function Form({ agregarPasajero, setNewFetch, }) {
 
   // Ejemplo de uso
   const fechaMaxima = obtenerFechaMaxima();
+
+  const closedModalErrorFinan = () =>{
+    agregarPasajero()
+    setShowAlert3(false)
+  }
 
   return (
     <View style={{
@@ -575,6 +520,8 @@ export function Form({ agregarPasajero, setNewFetch, }) {
         </View>
 
         <ModalComponent visible={modalVisible} onClose={closeModal} data={datosTotales} setNewFetch={setNewFetch} agregarPasajero={agregarPasajero} inputChanged={inputChanged} />
+
+        <ModalErrorFinanciacion visible={showAlert3} onClose={()=>{closedModalErrorFinan()}} text={errorFinan}/>
 
         <View style={{ height: 47, width: 331, marginTop: "2%", borderColor: "#3462BF", borderWidth: 1, borderRadius: 10 }}>
           <ButtonCustom

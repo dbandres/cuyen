@@ -23,7 +23,7 @@ const CustomDrawerContent = ({ navigation }) => {
 
 	const dispatch = useDispatch()
 	const { userdata, setUserData } = useContext(UserContext)
-	const {setAuthenticate} = useContext(AuthContext)
+	const { setAuthenticate } = useContext(AuthContext)
 	const { miInfo, setMiInfo } = useContext(InfoContext)
 	const contratoActual = useSelector((state) => state.currentContrato)
 
@@ -48,39 +48,39 @@ const CustomDrawerContent = ({ navigation }) => {
 		dispatch(CurrentContrato(''))
 		setAuthenticate(false)
 	}
-	
+
 
 	const getDataStorage = async (key) => {
-    try {
-      const value = await AsyncStorage.getItem(key);
-      if (value !== null) {
+		try {
+			const value = await AsyncStorage.getItem(key);
+			if (value !== null) {
 				console.log("value storage: ", value);
-        return value;
-      }
-    } catch (error) {
-      console.error('Failed to retrieve data', error);
-    }
-  };
+				return value;
+			}
+		} catch (error) {
+			console.error('Failed to retrieve data', error);
+		}
+	};
 
 	useEffect(() => {
-    // Obtener datos al inicio
-    const fetchData = async () => {
-      const value = await getDataStorage('contratoNum');
-      if (value) {
-        dispatch(CurrentContrato(value))
-      }
-    };
+		// Obtener datos al inicio
+		const fetchData = async () => {
+			const value = await getDataStorage('contratoNum');
+			if (value) {
+				dispatch(CurrentContrato(value))
+			}
+		};
 
-    fetchData();
+		fetchData();
 		// Uso
 		/* removeData('contratoNum'); */
-  }, []);
+	}, []);
 
 	const abrirLink = (linkUrl) => {
-    const url = linkUrl;
-    Linking.openURL(url)
-      .catch((err) => console.error('Error al abrir el enlace:', err));
-  };
+		const url = linkUrl;
+		Linking.openURL(url)
+			.catch((err) => console.error('Error al abrir el enlace:', err));
+	};
 
 	console.log('contrato drawer: ', contratoActual);
 
@@ -95,13 +95,13 @@ const CustomDrawerContent = ({ navigation }) => {
 			</View>
 			<View style={{ height: 70, alignItems: "center", position: "absolute", top: Platform.OS === 'android' ? "25%" : '29%', left: "20%" }}>
 				<View style={{ width: "80%", height: "100%", display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "flex-end" }}>
-					<TouchableOpacity onPress={()=>{abrirLink("https://www.instagram.com/cuyenturismo/")}}>
+					<TouchableOpacity onPress={() => { abrirLink("https://www.instagram.com/cuyenturismo/") }}>
 						<Image
 							source={require("../assets/insta.png")}
 							style={{ width: 32, height: 32 }}
 						/>
 					</TouchableOpacity>
-					<TouchableOpacity onPress={()=>{abrirLink("https://www.facebook.com/cuyenturismo/?locale=es_LA")}}>
+					<TouchableOpacity onPress={() => { abrirLink("https://www.facebook.com/cuyenturismo/?locale=es_LA") }}>
 						<Image
 							source={require("../assets/Facebook.png")}
 							style={{ width: 32, height: 34 }}
@@ -129,8 +129,8 @@ const CustomDrawerContent = ({ navigation }) => {
 								/>
 							</TouchableOpacity> */}
 						</View>
-						<View style={{borderWidth:1, borderColor:"#93E396" ,height:44, justifyContent:"center", borderRadius:5}}>
-						<Text style={{ color: "#93E396", fontWeight:"600", fontSize:12, lineHeight:14, textAlign:"center" }}>Contrato {contratoActual.length !== 0 ? contratoActual : userdata.contrato[0]}</Text>
+						<View style={{ borderWidth: 1, borderColor: "#93E396", height: 44, justifyContent: "center", borderRadius: 5 }}>
+							<Text style={{ color: "#93E396", fontWeight: "600", fontSize: 12, lineHeight: 14, textAlign: "center" }}>Contrato {contratoActual.length !== 0 ? contratoActual : userdata.contrato[0]}</Text>
 						</View>
 					</View>
 					{
@@ -188,7 +188,7 @@ function DrawerNavigator() {
 			}}
 		>
 			<Drawer.Screen name="Inicio" component={RouteLanding} options={{ headerShown: false }} />
-			<Drawer.Screen name="gestio-contrato" component={GestionContrato} options={{ headerShown: false }} /> 
+			<Drawer.Screen name="gestio-contrato" component={GestionContrato} options={{ headerShown: false }} />
 			<Drawer.Screen name="info-viaje" component={RouteInicial} options={{ headerShown: false }} />
 			<Drawer.Screen name="muro" component={RouteMuro} options={{ headerShown: false }} />
 			<Drawer.Screen name="ubiViaje" component={Ubicacion} options={{ headerShown: false }} />

@@ -8,6 +8,7 @@ import { getPasajero } from "../../../redux/actions";
 import { UserContext } from "../../../context/UserContext";
 import { ExpandibleInfoPasajero } from "./ExpandibleInfoPasajero";
 import { SafeAreaView } from "react-native-safe-area-context";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 export function CargaPasajero({ navigation }) {
@@ -21,11 +22,29 @@ export function CargaPasajero({ navigation }) {
 	const agregarPasajero = () => {
 		setShowForm(!showForm)
 	}
+	const getDataStorage = async (key) => {
+		try {
+			const value = await AsyncStorage.getItem(key);
+			if (value !== null) {
+				console.log("value storage: ", value);
+				return value;
+			}
+		} catch (error) {
+			console.error('Failed to retrieve data', error);
+		}
+	};
+	const fetchData = async () => {
+		const value = await getDataStorage('contratoNum');
+		if (value) {
+			dispatch(getPasajero(userdata.id, value))
+		}
+	};
 
 	useFocusEffect(
 		React.useCallback(() => {
-			// Puedes realizar otras operaciones aquí, como cargar datos, etc.
-			dispatch(getPasajero(userdata.id))
+			// Puedes realizar otras operaciones aquí, como cargar datos, etc
+
+			fetchData();
 			return () => {
 				// Este código se ejecuta cuando el componente se desenfoca o se desmonta
 				console.log('Pantalla desenfocada. Limpieza o desmontaje aquí.');
@@ -36,13 +55,11 @@ export function CargaPasajero({ navigation }) {
 
 	useEffect(() => {
 		if (newFetch === true) {
-			dispatch(getPasajero(userdata.id))
+			fetchData()
 			setNewFetch(false)
 			setShowForm(false)
 		}
 	}, [newFetch])
-
-	console.log(JSON.stringify(pasajero, null ,3));
 
 	return (
 		<SafeAreaView style={{flex:1}}>
