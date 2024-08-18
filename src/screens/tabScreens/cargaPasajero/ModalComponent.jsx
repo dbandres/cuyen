@@ -101,7 +101,8 @@ export function ModalComponent({ visible, onClose, data, inputChanged, setNewFet
           console.log(error);
           setShowAlert2(false)
         })
-    } else {
+    } 
+    else {
       await axios.post("/pasajero",
         {
           nombre: data.username,
@@ -109,7 +110,6 @@ export function ModalComponent({ visible, onClose, data, inputChanged, setNewFet
           dni: data.userdni,
           email: data.useremail,
           contrato: [contratoActual],
-          valor_cuo_fija: data.valor_cuo_fija,
           rol: "Pasajero",
           estado: true,
           login: data.login,

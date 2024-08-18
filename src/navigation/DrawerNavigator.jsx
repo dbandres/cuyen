@@ -170,6 +170,7 @@ const CustomDrawerContent = ({ navigation }) => {
 					</TouchableOpacity>
 				</View>
 			</View>
+			
 			{/* <DrawerItemList {...props} /> */}
 		</DrawerContentScrollView>
 	);

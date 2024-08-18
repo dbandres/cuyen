@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Animated, Image, Text, TouchableOpacity, View } from "react-native";
 import { ModalCodigoBarra } from "./ModalCodigoBarra";
 
-export function ProximosVencimientos({ data }) {
+export function ProximosVencimientos({ data, controlSelect }) {
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [heightAnim] = useState(new Animated.Value(88));
@@ -16,7 +16,7 @@ export function ProximosVencimientos({ data }) {
       // Mide la altura del contenido cuando se expande
       contentRef.current.measure((x, y, width, height) => {
         Animated.timing(heightAnim, {
-          toValue: data.length === 1 ? 200 : (data.length * 50 + 10) + 100, // Ajusta según tus necesidades
+          toValue: data.length === 1 ? 200 : (data.length * 64 ) + 50, // Ajusta según tus necesidades
           //toValue: height + 480,
           duration: 100,
           useNativeDriver: false,
@@ -32,6 +32,12 @@ export function ProximosVencimientos({ data }) {
       }).start();
     }
   }, [isExpanded]);
+
+  useEffect(()=>{
+    if(controlSelect === true){
+      setIsExpanded(false)
+    }
+  },[controlSelect])
 
   const toggleExpand = () => {
     // Envía el índice del componente al padre para gestionar la expansión individual

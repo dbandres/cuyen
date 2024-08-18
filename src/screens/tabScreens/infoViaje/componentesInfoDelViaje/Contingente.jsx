@@ -48,6 +48,7 @@ export function Contingente({ navigation }) {
       return () => {
         // Este código se ejecuta cuando el componente se desenfoca o se desmonta
         console.log('Pantalla desenfocada Contingente. Limpieza o desmontaje aquí.');
+        setIsExpanded(false)
       };
     }, []))
 

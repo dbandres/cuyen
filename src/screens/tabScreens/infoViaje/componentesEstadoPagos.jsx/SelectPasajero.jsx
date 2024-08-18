@@ -3,7 +3,7 @@ import { Animated, Image, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 import { InfoContext } from "../InfoContext";
 
-export const SelectPasajero = () => {
+export const SelectPasajero = ({setControlSelect}) => {
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [heightAnim] = useState(new Animated.Value(88));
@@ -51,6 +51,7 @@ export const SelectPasajero = () => {
   const toggleExpand = () => {
     // Envía el índice del componente al padre para gestionar la expansión individual
     setIsExpanded(!isExpanded);
+    setControlSelect(!isExpanded)
   };
 
   const selectNumPasajero = (value) =>{
@@ -64,6 +65,7 @@ export const SelectPasajero = () => {
 
   useEffect(() => {
     if (numPasajero !== null) {
+      console.log(numPasajero.numPass, numPasajero.pasajero);
       // Función para cambiar el valor de numPasajero
         setMiInfo(prevState => ({
           ...prevState,
@@ -72,8 +74,6 @@ export const SelectPasajero = () => {
     }
 
   }, [numPasajero])
-
-   console.log(JSON.stringify(pasajero[0], null, 3));
 
   return (
     <Animated.View ref={contentRef} style={{ height: heightAnim, width: 373, backgroundColor: "white", marginTop: "5%", borderRadius: 10, padding: "2%", justifyContent: "flex-start", alignItems: "center" }}>

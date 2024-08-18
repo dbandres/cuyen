@@ -26,6 +26,7 @@ export function Form({ agregarPasajero, setNewFetch, }) {
   const [toggleCheckBoxIPC, setToggleCheckBoxIPC] = useState(true)
   const [toggleCheckBoxDolares, setToggleCheckBoxDolares] = useState(true)
   const [inputChanged, setInputChanged] = useState(false)
+  const [inputChanged200, setInputChanged200] = useState(false)
 
   const [showAlert2, setShowAlert2] = useState(false)
   const [showAlert3, setShowAlert3] = useState(false)
@@ -145,16 +146,26 @@ export function Form({ agregarPasajero, setNewFetch, }) {
           'Content-Type': 'application/json',
         }
       }).then((res) => {
+        // existe el pasajero y quiero relacionarlo a mi numero de contrato, PRESENTAR FORMULARIO DE CUOTAS. 
         if (res.status === 200) {
-
           setShowAlert2(false)
           setShowDropDowns(false)
-          setInputChanged(false)
+          /* setInputChanged200(true) */
           setValue('username', res.data.nombre);
           setValue('userlastname', res.data.apellido);
-          setValue('useremail', res.data.email);
-          setValue('idPasajero', res.data.id)
+          setValue('useremail', res.data.email.trim());
+          setValue('idPasajero', res.data.idPasajero)
+          setFPDResponse(res.data.financiacion.map((finan) => finan.medio_de_pago))
+           setCuotasResponse(res.data.financiacion.map(finan => ({
+             fdm: finan.medio_de_pago,
+             cuotas: finan.cuotas
+           })))
+           setImporteResponse(res.data.financiacion.map(finan => ({
+             importe: finan.importe,
+             forma: finan.medio_de_pago
+           })))
         }
+        // el pasajero ya existe y está dentro de mi lista 
         else if (res.status === 201) {
           setShowAlert2(false)
           agregarPasajero()
@@ -171,6 +182,7 @@ export function Form({ agregarPasajero, setNewFetch, }) {
             { cancelable: false }
           );
         }
+        // el usuario ya existe en ese mismo contrato pero esta asociado a otro usuario padre NO PRESENTAR FORMULARIO DE CUOTAS
         else if (res.status === 202) {
           setShowAlert2(false)
           setShowDropDowns(true)
@@ -179,6 +191,7 @@ export function Form({ agregarPasajero, setNewFetch, }) {
           setValue('userlastname', res.data.apellido);
           setValue('useremail', res.data.correo.trim());
           setValue('idPasajero', res.data.id)
+          setImporte(res.data.importe)
         }
       }).catch((error) => {
         if (error.response.data.financiacion) {
@@ -214,6 +227,7 @@ export function Form({ agregarPasajero, setNewFetch, }) {
       setNewDate("")
       setToggleCheckBox(false)
       setFDPSeleccionado('')
+      setImporte('')
     }
   }, [dni])
 
@@ -242,7 +256,7 @@ export function Form({ agregarPasajero, setNewFetch, }) {
       // Mide la altura del contenido cuando se expande
       contentRef.current.measure((x, y, width, height) => {
         Animated.timing(heightAnim, {
-          toValue: FDPResponse.length * 3.5 + 165, // Ajusta según tus necesidades
+          toValue: (24 * FDPResponse.length) + 50, // Ajusta según tus necesidades
           //toValue: height + 480,
           duration: 100,
           useNativeDriver: false,
@@ -266,7 +280,7 @@ export function Form({ agregarPasajero, setNewFetch, }) {
       // Mide la altura del contenido cuando se expande
       contentRef1.current.measure((x, y, width, height) => {
         Animated.timing(heightAnim1, {
-          toValue: lengthCuotas * 10 + 150 , // Ajusta según tus necesidades
+          toValue: (24 * lengthCuotas) + 50 , // Ajusta según tus necesidades
           //toValue: height + 480,
           duration: 100,
           useNativeDriver: false,
@@ -465,7 +479,6 @@ export function Form({ agregarPasajero, setNewFetch, }) {
                     setIsExpanded1={setIsExpanded1}
                     contentRef1={contentRef1}
                     heightAnim1={heightAnim1}
-                    dataPasajero={dataPasajero}
                     cuotaSeleccionada={cuotaSeleccionada}
                     setCuotaSeleccionada={setCuotaSeleccionada}
                     FDPSeleccionado={FDPSeleccionado}
@@ -476,7 +489,6 @@ export function Form({ agregarPasajero, setNewFetch, }) {
               }
 
               <ImporteText
-                dataPasajero={dataPasajero}
                 FDPSeleccionado={FDPSeleccionado}
                 cuotaSeleccionada={cuotaSeleccionada}
                 importeResponse={importeResponse}
@@ -519,7 +531,7 @@ export function Form({ agregarPasajero, setNewFetch, }) {
           />
         </View>
 
-        <ModalComponent visible={modalVisible} onClose={closeModal} data={datosTotales} setNewFetch={setNewFetch} agregarPasajero={agregarPasajero} inputChanged={inputChanged} />
+        <ModalComponent visible={modalVisible} onClose={closeModal} data={datosTotales} setNewFetch={setNewFetch} agregarPasajero={agregarPasajero} inputChanged={inputChanged} inputChanged200={inputChanged200}/>
 
         <ModalErrorFinanciacion visible={showAlert3} onClose={()=>{closedModalErrorFinan()}} text={errorFinan}/>
 

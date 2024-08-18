@@ -1,7 +1,16 @@
+import { useEffect, useState } from "react"
 import { Text, View, Image } from "react-native"
-
+import DeviceInfo from "react-native-device-info"
 
 export const Footer = () => {
+
+  const [version, setVersion] = useState('')
+
+  useEffect(()=>{
+    let current = DeviceInfo.getVersion()
+    setVersion(current)
+  },[])
+
   return (
     <View style={{ height: 200, alignItems: "center", top: 54}}>
       <View style={{ width: "70%", height: 81}}>
@@ -34,6 +43,14 @@ export const Footer = () => {
             />
             <Text style={{ fontSize: 10, fontWeight: "600", color:"#3462BF" }}>info@cuyenturismo.com</Text>
           </View>
+      </View>
+      <View style={{position:"absolute", bottom:25, left:10, flexDirection:"row", gap:5}}>
+        <Text style={{color:"#3462BF", fontWeight:'600'}}>
+          Versión
+        </Text>
+        <Text style={{color:"#3462BF", fontWeight:'600'}}>
+          {version !== '' ? version : null}
+        </Text>
       </View>
     </View>
   )

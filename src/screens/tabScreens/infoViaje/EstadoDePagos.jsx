@@ -23,6 +23,7 @@ export function EstadoDePagos({ navigation }) {
   const { miInfo, setMiInfo } = useContext(InfoContext)
 
   const [showAlert, setShowAlert] = useState(false)
+  const [controlSelect, setControlSelect] = useState(false)
   const dispatch = useDispatch()
 
   const getAlert = () => {
@@ -50,20 +51,20 @@ export function EstadoDePagos({ navigation }) {
     }
   }, [miInfo])
 
-  /* console.log(codPasajero); */
-
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView style={{ flex: 1, backgroundColor: "#D2DCEB" }}>
         <View style={styles.container}>
           <Header children="Estado de pagos" navigation={navigation} />
-          <SelectPasajero/>
+          <SelectPasajero
+          setControlSelect={setControlSelect}
+          />
           <ResumenDeuda
             data={cuotasPasajero}
           />
           <EstadoDePagosComponent data={cuotasPasajero} />
-          <ProximosVencimientos data={codPasajero} />
+          <ProximosVencimientos data={codPasajero} controlSelect={controlSelect}/>
           <View style={{ width: 373, height: 88, backgroundColor: "#FFFFFF", borderRadius: 10, marginTop: 20, alignItems: "center", justifyContent: "flex-start", display: "flex", flexDirection: "row", padding: 20, marginBottom: 10 }}>
             <View style={{ width: 44, height: 44, borderRadius: 50, backgroundColor: "#3FA9F5", alignItems: "center", justifyContent: "center" }}>
               <Image
