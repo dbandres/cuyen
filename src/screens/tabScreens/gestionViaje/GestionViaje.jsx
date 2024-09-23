@@ -19,6 +19,7 @@ export function GestionViaje({ navigation }) {
 	const [items, setItems] = useState([]);
 	const [showAlert2, setShowAlert2] = useState(false)
 
+	console.log('data contrato: ', userdata);
 
 	useFocusEffect(
 		React.useCallback(() => {

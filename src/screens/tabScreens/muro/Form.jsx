@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from "react";
-import { View, Text, StyleSheet, Dimensions, ScrollView, TouchableOpacity, TextInput, Platform, PermissionsAndroid, Image } from "react-native";
+import { View, Text, StyleSheet, Dimensions, ScrollView, TouchableOpacity, TextInput, Platform, PermissionsAndroid, Image, Alert } from "react-native";
 import Swiper from 'react-native-swiper'
-import { request, PERMISSIONS, check, RESULTS } from 'react-native-permissions';
+import { request, PERMISSIONS, check, RESULTS, openSettings } from 'react-native-permissions';
 import { launchCamera, launchImageLibrary } from "react-native-image-picker"
 import { ButtonCustom } from "../../../components/ButtomCustom";
 import { Header } from "./Header";
@@ -153,19 +153,38 @@ export function Form({ navigation, route }) {
 
   const requestGalleryPermission = async () => {
     try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-        {
-          title: 'Permiso de acceso a la galería',
-          message: 'Necesitamos acceder a tu galería de fotos para que puedas seleccionar imágenes y utilizarlas en la aplicación. ' +
-            'Por favor, otorga el permiso para continuar.',
-          buttonPositive: 'Aceptar',
-        },
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        openImageLibrary()
-      } else {
-        console.log('Permiso a galeria denegado');
+      const permission = Platform.OS === 'ios'
+        ? PERMISSIONS.IOS.PHOTO_LIBRARY
+        : PERMISSIONS.ANDROID.READ_MEDIA_IMAGES;
+
+      const result = await check(permission);
+
+      switch (result) {
+        case RESULTS.GRANTED:
+          openImageLibrary();
+          break;
+        case RESULTS.DENIED:
+          const requestResult = await request(permission);
+          if (requestResult === RESULTS.GRANTED) {
+            openImageLibrary();
+          } else {
+            console.log('Permiso a galería denegado', requestResult);
+
+          }
+          break;
+        case RESULTS.BLOCKED:
+          openSettings()
+          Alert.alert(
+            "Permiso necesario",
+            "El acceso a la galería es necesario para seleccionar imágenes. Por favor, habilita el permiso en la configuración de la aplicación.",
+            [
+              { text: "Cancelar", style: "cancel" },
+              { text: "Abrir configuración", onPress: () => openSettings() }
+            ]
+          );
+          break;
+        default:
+          console.log('Resultado inesperado', result);
       }
     } catch (err) {
       console.warn(err);

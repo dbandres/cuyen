@@ -91,7 +91,7 @@ export function ComponenteExpandible({ index, data, seteo, setModificandoTotal, 
 
   useEffect(() => {
     console.log("renderizo");
-    console.log(arrayDeNumeros);
+    console.log('arrayDeNumeros: ',arrayDeNumeros);
     dispatch(getAllPasajerosXColegio(arrayDeNumeros))
   }, [])
 
@@ -160,7 +160,7 @@ export function ComponenteExpandible({ index, data, seteo, setModificandoTotal, 
     const pasajero = pasajerosFilter[index].presente == element.isEnabled.toString();
     if(pasajero === false){
       return axios.put(
-        `${API_URL}/pasajero/${element.id}`,
+        `${API_URL}/pasajero/datos/${element.id}`,
         {
           presente: element.isEnabled,
         },
@@ -190,7 +190,6 @@ export function ComponenteExpandible({ index, data, seteo, setModificandoTotal, 
       setShowAlert2(false);
     });
   }
-
 
   return (
     <View>

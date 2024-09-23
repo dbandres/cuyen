@@ -7,6 +7,8 @@ import { Header } from "./muro/Header";
 import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import { useFocusEffect } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { ButtonCustom } from "../../components/ButtomCustom";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export function Ubicacion({ navigation }) {
 
@@ -18,17 +20,56 @@ export function Ubicacion({ navigation }) {
 	const [longitude, setLongitude] = useState("")
 	const contratoActual = useSelector((state) => state.currentContrato)
 
+	const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+	const [timeLeft, setTimeLeft] = useState(0);
+
+	const checkButtonStatus = async () => {
+		try {
+			const storedTime = await AsyncStorage.getItem('buttonDisabledUntil');
+			if (storedTime) {
+				const disabledUntil = parseInt(storedTime, 10);
+				const currentTime = new Date().getTime();
+				if (disabledUntil > currentTime) {
+					setIsButtonDisabled(true);
+					setTimeLeft(Math.floor((disabledUntil - currentTime) / 1000));
+				} else {
+					await AsyncStorage.removeItem('buttonDisabledUntil');
+				}
+			}
+		} catch (error) {
+			console.error('Error checking button status:', error);
+		}
+	};
+
 	useFocusEffect(
 		React.useCallback(() => {
 			try {
 				dispatch(getDestino(contratoActual))
+				checkButtonStatus();
 			} catch (error) {
 				console.log("Error en useFocusEffect: ", error);
 			}
 		}, [])
 	)
 
-	console.log(destino);
+	useEffect(() => {
+		let timer;
+		if (isButtonDisabled && timeLeft > 0) {
+			timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+		} else if (timeLeft === 0) {
+			setIsButtonDisabled(false);
+			AsyncStorage.removeItem('buttonDisabledUntil');
+		}
+		return () => clearTimeout(timer);
+	}, [isButtonDisabled, timeLeft]);
+
+	const handleUpdateLocation = async () => {
+		dispatch(getDestino(contratoActual));
+		setIsButtonDisabled(true);
+		const disabledUntil = new Date().getTime() + 300000; // current time + 5 minutes
+		await AsyncStorage.setItem('buttonDisabledUntil', disabledUntil.toString());
+		setTimeLeft(300);
+	};
 
 	useEffect(() => {
 		if (destino.length !== 0) {
@@ -76,7 +117,7 @@ export function Ubicacion({ navigation }) {
 								Destino
 							</Text>
 							<Text style={{ color: "#564C71", fontWeight: "400", fontSize: 16, lineHeight: 19 }}>
-								{destino.destino? destino.destino : 'Destino no disponible.'}
+								{destino.destino ? destino.destino : 'Destino no disponible.'}
 							</Text>
 						</View>
 					</View>
@@ -121,7 +162,7 @@ export function Ubicacion({ navigation }) {
 										<Text style={styles.zoomButtonText}>-</Text>
 									</TouchableOpacity>
 								</View>
-								<View style={{ height: 120, justifyContent: "center", alignItems: "center" }}>
+								<View style={{ height: 120, justifyContent: "center", alignItems: "center", gap: 10 }}>
 									<View style={{ width: 280, height: 46, borderRadius: 30, borderWidth: 1, justifyContent: "space-around", alignItems: "center", borderColor: "#CDD1DF", display: "flex", flexDirection: "row" }}>
 										<View style={{ display: "flex", flexDirection: "row" }}>
 											<Text style={{ fontWeight: "400", fontSize: 16, lineHeight: 19, marginRight: 5, color: "#564C71" }}>
@@ -136,10 +177,33 @@ export function Ubicacion({ navigation }) {
 											style={{ width: 24, height: 24 }}
 										/>
 									</View>
+									<TouchableOpacity
+										onPress={handleUpdateLocation}
+										disabled={isButtonDisabled}
+										style={{
+											width: 280,
+											height: 40,
+											borderRadius: 30,
+											backgroundColor: isButtonDisabled ? '#A0A0A0' : '#FF3D00',
+											justifyContent: "space-around",
+											alignItems: "center",
+											display: "flex",
+											flexDirection: "row"
+										}}
+									>
+										<View style={{ display: "flex", flexDirection: "row" }}>
+											<Text style={{ fontWeight: "400", fontSize: 16, lineHeight: 19, marginRight: 5, color: "#FFF" }}>
+												{isButtonDisabled
+													? `Espera ${Math.floor(timeLeft / 60)}:${(timeLeft % 60).toString().padStart(2, '0')}`
+													: "Actualizar mapa"
+												}
+											</Text>
+										</View>
+									</TouchableOpacity>
 								</View>
 							</View>
 							:
-							<View style={{width:'100%', height:'100%', alignItems: "center"}}>
+							<View style={{ width: '100%', height: '100%', alignItems: "center" }}>
 								<View style={{ height: 80, width: '90%' }}>
 									<Text style={{ color: "#564C71", textAlign: 'center' }}>
 										Su viaje aún no ha comenzado! Pronto vas a tener novedades!

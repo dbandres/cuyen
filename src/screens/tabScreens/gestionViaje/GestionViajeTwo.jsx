@@ -91,7 +91,7 @@ export function GestionViajeTwo({ navigation, route }) {
   useEffect(() => {
     //setShowAlert2(true)
     try {
-      axios.get(`/viaje/${data[0]}`,
+      axios.get(`/viaje/${data}`,
         {
           headers: {
             'x-access-token': `${token}`,
@@ -119,9 +119,11 @@ export function GestionViajeTwo({ navigation, route }) {
     }
   }, [data])
 
+  console.log('esto es data: ', data);
+
   useEffect(() => {
     console.log("data: ", data);
-    dispatch(getAllColegiosXViaje(data[0]))
+    dispatch(getAllColegiosXViaje(data))
   }, [])
 
   useFocusEffect(
