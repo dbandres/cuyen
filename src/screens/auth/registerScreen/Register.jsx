@@ -175,6 +175,7 @@ export default function Register({ navigation }) {
 					.then((res) => {
 						setShowAlert4(false)
 						if (res.status === 202) {
+							console.log('result verify: ', res);
 							setMatch(true)
 							setShowAlert1(false)
 						}
@@ -266,6 +267,7 @@ export default function Register({ navigation }) {
 									required: true,
 								}}
 								focus={handleInputFocus}
+								maxLength={4}
 							/>
 							<View>
 								<View style={{
